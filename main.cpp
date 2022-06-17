@@ -43,7 +43,6 @@ bool have_frame = false;
 
 void start_frame()
 {
-    std::cout << "f" << std::flush;
     if (have_frame)
         return;
     have_frame = true;
@@ -92,8 +91,10 @@ int SDL_PollEvent_hook(SDL_Event* event)
 {
     auto ret = original_SDL_PollEvent(event);
 
-    if (imgui_initialised)
+    if (imgui_initialised && event && ret) {
+        std::cout << event->type << "\n";
         ImGui_ImplSDL2_ProcessEvent(event);
+    }
 
     return ret;
 }
