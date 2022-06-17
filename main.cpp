@@ -1,6 +1,10 @@
 #include <iostream>
+#include <memory>
 
+extern "C" {
 #include <lua.h>
+#include <lauxlib.h>
+}
 
 #include <imgui.h>
 #include <backends/imgui_impl_sdl.h>
@@ -11,7 +15,10 @@
 
 #include <MinHook.h>
 
+#include "add_lua_features.hpp"
 #include "noita_dear_imgui_export.h"
+
+bool imgui_initialised = false;
 
 // GLSL version used in Noita's shaders
 char glsl_version[] = "#version 110";
@@ -26,6 +33,8 @@ void setup_imgui(SDL_Window* window, SDL_GLContext gl_context)
     
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     ImGui_ImplOpenGL3_Init(glsl_version);
+
+    imgui_initialised = true;
 }
 
 bool show_demo_window = true;
@@ -34,8 +43,10 @@ bool have_frame = false;
 
 void start_frame()
 {
+    std::cout << "f" << std::flush;
     if (have_frame)
         return;
+    have_frame = true;
 
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
@@ -47,6 +58,13 @@ void start_frame()
 
 void render()
 {
+    if (!imgui_initialised) {
+        auto window = SDL_GL_GetCurrentWindow();
+        auto gl_context = SDL_GL_GetCurrentContext();
+        setup_imgui(window, gl_context);
+        start_frame();
+    }
+
     if (!have_frame)
         return;
 
@@ -59,14 +77,83 @@ void render()
 
 using swap_window_f = void (__fastcall *)(void*);
 
-swap_window_f original_swap_window;
+swap_window_f original_swap_window = nullptr;
 
 void __fastcall swap_window_hook(void* ctx)
 {
-    std::cout << "Render called !\n" << std::flush;
     render();
     return original_swap_window(ctx);
 }
+
+using SDL_PollEvent_f = int(*)(SDL_Event* event);
+SDL_PollEvent_f original_SDL_PollEvent = nullptr;
+
+int SDL_PollEvent_hook(SDL_Event* event)
+{
+    auto ret = original_SDL_PollEvent(event);
+
+    if (imgui_initialised)
+        ImGui_ImplSDL2_ProcessEvent(event);
+
+    return ret;
+}
+
+using luaL_newstate_f = lua_State*(*)();
+luaL_newstate_f original_luaL_newstate;
+
+lua_State* luaL_newstate_hook()
+{
+    auto state = original_luaL_newstate();
+    add_lua_features(state);
+    return state;
+}
+
+struct hook {
+    void* function;
+    void* hook_function;
+    void** original;
+
+    hook(void* f, void* h, void** o)
+        : function{f}
+        , hook_function{h}
+        , original{o}
+    {
+        if (MH_CreateHook(function, hook_function, original) != MH_OK) {
+            throw std::runtime_error{"Couldn't install hook."};
+        }
+
+        if (MH_EnableHook(function) != MH_OK) {
+            throw std::runtime_error{"Couldn't enable hook."};
+        }
+    }
+
+    ~hook()
+    {
+        MH_RemoveHook(function);
+    }
+};
+
+struct imgui_hooks {
+    hook sdl_pollevent{
+        *reinterpret_cast<void**>(0xd1e620),
+        SDL_PollEvent_hook,
+        reinterpret_cast<void**>(&original_SDL_PollEvent)
+    };
+
+    hook swap_window{
+        reinterpret_cast<void*>(0xc37e80),
+        swap_window_hook,
+        reinterpret_cast<void**>(&original_swap_window)
+    };
+
+    hook lual_newstate{
+        *reinterpret_cast<void**>(0xd1e7b0),
+        luaL_newstate_hook,
+        reinterpret_cast<void**>(&original_luaL_newstate)
+    };
+};
+
+std::unique_ptr<imgui_hooks> imgui_hooks_lifetime;
 
 extern "C"
 NOITA_DEAR_IMGUI_EXPORT void init_imgui()
@@ -75,21 +162,5 @@ NOITA_DEAR_IMGUI_EXPORT void init_imgui()
         return;
     }
 
-    auto window = SDL_GL_GetCurrentWindow();
-    auto gl_context = SDL_GL_GetCurrentContext();
-
-    std::cout << "W:" << window << "\n" << std::flush;
-    std::cout << "G:" << gl_context << "\n" << std::flush;
-
-    setup_imgui(window, gl_context);
-
-    start_frame();
-
-    MH_CreateHook(
-        reinterpret_cast<void*>(0xc37e80),
-        swap_window_hook,
-        reinterpret_cast<void**>(&original_swap_window));
-    MH_EnableHook(reinterpret_cast<void*>(0xc37e80));
+    imgui_hooks_lifetime = std::make_unique<imgui_hooks>();
 }
-
-// 20:44

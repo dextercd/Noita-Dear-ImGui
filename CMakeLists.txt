@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.22)
 
 project(NoitaDearImGui)
 
+set(CMAKE_CXX_STANDARD 20)
+
 include(FetchContent)
 include(ExternalProject)
 include(GenerateExportHeader)
@@ -134,8 +136,16 @@ set_target_properties(LuaJIT_exe PROPERTIES
 )
 
 
+FetchContent_Declare(sol
+    GIT_REPOSITORY https://github.com/ThePhD/sol2.git
+    GIT_TAG 2198d9374d260f168d53b6248e49068a6307227d
+)
+
+FetchContent_MakeAvailable(sol)
+
 add_library(noita_dear_imgui MODULE
     main.cpp
+    add_lua_features.cpp
 )
 
 generate_export_header(noita_dear_imgui)
@@ -145,6 +155,7 @@ target_include_directories(noita_dear_imgui PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(noita_dear_imgui
     PRIVATE
         LuaJIT_library
+        sol2::sol2
         DearImGui
         SDL2
         minhook
