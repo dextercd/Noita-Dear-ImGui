@@ -26,7 +26,8 @@ FetchContent_MakeAvailable(SDL2)
 
 file(COPY_FILE
     ${CMAKE_CURRENT_SOURCE_DIR}/fixup/SDL_syswm.h
-    ${sdl2_SOURCE_DIR}/include/SDL_syswm.h)
+    ${sdl2_SOURCE_DIR}/include/SDL_syswm.h
+    ONLY_IF_DIFFERENT)
 
 add_library(SDL2 SHARED IMPORTED)
 set_target_properties(SDL2 PROPERTIES
