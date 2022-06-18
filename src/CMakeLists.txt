@@ -5,6 +5,8 @@ add_library(noita_dear_imgui MODULE
     lua_features/imgui_gui_io.cpp
     lua_features/imgui_windows.cpp
     lua_features/imgui_text.cpp
+    lua_features/imgui_menu.cpp
+    lua_features/imgui_widgets_main.cpp
 )
 
 generate_export_header(noita_dear_imgui)
@@ -21,6 +23,7 @@ target_link_libraries(noita_dear_imgui
 )
 
 target_precompile_headers(noita_dear_imgui PRIVATE
+    <tuple>
     <sol/sol.hpp>
     <imgui.h>
 )

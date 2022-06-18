@@ -5,6 +5,8 @@
 void add_imgui_gui_io(sol::table&);
 void add_imgui_windows(sol::table&);
 void add_imgui_text(sol::table&);
+void add_imgui_menu(sol::table&);
+void add_imgui_widgets_main(sol::table&);
 
 void add_lua_features(lua_State* L)
 {
@@ -14,4 +16,6 @@ void add_lua_features(lua_State* L)
     add_imgui_gui_io(imgui);
     add_imgui_windows(imgui);
     add_imgui_text(imgui);
+    add_imgui_menu(imgui);
+    add_imgui_widgets_main(imgui);
 }
