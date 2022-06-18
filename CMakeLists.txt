@@ -143,23 +143,7 @@ FetchContent_Declare(sol
 
 FetchContent_MakeAvailable(sol)
 
-add_library(noita_dear_imgui MODULE
-    main.cpp
-    add_lua_features.cpp
-)
-
-generate_export_header(noita_dear_imgui)
-
-target_include_directories(noita_dear_imgui PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
-
-target_link_libraries(noita_dear_imgui
-    PRIVATE
-        LuaJIT_library
-        sol2::sol2
-        DearImGui
-        SDL2
-        minhook
-)
+add_subdirectory(src)
 
 install(TARGETS noita_dear_imgui DESTINATION "DearImGui" COMPONENT NoitaImGui)
 install(DIRECTORY DearImGui DESTINATION "." COMPONENT NoitaImGui)
