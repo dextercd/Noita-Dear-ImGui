@@ -17,9 +17,9 @@ void add_imgui_windows(sol::table& imgui)
     imgui.set_function("BeginChild",
         sol::overload(
             [](const char* str_id) { return ImGui::BeginChild(str_id); },
-            [](const char* str_id, ImVec2 size) { return ImGui::BeginChild(str_id, size); },
-            [](const char* str_id, ImVec2 size, bool border) { return ImGui::BeginChild(str_id, size, border); },
-            [](const char* str_id, ImVec2 size, bool border, ImGuiWindowFlags flags) { return ImGui::BeginChild(str_id, size, border, flags); }));
+            [](const char* str_id, float size_x, float size_y) { return ImGui::BeginChild(str_id, {size_x, size_y}); },
+            [](const char* str_id, float size_x, float size_y, bool border) { return ImGui::BeginChild(str_id, {size_x, size_y}, border); },
+            [](const char* str_id, float size_x, float size_y, bool border, ImGuiWindowFlags flags) { return ImGui::BeginChild(str_id, {size_x, size_y}, border, flags); }));
     imgui.set_function("EndChild", &ImGui::EndChild);
 
     // Windows Utilities
@@ -42,12 +42,12 @@ void add_imgui_windows(sol::table& imgui)
     // Window manipulation
     imgui.set_function("SetNextWindowPos",
         sol::overload(
-            [](ImVec2 pos) { return ImGui::SetNextWindowPos(pos); },
-            [](ImVec2 pos, ImGuiCond cond) { return ImGui::SetNextWindowPos(pos, cond); },
+            [](float pos_x, float pos_y) { return ImGui::SetNextWindowPos({pos_x, pos_y}); },
+            [](float pos_x, float pos_y, ImGuiCond cond) { return ImGui::SetNextWindowPos({pos_x, pos_y}, cond); },
             &ImGui::SetNextWindowPos));
     imgui.set_function("SetNextWindowSize",
         sol::overload(
-            [](ImVec2 size) { return ImGui::SetNextWindowSize(size); },
+            [](float size_x, float size_y) { return ImGui::SetNextWindowSize({size_x, size_y}); },
             &ImGui::SetNextWindowSize));
     //imgui.set_function("SetNextWindowSizeConstraints", &ImGui::SetNextWindowSizeConstraints);
     imgui.set_function("SetNextWindowContentSize", &ImGui::SetNextWindowContentSize);
@@ -59,16 +59,16 @@ void add_imgui_windows(sol::table& imgui)
     imgui.set_function("SetNextWindowBgAlpha", &ImGui::SetNextWindowBgAlpha);
     imgui.set_function("SetWindowPos",
         sol::overload(
-            [](ImVec2 pos) { return ImGui::SetWindowPos(pos); },
-            [](ImVec2 pos, ImGuiCond cond) { return ImGui::SetWindowPos(pos, cond); },
-            [](const char* name, ImVec2 pos) { return ImGui::SetWindowPos(name, pos); },
-            [](const char* name, ImVec2 pos, ImGuiCond cond) { return ImGui::SetWindowPos(name, pos, cond); }));
+            [](float pos_x, float pos_y) { return ImGui::SetWindowPos({pos_x, pos_y}); },
+            [](float pos_x, float pos_y, ImGuiCond cond) { return ImGui::SetWindowPos({pos_x, pos_y}, cond); },
+            [](const char* name, float pos_x, float pos_y) { return ImGui::SetWindowPos(name, {pos_x, pos_y}); },
+            [](const char* name, float pos_x, float pos_y, ImGuiCond cond) { return ImGui::SetWindowPos(name, {pos_x, pos_y}, cond); }));
     imgui.set_function("SetWindowSize",
         sol::overload(
-            [](ImVec2 pos) { return ImGui::SetWindowSize(pos); },
-            [](ImVec2 pos, ImGuiCond cond) { return ImGui::SetWindowSize(pos, cond); },
-            [](const char* name, ImVec2 pos) { return ImGui::SetWindowSize(name, pos); },
-            [](const char* name, ImVec2 pos, ImGuiCond cond) { return ImGui::SetWindowSize(name, pos, cond); }));
+            [](float pos_x, float pos_y) { return ImGui::SetWindowSize({pos_x, pos_y}); },
+            [](float pos_x, float pos_y, ImGuiCond cond) { return ImGui::SetWindowSize({pos_x, pos_y}, cond); },
+            [](const char* name, float pos_x, float pos_y) { return ImGui::SetWindowSize(name, {pos_x, pos_y}); },
+            [](const char* name, float pos_x, float pos_y, ImGuiCond cond) { return ImGui::SetWindowSize(name, {pos_x, pos_y}, cond); }));
     imgui.set_function("SetWindowCollapsed",
         sol::overload(
             [](bool collapsed) { return ImGui::SetWindowCollapsed(collapsed); },
