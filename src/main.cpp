@@ -87,12 +87,43 @@ void __fastcall swap_window_hook(void* ctx)
 using SDL_PollEvent_f = int(*)(SDL_Event* event);
 SDL_PollEvent_f original_SDL_PollEvent = nullptr;
 
+bool is_mouse_event(SDL_Event* event)
+{
+    switch (event->type) {
+        case SDL_MOUSEMOTION:
+        case SDL_MOUSEBUTTONDOWN:
+        case SDL_MOUSEBUTTONUP:
+        case SDL_MOUSEWHEEL:
+            return true;
+    }
+
+    return false;
+}
+
+bool is_keyboard_event(SDL_Event* event)
+{
+    switch (event->type) {
+        case SDL_KEYDOWN:
+        case SDL_KEYUP:
+            return true;
+    }
+
+    return false;
+}
+
 int SDL_PollEvent_hook(SDL_Event* event)
 {
     auto ret = original_SDL_PollEvent(event);
 
     if (imgui_initialised && event && ret) {
         ImGui_ImplSDL2_ProcessEvent(event);
+
+        auto& io = ImGui::GetIO();
+        if (io.WantCaptureMouse && is_mouse_event(event))
+            return SDL_PollEvent_hook(event);
+
+        if (io.WantCaptureKeyboard && is_keyboard_event(event))
+            return SDL_PollEvent_hook(event);
     }
 
     return ret;
