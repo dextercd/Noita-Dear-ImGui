@@ -4,6 +4,7 @@ add_library(noita_dear_imgui MODULE
 
     lua_features/imgui_gui_io.cpp
     lua_features/imgui_windows.cpp
+    lua_features/imgui_text.cpp
 )
 
 generate_export_header(noita_dear_imgui)
