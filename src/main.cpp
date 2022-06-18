@@ -92,7 +92,6 @@ int SDL_PollEvent_hook(SDL_Event* event)
     auto ret = original_SDL_PollEvent(event);
 
     if (imgui_initialised && event && ret) {
-        std::cout << event->type << "\n";
         ImGui_ImplSDL2_ProcessEvent(event);
     }
 
@@ -159,7 +158,11 @@ std::unique_ptr<imgui_hooks> imgui_hooks_lifetime;
 extern "C"
 NOITA_DEAR_IMGUI_EXPORT void init_imgui()
 {
+    if (imgui_hooks_lifetime)
+        return;
+
     if (MH_Initialize() != MH_OK) {
+        std::cerr << "MH_Initialize failed.\n";
         return;
     }
 
