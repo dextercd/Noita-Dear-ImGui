@@ -14,7 +14,6 @@ struct version_number {
     int minor = -1;
     int patch = -1;
     int tweak = -1;
-    std::string suffix;
 
     friend std::weak_ordering operator<=>(const version_number&, const version_number&) = default;
 
@@ -53,20 +52,9 @@ struct version_number {
             if (*assigning_component < 0)
                 return std::nullopt;
 
-            if (parse_end != component_end) {
-                // Something after the digits, see if it's a '-suffix'
-
-                // The part we parse is always inside the version_str and we
-                // know that parse_end points at more content.
-                assert(parse_end < version_end);
-
-                if (*parse_end != '-')
-                    return std::nullopt;
-
-                ver.suffix = std::string{parse_end + 1, version_end};
-                return ver;
-
-            }
+            // Junk at the end of the number
+            if (parse_end != component_end)
+                return std::nullopt;
 
             // Nothing after the digits, continue with next component
             ++component_nr;
@@ -93,10 +81,7 @@ constexpr bool version_compatible(const version_number& a, const version_number&
 
     if (a.tweak == -1) return true;
     if (a.tweak < b.tweak) return false;
-    if (a.tweak > b.tweak) return true;
-
-    if (a.suffix.empty() || b.suffix.empty()) return true;
-    return a.suffix == b.suffix;
+    if (a.tweak >= b.tweak) return true;
 }
 
 NOITA_DEAR_IMGUI_EXPORT
