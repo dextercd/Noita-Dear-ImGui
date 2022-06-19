@@ -1,6 +1,7 @@
-add_library(noita_dear_imgui MODULE
+add_library(noita_dear_imgui SHARED
     main.cpp
     add_lua_features.cpp
+    version_number.cpp
 
     lua_features/imgui_gui_io.cpp
     lua_features/imgui_windows.cpp
@@ -11,7 +12,7 @@ add_library(noita_dear_imgui MODULE
 
 generate_export_header(noita_dear_imgui)
 
-target_include_directories(noita_dear_imgui PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories(noita_dear_imgui PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 
 target_link_libraries(noita_dear_imgui
     PRIVATE
@@ -27,3 +28,7 @@ target_precompile_headers(noita_dear_imgui PRIVATE
     <sol/sol.hpp>
     <imgui.h>
 )
+
+if (BUILD_TESTING)
+    add_subdirectory(tests)
+endif()

@@ -4,11 +4,19 @@ project(NoitaDearImGui)
 
 set(CMAKE_CXX_STANDARD 20)
 
+include(CTest)
 include(FetchContent)
 include(ExternalProject)
 include(GenerateExportHeader)
 
 find_program(CLANGXX clang++ REQUIRED)
+
+FetchContent_Declare(Catch2
+    GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+    GIT_TAG 605a34765aa5d5ecbf476b4598a862ada971b0cc  # v3.0.1
+)
+
+FetchContent_MakeAvailable(Catch2)
 
 FetchContent_Declare(MinHook
     GIT_REPOSITORY https://github.com/TsudaKageyu/minhook.git
