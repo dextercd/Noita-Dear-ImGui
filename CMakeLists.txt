@@ -59,29 +59,6 @@ if (NOT dearimgui_POPULATED)
     FetchContent_Populate(DearImGui)
 endif()
 
-add_library(DearImGui STATIC
-    ${dearimgui_SOURCE_DIR}/imgui.cpp
-    ${dearimgui_SOURCE_DIR}/imgui_demo.cpp
-    ${dearimgui_SOURCE_DIR}/imgui_draw.cpp
-    ${dearimgui_SOURCE_DIR}/imgui_tables.cpp
-    ${dearimgui_SOURCE_DIR}/imgui_widgets.cpp
-    ${dearimgui_SOURCE_DIR}/backends/imgui_impl_sdl.cpp
-    ${dearimgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
-)
-
-target_include_directories(DearImGui
-    PUBLIC
-        ${dearimgui_SOURCE_DIR}
-)
-
-target_compile_definitions(DearImGui
-    PUBLIC
-        IMGUI_DISABLE_OBSOLETE_KEYIO
-        IMGUI_DISABLE_OBSOLETE_FUNCTIONS
-)
-
-target_link_libraries(DearImGui PUBLIC SDL2)
-
 ExternalProject_Add(LuaJIT
     URL https://luajit.org/download/LuaJIT-2.0.4.zip
     URL_HASH SHA224=163def4ec3ad502702760c703bb81da7932573a6f4b2ff482d04ccb6
