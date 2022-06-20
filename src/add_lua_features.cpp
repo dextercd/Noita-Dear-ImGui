@@ -3,6 +3,7 @@
 
 #include <sol/sol.hpp>
 
+#include <noita_dear_imgui_export.h>
 #include <noita_imgui/version_number.hpp>
 
 void add_imgui_gui_io(sol::table&);
@@ -26,7 +27,8 @@ sol::table load_imgui(sol::this_state s, sol::table load_params)
     return imgui;
 }
 
-void add_lua_features(lua_State* L)
+extern "C"
+NOITA_DEAR_IMGUI_EXPORT void add_lua_features(lua_State* L)
 {
     sol::state_view lua{L};
     lua.set_function("load_imgui", load_imgui);
