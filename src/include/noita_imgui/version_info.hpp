@@ -6,6 +6,7 @@
 #include "noita_dear_imgui_export.h"
 #include "version_number.hpp"
 
+
 NOITA_DEAR_IMGUI_EXPORT
 extern constinit const std::string_view git_sha;
 

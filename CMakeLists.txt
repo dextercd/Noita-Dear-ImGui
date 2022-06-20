@@ -180,9 +180,9 @@ add_custom_target(version_info_files ALL
     BYPRODUCTS ${VERSION_INFO_TXT} ${VERSION_INFO_CPP}
 )
 
-set(CMAKE_INSTALL_INCLUDEDIR "DearImGui/native/include")
+set(CMAKE_INSTALL_INCLUDEDIR "NoitaDearImGui/native/include")
 
 add_subdirectory(src)
 
-install(DIRECTORY DearImGui DESTINATION "." COMPONENT NoitaImGui)
-install(FILES ${VERSION_INFO_TXT} DESTINATION "DearImGui" COMPONENT NoitaImGui)
+install(DIRECTORY NoitaDearImGui DESTINATION "." COMPONENT NoitaImGui)
+install(FILES ${VERSION_INFO_TXT} DESTINATION "NoitaDearImGui" COMPONENT NoitaImGui)

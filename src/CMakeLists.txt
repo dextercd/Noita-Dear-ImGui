@@ -18,6 +18,9 @@ add_library(noita_dear_imgui SHARED
     lua_features/imgui_widgets_main.cpp
     ${public_headers}
 )
+add_library(NoitaDearImGui::noita_dear_imgui ALIAS noita_dear_imgui)
+
+target_compile_features(noita_dear_imgui PUBLIC cxx_std_20)
 
 set_target_properties(noita_dear_imgui PROPERTIES
     PUBLIC_HEADER "${public_headers}"
@@ -55,11 +58,11 @@ install(TARGETS noita_dear_imgui
     EXPORT NoitaDearImGui
     RUNTIME
         COMPONENT NoitaImGui
-        DESTINATION "DearImGui"
+        DESTINATION "NoitaDearImGui"
 
     ARCHIVE
         COMPONENT NoitaImGui_Native
-        DESTINATION "DearImGui/native/lib"
+        DESTINATION "NoitaDearImGui/native/lib"
 
     PUBLIC_HEADER
         COMPONENT NoitaImGui_Native
@@ -69,4 +72,11 @@ install(TARGETS noita_dear_imgui
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/noita_dear_imgui_export.h
     DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
     COMPONENT NoitaImGui_Native
+)
+
+install(EXPORT NoitaDearImGui
+    COMPONENT NoitaImGui_Native
+    DESTINATION "NoitaDearImGui/cmake"
+    NAMESPACE NoitaDearImGui::
+    FILE NoitaDearImGuiConfig.cmake
 )
