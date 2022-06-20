@@ -11,8 +11,6 @@ include(CTest)
 include(FetchContent)
 include(ExternalProject)
 
-find_program(CLANGXX clang++ REQUIRED)
-
 FetchContent_Declare(Catch2
     GIT_REPOSITORY https://github.com/catchorg/Catch2.git
     GIT_TAG 605a34765aa5d5ecbf476b4598a862ada971b0cc  # v3.0.1
@@ -60,25 +58,6 @@ FetchContent_GetProperties(DearImGui)
 if (NOT dearimgui_POPULATED)
     FetchContent_Populate(DearImGui)
 endif()
-
-set(IMGUI_AST_DUMP "${CMAKE_CURRENT_BINARY_DIR}/imgui_ast_dump.json")
-
-add_custom_command(
-    OUTPUT ${IMGUI_AST_DUMP}
-    COMMAND ${CLANGXX} -c
-        -fdelayed-template-parsing
-        -fms-extensions
-        -fms-compatibility
-        -Xclang
-        -ast-dump=json
-        ${dearimgui_SOURCE_DIR}/imgui.h
-        -ferror-limit=1000
-        >${IMGUI_AST_DUMP}
-    || cd .
-)
-
-add_custom_target(imgui_ast_dump DEPENDS ${IMGUI_AST_DUMP})
-
 
 add_library(DearImGui STATIC
     ${dearimgui_SOURCE_DIR}/imgui.cpp
