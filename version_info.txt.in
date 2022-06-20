@@ -1,0 +1,4 @@
+This is version @PROJECT_VERSION@ of NoitaDearImGui.
+
+Branch: @THIS_REPO_BRANCH@
+Commit: @THIS_REPO_SHA@

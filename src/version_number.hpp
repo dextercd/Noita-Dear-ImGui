@@ -17,53 +17,16 @@ struct version_number {
 
     friend std::weak_ordering operator<=>(const version_number&, const version_number&) = default;
 
-    constexpr static std::optional<version_number> from_string(
-        std::string_view version_str)
+    NOITA_DEAR_IMGUI_EXPORT
+    static std::optional<version_number> from_string(std::string_view version_str);
+
+    constexpr version_number zero_fill() const
     {
-        version_number ver{};
-
-        auto const version_end = version_str.data() + version_str.size();
-
-        int component_nr = 0;
-        for (const auto crange : std::views::split(version_str, sep)) {
-            auto component = std::string_view(crange.begin(), crange.end());
-            auto component_end = component.data() + component.size();
-
-            int* assigning_component = nullptr;
-            if (component_nr == 0) assigning_component = &ver.major;
-            if (component_nr == 1) assigning_component = &ver.minor;
-            if (component_nr == 2) assigning_component = &ver.patch;
-            if (component_nr == 3) assigning_component = &ver.tweak;
-
-            // Too many parts in the version string
-            if (assigning_component == nullptr)
-                return std::nullopt;
-
-            auto [parse_end, ec] = std::from_chars(
-                component.data(), component.data() + component.size(),
-                *assigning_component
-            );
-
-            // Couldn't parse the number
-            if (ec != std::errc{})
-                return std::nullopt;
-
-            // Negative version component
-            if (*assigning_component < 0)
-                return std::nullopt;
-
-            // Junk at the end of the number
-            if (parse_end != component_end)
-                return std::nullopt;
-
-            // Nothing after the digits, continue with next component
-            ++component_nr;
-        }
-
-        if (component_nr == 0)
-            return std::nullopt;
-
-        return ver;
+        version_number ret = *this;
+        if (ret.minor == -1) ret.minor = 0;
+        if (ret.patch == -1) ret.patch = 0;
+        if (ret.tweak == -1) ret.tweak = 0;
+        return ret;
     }
 };
 

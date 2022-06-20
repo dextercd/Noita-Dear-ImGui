@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(NoitaDearImGui)
+project(NoitaDearImGui
+    VERSION 0.0.1.0
+    LANGUAGES CXX C
+)
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -152,7 +155,34 @@ FetchContent_Declare(sol
 
 FetchContent_MakeAvailable(sol)
 
+set(VERSION_INFO_TXT "${CMAKE_CURRENT_BINARY_DIR}/version_info.txt")
+set(VERSION_INFO_CPP "${CMAKE_CURRENT_BINARY_DIR}/version_info.cpp")
+
+find_program(GIT_PROGRAM git)
+
+set(git_file_list
+    version_info.txt.in ${VERSION_INFO_TXT}
+    version_info.cpp.in ${VERSION_INFO_CPP}
+)
+
+add_custom_target(version_info_files ALL
+    VERBATIM
+    COMMAND cmake
+        -D GIT_PROGRAM=${GIT_PROGRAM}
+        -D "FILES=${git_file_list}"
+        -D "PROJECT_VERSION=${NoitaDearImGui_VERSION}"
+        -D "PROJECT_VERSION_MAJOR=${NoitaDearImGui_VERSION_MAJOR}"
+        -D "PROJECT_VERSION_MINOR=${NoitaDearImGui_VERSION_MINOR}"
+        -D "PROJECT_VERSION_PATCH=${NoitaDearImGui_VERSION_PATCH}"
+        -D "PROJECT_VERSION_TWEAK=${NoitaDearImGui_VERSION_TWEAK}"
+        -P cmake/write_git_info.cmake
+
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    BYPRODUCTS ${VERSION_INFO_TXT} ${VERSION_INFO_CPP}
+)
+
 add_subdirectory(src)
 
 install(TARGETS noita_dear_imgui DESTINATION "DearImGui" COMPONENT NoitaImGui)
 install(DIRECTORY DearImGui DESTINATION "." COMPONENT NoitaImGui)
+install(FILES ${VERSION_INFO_TXT} DESTINATION "DearImGui" COMPONENT NoitaImGui)
