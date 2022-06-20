@@ -4,6 +4,7 @@ set(public_headers
     include/noita_imgui/add_lua_features.hpp
     include/noita_imgui/version_info.hpp
     include/noita_imgui/version_number.hpp
+    include/noita_imgui/imgui_config.hpp
 )
 
 set(dear_imgui_headers
