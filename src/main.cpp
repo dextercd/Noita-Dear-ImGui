@@ -37,8 +37,6 @@ void setup_imgui(SDL_Window* window, SDL_GLContext gl_context)
     imgui_initialised = true;
 }
 
-bool show_demo_window = true;
-
 bool have_frame = false;
 
 void start_frame()
@@ -50,9 +48,6 @@ void start_frame()
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
-
-    if (show_demo_window)
-        ImGui::ShowDemoWindow(&show_demo_window);
 }
 
 void render()
