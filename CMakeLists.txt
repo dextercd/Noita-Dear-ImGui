@@ -10,7 +10,6 @@ set(CMAKE_CXX_STANDARD 20)
 include(CTest)
 include(FetchContent)
 include(ExternalProject)
-include(GenerateExportHeader)
 
 find_program(CLANGXX clang++ REQUIRED)
 
@@ -181,8 +180,9 @@ add_custom_target(version_info_files ALL
     BYPRODUCTS ${VERSION_INFO_TXT} ${VERSION_INFO_CPP}
 )
 
+set(CMAKE_INSTALL_INCLUDEDIR "DearImGui/native/include")
+
 add_subdirectory(src)
 
-install(TARGETS noita_dear_imgui DESTINATION "DearImGui" COMPONENT NoitaImGui)
 install(DIRECTORY DearImGui DESTINATION "." COMPONENT NoitaImGui)
 install(FILES ${VERSION_INFO_TXT} DESTINATION "DearImGui" COMPONENT NoitaImGui)

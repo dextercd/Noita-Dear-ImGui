@@ -3,7 +3,7 @@
 
 #include <sol/sol.hpp>
 
-#include "version_number.hpp"
+#include <noita_imgui/version_number.hpp>
 
 void add_imgui_gui_io(sol::table&);
 void add_imgui_windows(sol::table&);

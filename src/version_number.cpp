@@ -1,5 +1,11 @@
-#include "version_number.hpp"
-#include "noita_dear_imgui_export.h"
+#include <optional>
+#include <string_view>
+#include <ranges>
+#include <charconv>
+#include <cassert>
+
+#include <noita_dear_imgui_export.h>
+#include <noita_imgui/version_number.hpp>
 
 NOITA_DEAR_IMGUI_EXPORT
 std::optional<version_number> version_number::from_string(

@@ -15,8 +15,8 @@ extern "C" {
 
 #include <MinHook.h>
 
-#include "add_lua_features.hpp"
-#include "noita_dear_imgui_export.h"
+#include <noita_imgui/add_lua_features.hpp>
+#include <noita_dear_imgui_export.h>
 
 bool imgui_initialised = false;
 

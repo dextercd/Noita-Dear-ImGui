@@ -1,9 +1,7 @@
 #include <cassert>
-#include <charconv>
 #include <iosfwd>
 #include <optional>
-#include <ranges>
-#include <string>
+#include <string_view>
 
 #include "noita_dear_imgui_export.h"
 
@@ -45,6 +43,10 @@ constexpr bool version_compatible(const version_number& a, const version_number&
     if (a.tweak == -1) return true;
     if (a.tweak < b.tweak) return false;
     if (a.tweak >= b.tweak) return true;
+
+    // Unreachable
+    assert(false);
+    return false;
 }
 
 NOITA_DEAR_IMGUI_EXPORT

@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "version_number.hpp"
+#include <noita_imgui/version_number.hpp>
 
 version_number vparse(std::string_view version_str)
 {
