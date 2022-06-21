@@ -1,3 +1,6 @@
+#ifndef NOITA_IMGUI_VERSION_NUMBER_HPP
+#define NOITA_IMGUI_VERSION_NUMBER_HPP
+
 #include <cassert>
 #include <iosfwd>
 #include <optional>
@@ -51,3 +54,5 @@ constexpr bool version_compatible(const version_number& a, const version_number&
 
 NOITA_DEAR_IMGUI_EXPORT
 std::ostream& operator<<(std::ostream& os, const version_number&);
+
+#endif // header guard
