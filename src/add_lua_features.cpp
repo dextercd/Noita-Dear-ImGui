@@ -11,6 +11,7 @@ void add_imgui_windows(sol::table&);
 void add_imgui_text(sol::table&);
 void add_imgui_menu(sol::table&);
 void add_imgui_widgets_main(sol::table&);
+void add_keyboard_input(sol::table& imgui);
 
 sol::table load_imgui(sol::this_state s, sol::table load_params)
 {
@@ -23,6 +24,7 @@ sol::table load_imgui(sol::this_state s, sol::table load_params)
     add_imgui_text(imgui);
     add_imgui_menu(imgui);
     add_imgui_widgets_main(imgui);
+    add_keyboard_input(imgui);
 
     return imgui;
 }
