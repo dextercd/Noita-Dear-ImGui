@@ -20,6 +20,7 @@ add_library(noita_dear_imgui SHARED
     main.cpp
     version_number.cpp
     ${VERSION_INFO_CPP}
+    style.cpp
 
     # Dear ImGui sources
     ${dearimgui_SOURCE_DIR}/imgui.cpp

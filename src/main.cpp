@@ -17,6 +17,7 @@ extern "C" {
 
 #include <noita_imgui/add_lua_features.hpp>
 #include <noita_dear_imgui_export.h>
+#include "style.hpp"
 
 bool imgui_initialised = false;
 
@@ -29,7 +30,7 @@ void setup_imgui(SDL_Window* window, SDL_GLContext gl_context)
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
 
-    ImGui::StyleColorsDark();
+    noita_imgui_style();
     
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     ImGui_ImplOpenGL3_Init(glsl_version);
