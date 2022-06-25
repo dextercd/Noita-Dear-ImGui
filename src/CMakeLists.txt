@@ -36,6 +36,7 @@ add_library(noita_dear_imgui SHARED
     add_lua_features.cpp
     lua_features/imgui_color_editor.cpp
     lua_features/imgui_combo_box.cpp
+    lua_features/imgui_common.cpp
     lua_features/imgui_drag_sliders.cpp
     lua_features/imgui_gui_io.cpp
     lua_features/imgui_keyboard_input.cpp
@@ -44,6 +45,7 @@ add_library(noita_dear_imgui SHARED
     lua_features/imgui_regular_sliders.cpp
     lua_features/imgui_scopes.cpp
     lua_features/imgui_text.cpp
+    lua_features/imgui_trees.cpp
     lua_features/imgui_widgets_main.cpp
     lua_features/imgui_windows.cpp
 
