@@ -10,6 +10,7 @@ void add_imgui_color_editor(sol::table& imgui);
 void add_imgui_combo_box(sol::table&);
 void add_imgui_drag_sliders(sol::table& imgui);
 void add_imgui_gui_io(sol::table&);
+void add_imgui_layout(sol::table&);
 void add_imgui_menu(sol::table&);
 void add_imgui_regular_sliders(sol::table& imgui);
 void add_imgui_text(sol::table&);
@@ -27,6 +28,7 @@ sol::table load_imgui(sol::this_state s, sol::table load_params)
     add_imgui_combo_box(imgui);
     add_imgui_drag_sliders(imgui);
     add_imgui_gui_io(imgui);
+    add_imgui_layout(imgui);
     add_imgui_menu(imgui);
     add_imgui_regular_sliders(imgui);
     add_imgui_text(imgui);

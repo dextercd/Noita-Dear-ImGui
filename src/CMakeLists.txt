@@ -38,6 +38,7 @@ add_library(noita_dear_imgui SHARED
     lua_features/imgui_drag_sliders.cpp
     lua_features/imgui_gui_io.cpp
     lua_features/imgui_keyboard_input.cpp
+    lua_features/imgui_layout.cpp
     lua_features/imgui_menu.cpp
     lua_features/imgui_regular_sliders.cpp
     lua_features/imgui_text.cpp
