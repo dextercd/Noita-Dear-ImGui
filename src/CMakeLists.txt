@@ -33,12 +33,13 @@ add_library(noita_dear_imgui SHARED
 
     # Lua features
     add_lua_features.cpp
+    lua_features/imgui_combo_box.cpp
     lua_features/imgui_gui_io.cpp
-    lua_features/imgui_windows.cpp
-    lua_features/imgui_text.cpp
-    lua_features/imgui_menu.cpp
-    lua_features/imgui_widgets_main.cpp
     lua_features/imgui_keyboard_input.cpp
+    lua_features/imgui_menu.cpp
+    lua_features/imgui_text.cpp
+    lua_features/imgui_widgets_main.cpp
+    lua_features/imgui_windows.cpp
 
     ${public_headers}
     ${dear_imgui_headers}
