@@ -55,4 +55,21 @@ void add_imgui_combo_box(sol::table& imgui)
         sol::overload(
             [](const char* label, int current_item, sol::table items) { return ImGui_Combo(label, current_item, items); },
             [](const char* label, int current_item, sol::table items, int popup_max_height_in_items) { return ImGui_Combo(label, current_item, items, popup_max_height_in_items); }));
+
+    imgui.new_enum("SelectableFlags",
+        "None",             ImGuiSelectableFlags_None,
+        "DontClosePopups",  ImGuiSelectableFlags_DontClosePopups,
+        "SpanAllColumns",   ImGuiSelectableFlags_SpanAllColumns,
+        "AllowDoubleClick", ImGuiSelectableFlags_AllowDoubleClick,
+        "Disabled",         ImGuiSelectableFlags_Disabled,
+        "AllowItemOverlap", ImGuiSelectableFlags_AllowItemOverlap
+    );
+
+    imgui.set_function("Selectable",
+        sol::overload(
+            [](const char* label) { return ImGui::Selectable(label); },
+            [](const char* label, bool selected) { return ImGui::Selectable(label, selected); },
+            [](const char* label, bool selected, ImGuiSelectableFlags flags) { return ImGui::Selectable(label, selected, flags); },
+            [](const char* label, bool selected, ImGuiSelectableFlags flags, float size_x, float size_y) { return ImGui::Selectable(label, selected, flags, {size_x, size_y}); }
+        ));
 }
