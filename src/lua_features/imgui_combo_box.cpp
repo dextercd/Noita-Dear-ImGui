@@ -1,5 +1,4 @@
 #include <string>
-#include <iostream>
 #include <tuple>
 
 #include <sol/sol.hpp>
