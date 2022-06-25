@@ -34,6 +34,7 @@ add_library(noita_dear_imgui SHARED
     # Lua features
     add_lua_features.cpp
     lua_features/imgui_combo_box.cpp
+    lua_features/imgui_drag_sliders.cpp
     lua_features/imgui_gui_io.cpp
     lua_features/imgui_keyboard_input.cpp
     lua_features/imgui_menu.cpp
