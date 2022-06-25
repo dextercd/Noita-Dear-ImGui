@@ -21,6 +21,7 @@ add_library(noita_dear_imgui SHARED
     version_number.cpp
     ${VERSION_INFO_CPP}
     style.cpp
+    wine_compat.cpp
 
     # Dear ImGui sources
     ${dearimgui_SOURCE_DIR}/imgui.cpp
@@ -28,7 +29,7 @@ add_library(noita_dear_imgui SHARED
     ${dearimgui_SOURCE_DIR}/imgui_draw.cpp
     ${dearimgui_SOURCE_DIR}/imgui_tables.cpp
     ${dearimgui_SOURCE_DIR}/imgui_widgets.cpp
-    ${dearimgui_SOURCE_DIR}/backends/imgui_impl_sdl.cpp
+    imgui_impl_sdl.cpp
     ${dearimgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
 
     # Lua features
