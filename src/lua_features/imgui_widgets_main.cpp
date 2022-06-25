@@ -5,6 +5,13 @@
 
 void add_imgui_widgets_main(sol::table& imgui)
 {
+    imgui.new_enum("ButtonFlags",
+        "None",              ImGuiButtonFlags_None,
+        "MouseButtonLeft",   ImGuiButtonFlags_MouseButtonLeft,
+        "MouseButtonRight",  ImGuiButtonFlags_MouseButtonRight,
+        "MouseButtonMiddle", ImGuiButtonFlags_MouseButtonMiddle
+    );
+
     imgui.set_function("Button",
         sol::overload(
             [](const char* label) { return ImGui::Button(label); },

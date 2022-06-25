@@ -5,6 +5,33 @@
 
 void add_imgui_windows(sol::table& imgui)
 {
+    imgui.new_enum("WindowFlags",
+        "None",                      ImGuiWindowFlags_None,
+        "NoTitleBar",                ImGuiWindowFlags_NoTitleBar,
+        "NoResize",                  ImGuiWindowFlags_NoResize,
+        "NoMove",                    ImGuiWindowFlags_NoMove,
+        "NoScrollbar",               ImGuiWindowFlags_NoScrollbar,
+        "NoScrollWithMouse",         ImGuiWindowFlags_NoScrollWithMouse,
+        "NoCollapse",                ImGuiWindowFlags_NoCollapse,
+        "AlwaysAutoResize",          ImGuiWindowFlags_AlwaysAutoResize,
+        "NoBackground",              ImGuiWindowFlags_NoBackground,
+        "NoSavedSettings",           ImGuiWindowFlags_NoSavedSettings,
+        "NoMouseInputs",             ImGuiWindowFlags_NoMouseInputs,
+        "MenuBar",                   ImGuiWindowFlags_MenuBar,
+        "HorizontalScrollbar",       ImGuiWindowFlags_HorizontalScrollbar,
+        "NoFocusOnAppearing",        ImGuiWindowFlags_NoFocusOnAppearing,
+        "NoBringToFrontOnFocus",     ImGuiWindowFlags_NoBringToFrontOnFocus,
+        "AlwaysVerticalScrollbar",   ImGuiWindowFlags_AlwaysVerticalScrollbar,
+        "AlwaysHorizontalScrollbar", ImGuiWindowFlags_AlwaysHorizontalScrollbar,
+        "AlwaysUseWindowPadding",    ImGuiWindowFlags_AlwaysUseWindowPadding,
+        "NoNavInputs",               ImGuiWindowFlags_NoNavInputs,
+        "NoNavFocus",                ImGuiWindowFlags_NoNavFocus,
+        "UnsavedDocument",           ImGuiWindowFlags_UnsavedDocument,
+        "NoNav",                     ImGuiWindowFlags_NoNav,
+        "NoDecoration",              ImGuiWindowFlags_NoDecoration,
+        "NoInputs",                  ImGuiWindowFlags_NoInputs
+    );
+
     // Windows
     imgui.set_function("Begin",
         sol::overload(
