@@ -7,31 +7,31 @@
 #include <noita_imgui/version_number.hpp>
 
 void add_imgui_clipboard(sol::table&);
-void add_imgui_color_editor(sol::table& imgui);
+void add_imgui_color_editor(sol::table&);
 void add_imgui_combo_box(sol::table&);
 void add_imgui_common(sol::table&);
-void add_imgui_drag_sliders(sol::table& imgui);
+void add_imgui_drag_sliders(sol::table&);
 void add_imgui_font(sol::table&);
 void add_imgui_gui_io(sol::table&);
 void add_imgui_keyboard_input(sol::table&);
 void add_imgui_layout(sol::table&);
 void add_imgui_menu(sol::table&);
 void add_imgui_mouse_input(sol::table&);
-void add_imgui_regular_sliders(sol::table& imgui);
+void add_imgui_regular_sliders(sol::table&);
 void add_imgui_scopes(sol::table&);
 void add_imgui_text(sol::table&);
-void add_imgui_text_input(sol::table& imgui);
+void add_imgui_text_input(sol::table&);
 void add_imgui_trees(sol::table&);
-void add_imgui_widget_utils(sol::table& imgui);
+void add_imgui_widget_utils(sol::table&);
 void add_imgui_widgets_main(sol::table&);
 void add_imgui_windows(sol::table&);
 
 sol::table load_imgui(sol::this_state s, sol::table load_params)
 {
     std::string version = load_params["version"];
-    std::cerr << "Version: " << version << "\n";
     sol::state_view lua{s};
     sol::table imgui = lua.create_table();
+
     add_imgui_clipboard(imgui);
     add_imgui_color_editor(imgui);
     add_imgui_combo_box(imgui);
