@@ -91,8 +91,8 @@ void show_version_compat_window()
         "to a version mismatch."
     );
     ImGui::TextWrapped(
-        "You should also check if a newer version of any of mods in the table "
-        "above is available."
+        "You should also check if a newer version of any of the mods in the "
+        "table above is available."
     );
 
     if (!open)
