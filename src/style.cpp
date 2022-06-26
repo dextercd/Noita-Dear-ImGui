@@ -73,6 +73,8 @@ void noita_imgui_style(ImGuiStyle* dst)
     dst->Colors[ImGuiCol_TitleBg] = accent_light;
     dst->Colors[ImGuiCol_Border] = accent_main;
 
+    dst->Colors[ImGuiCol_WindowBg] = color("#0e0d0cf1");
+
     dst->Colors[ImGuiCol_FrameBg] = background_frame;
     dst->Colors[ImGuiCol_FrameBgHovered] = background_frame_active;
     dst->Colors[ImGuiCol_FrameBgActive] = background_frame_active;
