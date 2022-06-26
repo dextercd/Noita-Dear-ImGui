@@ -18,10 +18,10 @@ void add_imgui_mouse_input(sol::table&);
 void add_imgui_regular_sliders(sol::table& imgui);
 void add_imgui_scopes(sol::table&);
 void add_imgui_text(sol::table&);
+void add_imgui_text_input(sol::table& imgui);
 void add_imgui_trees(sol::table&);
 void add_imgui_widgets_main(sol::table&);
 void add_imgui_windows(sol::table&);
-void add_keyboard_input(sol::table& imgui);
 
 sol::table load_imgui(sol::this_state s, sol::table load_params)
 {
@@ -41,10 +41,10 @@ sol::table load_imgui(sol::this_state s, sol::table load_params)
     add_imgui_regular_sliders(imgui);
     add_imgui_scopes(imgui);
     add_imgui_text(imgui);
+    add_imgui_text_input(imgui);
     add_imgui_trees(imgui);
     add_imgui_widgets_main(imgui);
     add_imgui_windows(imgui);
-    add_keyboard_input(imgui);
 
     return imgui;
 }

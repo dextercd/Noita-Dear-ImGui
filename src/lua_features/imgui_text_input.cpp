@@ -66,7 +66,7 @@ ImGuiInputTextFlags remove_callback_bits(ImGuiInputTextFlags flags)
     );
 }
 
-void add_keyboard_input(sol::table& imgui)
+void add_imgui_text_input(sol::table& imgui)
 {
     imgui.new_enum("InputTextFlags",
         "None",                ImGuiInputTextFlags_None,
