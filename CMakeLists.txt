@@ -74,9 +74,9 @@ ExternalProject_Add(LuaJIT
         <INSTALL_DIR>
 
     BUILD_BYPRODUCTS
-        <SOURCE_DIR>/src/luajit.exe
-        <SOURCE_DIR>/src/lua51.dll
-        <SOURCE_DIR>/src/lua51.lib
+        <INSTALL_DIR>/luajit.exe
+        <INSTALL_DIR>/lua51.dll
+        <INSTALL_DIR>/lua51.lib
 )
 
 ExternalProject_Add_Step(LuaJIT install-lua-files
@@ -92,6 +92,9 @@ set_target_properties(LuaJIT_library PROPERTIES
     IMPORTED_IMPLIB   ${INSTALL_DIR}/lua51.lib
 )
 
+# Bit of a hack, include dir won't exist yet after the generate stage but CMake
+# requires it to be.
+file(MAKE_DIRECTORY ${SOURCE_DIR}/src)
 target_include_directories(LuaJIT_library
     INTERFACE
         ${SOURCE_DIR}/src

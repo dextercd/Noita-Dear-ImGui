@@ -1,0 +1,54 @@
+on: push
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Create build
+        shell: cmd
+        run: |
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x86 10.0.22000.0 -vcvars_ver=14.32
+          mkdir build
+          cmake -S . -B build -G Ninja ^
+            -DCMAKE_CXX_FLAGS="/D_WIN32_WINNT=0x0601 /DWINVER=0x0601 /DWIN32 /D_WINDOWS /EHsc /MD" ^
+            -DCMAKE_BUILD_TYPE=Release
+
+      - name: Run build
+        shell: cmd
+        run: |
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x86 10.0.22000.0 -vcvars_ver=14.32
+          cmake --build build
+
+      - name: Run CTest
+        shell: cmd
+        run: |
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x86 10.0.22000.0 -vcvars_ver=14.32
+          cd build
+          ctest --output-on-failure
+
+      - name: Run CPack
+        shell: cmd
+        run: |
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x86 10.0.22000.0 -vcvars_ver=14.32
+          cd build
+          cpack
+
+      - name: Upload package artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: package
+          path: build/*.zip
+          retention-days: 2
+
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/release-')
+        with:
+          files: |
+            build/*.zip
