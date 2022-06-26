@@ -32,7 +32,7 @@ void setup_imgui(SDL_Window* window, SDL_GLContext gl_context)
     ImGuiIO& io = ImGui::GetIO();
 
     noita_imgui_style();
-    
+
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
@@ -76,14 +76,14 @@ void render()
     start_frame();
 }
 
-using swap_window_f = void (__fastcall *)(void*);
+using SDL_GL_SwapWindow_f = void (*)(SDL_Window*);
 
-swap_window_f original_swap_window = nullptr;
+SDL_GL_SwapWindow_f original_SDL_GL_SwapWindow = nullptr;
 
-void __fastcall swap_window_hook(void* ctx)
+void SDL_GL_SwapWindow_hook(SDL_Window* ctx)
 {
     render();
-    return original_swap_window(ctx);
+    return original_SDL_GL_SwapWindow(ctx);
 }
 
 using SDL_PollEvent_f = int(*)(SDL_Event* event);
@@ -166,24 +166,50 @@ struct hook {
     }
 };
 
+struct hook_points {
+    void* sdl_pollevent;
+    void* sdl_gl_swapwindow;
+    void* lual_newstate;
+};
+
+hook_points get_noita_hook_points()
+{
+    return hook_points{
+        .sdl_pollevent = *reinterpret_cast<void**>(0xd1e620),
+        .sdl_gl_swapwindow = *reinterpret_cast<void**>(0xd1e600),
+        .lual_newstate = *reinterpret_cast<void**>(0xd1e7b0),
+    };
+}
+
+hook_points get_noita_dev_hook_points()
+{
+    return hook_points{
+        .sdl_pollevent = *reinterpret_cast<void**>(0xf405dc),
+        .sdl_gl_swapwindow = *reinterpret_cast<void**>(0xf40600),
+        .lual_newstate = *reinterpret_cast<void**>(0xf40804),
+    };
+}
+
 struct imgui_hooks {
-    hook sdl_pollevent{
-        *reinterpret_cast<void**>(0xd1e620),
-        SDL_PollEvent_hook,
-        reinterpret_cast<void**>(&original_SDL_PollEvent)
-    };
+    hook sdl_pollevent;
+    hook sdl_gl_swapwindow;
+    hook lual_newstate;
 
-    hook swap_window{
-        reinterpret_cast<void*>(0xc37e80),
-        swap_window_hook,
-        reinterpret_cast<void**>(&original_swap_window)
-    };
-
-    hook lual_newstate{
-        *reinterpret_cast<void**>(0xd1e7b0),
-        luaL_newstate_hook,
-        reinterpret_cast<void**>(&original_luaL_newstate)
-    };
+    imgui_hooks(hook_points points)
+        : sdl_pollevent{
+            points.sdl_pollevent,
+            SDL_PollEvent_hook,
+            reinterpret_cast<void**>(&original_SDL_PollEvent)}
+        , sdl_gl_swapwindow{
+            points.sdl_gl_swapwindow,
+            SDL_GL_SwapWindow_hook,
+            reinterpret_cast<void**>(&original_SDL_GL_SwapWindow)}
+        , lual_newstate{
+            points.lual_newstate,
+            luaL_newstate_hook,
+            reinterpret_cast<void**>(&original_luaL_newstate)}
+    {
+    }
 };
 
 std::unique_ptr<imgui_hooks> imgui_hooks_lifetime;
@@ -199,5 +225,23 @@ NOITA_DEAR_IMGUI_EXPORT void init_imgui()
         return;
     }
 
-    imgui_hooks_lifetime = std::make_unique<imgui_hooks>();
+    char file_name_buffer[1024];
+    if (GetModuleFileNameA(nullptr, file_name_buffer, sizeof(file_name_buffer)) == 0) {
+        std::cerr << "Couldn't get Noita executable file name! Could not initialise hooks for ImGui\n";
+        return;
+    }
+
+    std::string_view file_name{file_name_buffer};
+
+    // TODO: Do this based on the file hash instead?
+    if (file_name.ends_with("\\noita.exe")) {
+        std::cout << "Initialising ImGui hooks for standard noita.exe\n";
+        imgui_hooks_lifetime = std::make_unique<imgui_hooks>(get_noita_hook_points());
+    } else if (file_name.ends_with("\\noita_dev.exe")) {
+        std::cout << "Initialising ImGui hooks for noita_dev.exe\n";
+        imgui_hooks_lifetime = std::make_unique<imgui_hooks>(get_noita_dev_hook_points());
+    } else {
+        std::cerr << "Unrecognised exe file name: " << file_name << '\n';
+        return;
+    }
 }
