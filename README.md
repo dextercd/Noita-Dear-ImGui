@@ -11,6 +11,8 @@ use the [ImGui demo/example file](https://github.com/ocornut/imgui/blob/9aae45eb
 to search for functions/widgets that look useful to you and then check out the
 source code of the bindings to see how to use it from Lua.
 
+Also check out the ImGui FAQ: https://github.com/ocornut/imgui/blob/master/docs/FAQ.md a lot of stuff there also applies to these bindings.
+
 The bindings are a relatively close 1:1 mapping of the normal ImGui functions
 except:
 
