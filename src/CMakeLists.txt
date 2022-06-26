@@ -45,14 +45,15 @@ add_library(noita_dear_imgui SHARED
     lua_features/imgui_layout.cpp
     lua_features/imgui_menu.cpp
     lua_features/imgui_mouse_input.cpp
+    lua_features/imgui_param_stacks.cpp
     lua_features/imgui_regular_sliders.cpp
     lua_features/imgui_scopes.cpp
     lua_features/imgui_text.cpp
     lua_features/imgui_text_input.cpp
     lua_features/imgui_trees.cpp
+    lua_features/imgui_widget_utils.cpp
     lua_features/imgui_widgets_main.cpp
     lua_features/imgui_windows.cpp
-    lua_features/imgui_widget_utils.cpp
 
     ${public_headers}
     ${dear_imgui_headers}
