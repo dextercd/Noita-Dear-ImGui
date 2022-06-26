@@ -88,7 +88,11 @@ void show_version_compat_window()
     ImGui::TextWrapped(
         "If a newer version of NoitaDearImGui is available, you should "
         "consider installing it. The mods in the table above may misbehave due "
-        "to the version mismatch."
+        "to a version mismatch."
+    );
+    ImGui::TextWrapped(
+        "You should also check if a newer version of any of mods in the table "
+        "above is available."
     );
 
     if (!open)
