@@ -147,3 +147,5 @@ install(DIRECTORY NoitaDearImGui DESTINATION "." COMPONENT NoitaImGui)
 install(FILES ${VERSION_INFO_TXT} DESTINATION "NoitaDearImGui" COMPONENT NoitaImGui)
 
 install(DIRECTORY ExampleMod/ DESTINATION "NoitaDearImGuiExampleMod" COMPONENT NoitaImGui_Example)
+
+add_subdirectory(packaging)
