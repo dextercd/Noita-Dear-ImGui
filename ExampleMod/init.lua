@@ -30,7 +30,7 @@ function OnWorldPostUpdate()
         end
     end
 
-    imgui.Begin("Player position.")
+    if imgui.Begin("Player position.") then
         imgui.Text(string.format("Position: %.2f %.2f", x, y))
         if imgui.Button("Reset") then
             EntitySetTransform(player, fx, fy)
@@ -58,5 +58,7 @@ function OnWorldPostUpdate()
         -- you can create the variable on a separate line:
         local col_changed
         col_changed, r, g, b, a = imgui.ColorEdit4("Colour", r, g, b, a)
-    imgui.End()
+
+        imgui.End()
+    end
 end

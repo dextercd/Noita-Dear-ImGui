@@ -3,6 +3,32 @@
 #include <sol/sol.hpp>
 #include <imgui.h>
 
+// imgui.h contains the following disclaimer:
+// [Important: due to legacy reason, this is inconsistent with most other functions such as BeginMenu/EndMenu,
+// BeginPopup/EndPopup, etc. where the EndXXX call should only be called if the corresponding BeginXXX function
+// returned true. Begin and BeginChild are the only odd ones out. Will be fixed in a future update.]
+//
+// Instead of waiting for ImGui to fix this and having mods break, let's make
+// this change right now in the Noita bindings.
+
+bool ConsistentBegin(const char* name, bool* p_open = nullptr, ImGuiWindowFlags flags = 0)
+{
+    auto visible = ImGui::Begin(name, p_open, flags);
+    if (!visible)
+        ImGui::End();
+
+    return visible;
+}
+
+bool ConsistentBeginChild(const char* str_id, const ImVec2& size = ImVec2(0, 0), bool border = false, ImGuiWindowFlags flags = 0)
+{
+    auto visible = ImGui::BeginChild(str_id, size, border, flags);
+    if (!visible)
+        ImGui::EndChild();
+
+    return visible;
+}
+
 void add_imgui_windows(sol::table& imgui)
 {
     imgui.new_enum("WindowFlags",
@@ -35,18 +61,18 @@ void add_imgui_windows(sol::table& imgui)
     // Windows
     imgui.set_function("Begin",
         sol::overload(
-            [](const char* name) { return ImGui::Begin(name); },
-            [](const char* name, bool open) { auto ret = ImGui::Begin(name, &open); return std::tuple{ret, open}; },
-            [](const char* name, bool open, ImGuiWindowFlags flags) { auto ret = ImGui::Begin(name, &open, flags); return std::tuple{ret, open}; }));
+            [](const char* name) { return ConsistentBegin(name); },
+            [](const char* name, bool open) { auto ret = ConsistentBegin(name, &open); return std::tuple{ret, open}; },
+            [](const char* name, bool open, ImGuiWindowFlags flags) { auto ret = ConsistentBegin(name, &open, flags); return std::tuple{ret, open}; }));
     imgui.set_function("End", &ImGui::End);
 
     // Child Windows
     imgui.set_function("BeginChild",
         sol::overload(
-            [](const char* str_id) { return ImGui::BeginChild(str_id); },
-            [](const char* str_id, float size_x, float size_y) { return ImGui::BeginChild(str_id, {size_x, size_y}); },
-            [](const char* str_id, float size_x, float size_y, bool border) { return ImGui::BeginChild(str_id, {size_x, size_y}, border); },
-            [](const char* str_id, float size_x, float size_y, bool border, ImGuiWindowFlags flags) { return ImGui::BeginChild(str_id, {size_x, size_y}, border, flags); }));
+            [](const char* str_id) { return ConsistentBeginChild(str_id); },
+            [](const char* str_id, float size_x, float size_y) { return ConsistentBeginChild(str_id, {size_x, size_y}); },
+            [](const char* str_id, float size_x, float size_y, bool border) { return ConsistentBeginChild(str_id, {size_x, size_y}, border); },
+            [](const char* str_id, float size_x, float size_y, bool border, ImGuiWindowFlags flags) { return ConsistentBeginChild(str_id, {size_x, size_y}, border, flags); }));
     imgui.set_function("EndChild", &ImGui::EndChild);
 
     // Windows Utilities
