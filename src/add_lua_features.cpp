@@ -13,6 +13,7 @@ void add_imgui_common(sol::table&);
 void add_imgui_drag_sliders(sol::table& imgui);
 void add_imgui_font(sol::table&);
 void add_imgui_gui_io(sol::table&);
+void add_imgui_keyboard_input(sol::table&);
 void add_imgui_layout(sol::table&);
 void add_imgui_menu(sol::table&);
 void add_imgui_mouse_input(sol::table&);
@@ -37,6 +38,7 @@ sol::table load_imgui(sol::this_state s, sol::table load_params)
     add_imgui_drag_sliders(imgui);
     add_imgui_font(imgui);
     add_imgui_gui_io(imgui);
+    add_imgui_keyboard_input(imgui);
     add_imgui_layout(imgui);
     add_imgui_menu(imgui);
     add_imgui_mouse_input(imgui);
