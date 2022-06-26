@@ -140,5 +140,8 @@ set(CMAKE_INSTALL_INCLUDEDIR "NoitaDearImGui/native/include")
 
 add_subdirectory(src)
 
+set(NDI_SUBPROJECT TRUE)
+add_subdirectory(ExampleNative)
+
 install(DIRECTORY NoitaDearImGui DESTINATION "." COMPONENT NoitaImGui)
 install(FILES ${VERSION_INFO_TXT} DESTINATION "NoitaDearImGui" COMPONENT NoitaImGui)

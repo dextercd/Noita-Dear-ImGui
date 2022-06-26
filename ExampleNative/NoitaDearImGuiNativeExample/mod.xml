@@ -1,0 +1,5 @@
+<Mod
+    name="Noita Dear ImGui Native Example"
+    description="Shows the Dear ImGui demo window through a native C++ mod that links with the NoitaDearImGui dll."
+    request_no_api_restrictions="1" />
+
