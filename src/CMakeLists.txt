@@ -22,6 +22,7 @@ add_library(noita_dear_imgui SHARED
     ${VERSION_INFO_CPP}
     style.cpp
     wine_compat.cpp
+    version_compat_window.cpp
 
     # Dear ImGui sources
     ${dearimgui_SOURCE_DIR}/imgui.cpp

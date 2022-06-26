@@ -1,8 +1,10 @@
-#include <optional>
-#include <string_view>
-#include <ranges>
-#include <charconv>
 #include <cassert>
+#include <charconv>
+#include <optional>
+#include <ranges>
+#include <sstream>
+#include <string>
+#include <string_view>
 
 #include <noita_dear_imgui_export.h>
 #include <noita_imgui/version_number.hpp>
@@ -67,4 +69,11 @@ std::ostream& operator<<(std::ostream& os, const version_number& version)
 
 end:
     return os;
+}
+
+std::string to_string(const version_number& version)
+{
+    std::stringstream sstream;
+    sstream << version;
+    return sstream.str();
 }

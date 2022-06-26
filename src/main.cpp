@@ -18,6 +18,7 @@ extern "C" {
 #include <noita_imgui/add_lua_features.hpp>
 #include <noita_dear_imgui_export.h>
 #include "style.hpp"
+#include "version_compat_window.hpp"
 
 bool imgui_initialised = false;
 
@@ -52,6 +53,8 @@ void start_frame()
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
+
+    show_version_compat_window();
 }
 
 void render()

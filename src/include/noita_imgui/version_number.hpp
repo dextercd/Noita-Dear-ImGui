@@ -4,6 +4,7 @@
 #include <cassert>
 #include <iosfwd>
 #include <optional>
+#include <string>
 #include <string_view>
 
 #include "noita_dear_imgui_export.h"
@@ -54,5 +55,7 @@ constexpr bool version_compatible(const version_number& a, const version_number&
 
 NOITA_DEAR_IMGUI_EXPORT
 std::ostream& operator<<(std::ostream& os, const version_number&);
+
+std::string to_string(const version_number&);
 
 #endif // header guard

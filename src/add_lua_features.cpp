@@ -4,7 +4,9 @@
 #include <sol/sol.hpp>
 
 #include <noita_dear_imgui_export.h>
+#include <noita_imgui/version_info.hpp>
 #include <noita_imgui/version_number.hpp>
+#include "version_compat_window.hpp"
 
 void add_imgui_clipboard(sol::table&);
 void add_imgui_color_editor(sol::table&);
@@ -32,6 +34,15 @@ void add_imgui_windows(sol::table&);
 sol::table load_imgui(sol::this_state s, sol::table load_params)
 {
     std::string version = load_params["version"];
+    std::string mod_name = load_params["mod"];
+
+    auto parsed_version = version_number::from_string(version);
+    if (!parsed_version) {
+        report_incompatibility(mod_name, version, incompatibility_reason::cant_parse_version);
+    } else if (!version_compatible(ndi::version, parsed_version.value())) {
+        report_incompatibility(mod_name, version, incompatibility_reason::version_mismatch);
+    }
+
     sol::state_view lua{s};
     sol::table imgui = lua.create_table();
 
