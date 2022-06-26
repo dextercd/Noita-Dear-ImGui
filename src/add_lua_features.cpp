@@ -6,6 +6,7 @@
 #include <noita_dear_imgui_export.h>
 #include <noita_imgui/version_number.hpp>
 
+void add_imgui_clipboard(sol::table&);
 void add_imgui_color_editor(sol::table& imgui);
 void add_imgui_combo_box(sol::table&);
 void add_imgui_common(sol::table&);
@@ -28,6 +29,7 @@ sol::table load_imgui(sol::this_state s, sol::table load_params)
     std::cerr << "Version: " << version << "\n";
     sol::state_view lua{s};
     sol::table imgui = lua.create_table();
+    add_imgui_clipboard(imgui);
     add_imgui_color_editor(imgui);
     add_imgui_combo_box(imgui);
     add_imgui_common(imgui);
