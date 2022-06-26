@@ -4,7 +4,7 @@ ffi.cdef([[
 void show_demo_window();
 ]])
 
-local lib = ffi.load("mods/NoitaDearImGuiNativeExample/native_test.dll")
+local lib = ffi.load("mods/NoitaDearImGuiExampleNative/native_test.dll")
 
 function OnWorldPostUpdate()
     lib.show_demo_window()

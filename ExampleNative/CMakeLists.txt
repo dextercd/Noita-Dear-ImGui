@@ -16,12 +16,12 @@ add_library(native_test MODULE
 target_link_libraries(native_test PUBLIC NoitaDearImGui::noita_dear_imgui)
 
 install(TARGETS native_test
-    DESTINATION "NoitaDearImGuiNativeExample"
+    DESTINATION "NoitaDearImGuiExampleNative"
     COMPONENT NoitaImGui_Example
 )
 
 install(
-    DIRECTORY NoitaDearImGuiNativeExample
+    DIRECTORY NoitaDearImGuiExampleNative
     DESTINATION "."
     COMPONENT NoitaImGui_Example
 )
