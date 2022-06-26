@@ -5,7 +5,7 @@
 
 void add_imgui_trees(sol::table& imgui)
 {
-    imgui.new_enum("ImGuiTreeNodeFlags",
+    imgui.new_enum("TreeNodeFlags",
         "None",                 ImGuiTreeNodeFlags_None,
         "Selected",             ImGuiTreeNodeFlags_Selected,
         "Framed",               ImGuiTreeNodeFlags_Framed,
