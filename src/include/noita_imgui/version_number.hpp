@@ -30,6 +30,13 @@ struct version_number {
         if (ret.tweak == -1) ret.tweak = 0;
         return ret;
     }
+
+    constexpr version_number without_tweak() const
+    {
+        auto ret = *this;
+        ret.tweak = -1;
+        return ret;
+    }
 };
 
 constexpr bool version_compatible(const version_number& a, const version_number& b)

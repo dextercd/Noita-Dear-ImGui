@@ -56,7 +56,7 @@ void show_version_compat_window()
     }
 
     std::string version_text = "Installed version of NoitaDearImGui: ";
-    version_text += to_string(ndi::version);
+    version_text += to_string(ndi::version.without_tweak());
     ImGui::TextWrapped(version_text.c_str());
 
     ImGui::TextWrapped(
