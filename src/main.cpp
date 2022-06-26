@@ -35,6 +35,9 @@ void setup_imgui(SDL_Window* window, SDL_GLContext gl_context)
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
+    io.Fonts->AddFontFromFileTTF("mods/NoitaDearImGui/NoitaPixel.ttf", 22);
+    io.Fonts->AddFontDefault();
+
     imgui_initialised = true;
 }
 
