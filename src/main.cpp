@@ -30,6 +30,7 @@ void setup_imgui(SDL_Window* window, SDL_GLContext gl_context)
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
 
     noita_imgui_style();
 
@@ -113,6 +114,13 @@ bool is_keyboard_event(SDL_Event* event)
     return false;
 }
 
+// Cursor state, used to restore old cursor settings when you move your mouse
+// off all ImGui windows.
+SDL_Cursor* restore_cursor = nullptr;
+bool restore_show_cursor = false;
+
+bool previous_want_capture_mouse = false;
+
 int SDL_PollEvent_hook(SDL_Event* event)
 {
     auto ret = original_SDL_PollEvent(event);
@@ -121,6 +129,21 @@ int SDL_PollEvent_hook(SDL_Event* event)
         ImGui_ImplSDL2_ProcessEvent(event);
 
         auto& io = ImGui::GetIO();
+
+        if (!previous_want_capture_mouse && io.WantCaptureMouse) {
+            restore_cursor = SDL_GetCursor();
+            restore_show_cursor = SDL_ShowCursor(SDL_ENABLE);
+            io.ConfigFlags &= ~ImGuiConfigFlags_NoMouseCursorChange;
+        } else if (previous_want_capture_mouse && !io.WantCaptureMouse) {
+            io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
+            SDL_ShowCursor(restore_show_cursor);
+            if (restore_cursor) {
+                SDL_SetCursor(restore_cursor);
+            }
+        }
+
+        previous_want_capture_mouse = io.WantCaptureMouse;
+
         if (io.WantCaptureMouse && is_mouse_event(event))
             return SDL_PollEvent_hook(event);
 
