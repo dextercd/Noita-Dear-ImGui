@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 
 project(NoitaDearImGui
-    VERSION 1.0.0.0
+    VERSION 1.0.1.0
     LANGUAGES CXX C
 )
 
