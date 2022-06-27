@@ -2,16 +2,20 @@
 
 ## How to use this mod in your own mod?
 
-This is a mod that needs to be installed on its own. It requires unsafe mode.
-Any mod below it in the mod load order can then use the ImGui bindings that are
-introduced by this mod. (Other mods do not need to enable unsafe mode!)
+You are not expected to bundle this mod with your own mod! You should instead
+instruct people to install this themselves.
+
+Any mod below this mod in the mod load order can use the ImGui bindings. So
+while this mod requires 'unsafe' mode, other mods don't need to enable unsafe
+mode to use the ImGui UI!
 
 There's not really any documentation on how to use these bindings. I suggest you
 use the [ImGui demo/example file](https://github.com/ocornut/imgui/blob/9aae45eb4a05a5a1f96be1ef37eb503a12ceb889/imgui_demo.cpp)
 to search for functions/widgets that look useful to you and then check out the
-source code of the bindings to see how to use it from Lua.
+source code of this mod to see how to use it from Lua.
 
-Also check out the ImGui FAQ: https://github.com/ocornut/imgui/blob/master/docs/FAQ.md a lot of stuff there also applies to these bindings.
+Also check out the ImGui FAQ: https://github.com/ocornut/imgui/blob/master/docs/FAQ.md
+a lot of stuff there also applies to these bindings.
 
 The bindings are a relatively close 1:1 mapping of the normal ImGui functions
 except:
@@ -26,7 +30,7 @@ except:
 
 - ImGui's `Begin`/`BeginChild` functions have an inconsistency that's explained
   [here](https://github.com/dextercd/Noita-Dear-ImGui/blob/037d4a8bad1fc976f8dd731067fdc312a986f747/src/lua_features/imgui_windows.cpp#L6-L12).
-  This inconsistency is already fixed in the bindings.
+  This inconsistency is fixed in the bindings.
 
 - Enums don't have the `ImGui` prefix since you already have to use them through
   the `imgui` table.
