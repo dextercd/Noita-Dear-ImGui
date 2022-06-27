@@ -6,7 +6,7 @@ You are not expected to bundle this mod with your own mod! You should instead
 instruct people to install this themselves alongside your mod.
 
 Any mod below this mod in the mod load order can use the ImGui bindings. This mod
-requires 'unsafe' mode, mods that use this ImGui bindings don't need to  unsafe
+requires 'unsafe' mode, mods that use this ImGui bindings don't need to enable unsafe
 mode themselves!
 
 There's not really any documentation on how to use these bindings. I suggest you
@@ -16,6 +16,8 @@ source code of this mod to see how to use it from Lua.
 
 Also check out the ImGui FAQ: https://github.com/ocornut/imgui/blob/master/docs/FAQ.md
 a lot of stuff there also applies to these bindings.
+
+There's also an example mod that shows the basics: https://github.com/dextercd/Noita-Dear-ImGui/blob/main/ExampleMod/init.lua
 
 The bindings are a relatively close 1:1 mapping of the normal ImGui functions
 except:
@@ -48,8 +50,6 @@ turns into this with these Noita/Lua bindings:
 _, r, g, b = imgui.ColorEdit3("Colour", r, g, b,
     bit.bor(imgui.ColorEditFlags.PickerHueWheel, imgui.ColorEditFlags.NoSidePreview, imgui.ColorEditFlags.NoAlpha))
 ```
-
-See the example mod for some more information: https://github.com/dextercd/Noita-Dear-ImGui/blob/main/ExampleMod/init.lua
 
 ## Credit
 
