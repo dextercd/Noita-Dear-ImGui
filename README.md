@@ -40,7 +40,7 @@ except:
 This standard ImGui code:
 
 ```cpp
-ImGui::ColorPicker3("Color", (float*)&color,
+ImGui::ColorEdit3("Color", (float*)&color,
     ImGuiColorEditFlags_PickerHueWheel | ImGuiColorEditFlags_NoSidePreview | ImGuiColorEditFlags_NoAlpha);
 ```
 
