@@ -23,6 +23,7 @@ add_library(noita_dear_imgui SHARED
     style.cpp
     wine_compat.cpp
     version_compat_window.cpp
+    hook_points.cpp
 
     # Dear ImGui sources
     ${dearimgui_SOURCE_DIR}/imgui.cpp
@@ -92,6 +93,7 @@ target_link_libraries(noita_dear_imgui
         sol2::sol2
         SDL2
         minhook
+        LIEF::LIEF
 )
 
 target_precompile_headers(noita_dear_imgui PRIVATE

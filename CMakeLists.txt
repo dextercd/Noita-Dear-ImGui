@@ -20,17 +20,34 @@ FetchContent_MakeAvailable(Catch2)
 
 FetchContent_Declare(MinHook
     GIT_REPOSITORY https://github.com/TsudaKageyu/minhook.git
-    GIT_TAG 4a455528f61b5a375b1f9d44e7d296d47f18bb18
-)
-
+    GIT_TAG 4a455528f61b5a375b1f9d44e7d296d47f18bb18)
 FetchContent_MakeAvailable(MinHook)
+
+
+FetchContent_Declare(LIEF
+    GIT_REPOSITORY https://github.com/lief-project/LIEF.git
+    GIT_TAG 9cf3b56cf004407c56695a61688ecc8ac511ef0e)
+
+option(LIEF_DOC "" OFF)
+option(LIEF_C_API "" OFF)
+option(LIEF_EXAMPLES "" OFF)
+option(LIEF_TESTS "" OFF)
+option(LIEF_ELF "" OFF)
+option(LIEF_MACHO "" OFF)
+option(LIEF_DEX "" OFF)
+option(LIEF_ART "" OFF)
+option(LIEF_ENABLE_JSON "" OFF)
+option(LIEF_USE_CCACHE "" OFF)
+set(LIEF_USE_CRT_RELEASE "MD" CACHE STRING "" FORCE)
+
+FetchContent_MakeAvailable(LIEF)
+
 
 FetchContent_Declare(SDL2
     URL https://www.libsdl.org/release/SDL2-devel-2.0.7-VC.zip
-    URL_HASH SHA224=2c64cce76e917525e6096481ee7f46b0c999838ae65405e9af8df367
-)
-
+    URL_HASH SHA224=2c64cce76e917525e6096481ee7f46b0c999838ae65405e9af8df367)
 FetchContent_MakeAvailable(SDL2)
+
 
 file(COPY_FILE
     ${CMAKE_CURRENT_SOURCE_DIR}/fixup/SDL_syswm.h

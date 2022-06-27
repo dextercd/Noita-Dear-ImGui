@@ -19,6 +19,7 @@ extern "C" {
 #include <noita_dear_imgui_export.h>
 #include "style.hpp"
 #include "version_compat_window.hpp"
+#include "hook_points.hpp"
 
 bool imgui_initialised = false;
 
@@ -189,30 +190,6 @@ struct hook {
     }
 };
 
-struct hook_points {
-    void* sdl_pollevent;
-    void* sdl_gl_swapwindow;
-    void* lual_newstate;
-};
-
-hook_points get_noita_hook_points()
-{
-    return hook_points{
-        .sdl_pollevent = *reinterpret_cast<void**>(0xd1e620),
-        .sdl_gl_swapwindow = *reinterpret_cast<void**>(0xd1e600),
-        .lual_newstate = *reinterpret_cast<void**>(0xd1e7b0),
-    };
-}
-
-hook_points get_noita_dev_hook_points()
-{
-    return hook_points{
-        .sdl_pollevent = *reinterpret_cast<void**>(0xf405dc),
-        .sdl_gl_swapwindow = *reinterpret_cast<void**>(0xf40600),
-        .lual_newstate = *reinterpret_cast<void**>(0xf40804),
-    };
-}
-
 struct imgui_hooks {
     hook sdl_pollevent;
     hook sdl_gl_swapwindow;
@@ -254,17 +231,12 @@ NOITA_DEAR_IMGUI_EXPORT void init_imgui()
         return;
     }
 
-    std::string_view file_name{file_name_buffer};
-
-    // TODO: Do this based on the file hash instead?
-    if (file_name.ends_with("\\noita.exe")) {
-        std::cout << "Initialising ImGui hooks for standard noita.exe\n";
-        imgui_hooks_lifetime = std::make_unique<imgui_hooks>(get_noita_hook_points());
-    } else if (file_name.ends_with("\\noita_dev.exe")) {
-        std::cout << "Initialising ImGui hooks for noita_dev.exe\n";
-        imgui_hooks_lifetime = std::make_unique<imgui_hooks>(get_noita_dev_hook_points());
-    } else {
-        std::cerr << "Unrecognised exe file name: " << file_name << '\n';
+    auto hook_points = get_hook_points_for_exe(file_name_buffer);
+    if (!hook_points) {
+        std::cerr << "Couldn't get ImGui hook points for binary: " << file_name_buffer << '\n';
         return;
     }
+
+    std::cout << "Initialising ImGui hook points.\n";
+    imgui_hooks_lifetime = std::make_unique<imgui_hooks>(hook_points.value());
 }
