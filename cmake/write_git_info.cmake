@@ -7,13 +7,6 @@ execute_process(
     COMMAND_ERROR_IS_FATAL ANY
 )
 
-execute_process(
-    COMMAND ${GIT_PROGRAM} symbolic-ref --short HEAD
-    OUTPUT_VARIABLE THIS_REPO_BRANCH
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-    COMMAND_ERROR_IS_FATAL ANY
-)
-
 list(LENGTH FILES FILE_ARG_COUNT)
 
     message(STATUS ${FILES})
