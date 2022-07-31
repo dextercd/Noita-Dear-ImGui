@@ -53,5 +53,5 @@ _, r, g, b = imgui.ColorEdit3("Colour", r, g, b,
 
 ## Credit
 
-Many thanks to 🌸Joel🌸 (vexx32) on the Noita Discord for the Noita font ttf that they created.
+Many thanks to 🌸Rain🌸 (vexx32) on the Noita Discord for the Noita font ttf that they created.
 [NoitaPixel.ttf](https://discord.com/channels/453998283174576133/626791912443084801/794756926722277377).
