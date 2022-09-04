@@ -19,7 +19,6 @@ extern "C" {
 #include <noita_dear_imgui_export.h>
 #include "style.hpp"
 #include "version_compat_window.hpp"
-#include "hook_points.hpp"
 
 bool imgui_initialised = false;
 
@@ -195,17 +194,17 @@ struct imgui_hooks {
     hook sdl_gl_swapwindow;
     hook lual_newstate;
 
-    imgui_hooks(hook_points points)
+    imgui_hooks(void* pollevent, void* swapwindow, void* newstate)
         : sdl_pollevent{
-            points.sdl_pollevent,
+            pollevent,
             SDL_PollEvent_hook,
             reinterpret_cast<void**>(&original_SDL_PollEvent)}
         , sdl_gl_swapwindow{
-            points.sdl_gl_swapwindow,
+            swapwindow,
             SDL_GL_SwapWindow_hook,
             reinterpret_cast<void**>(&original_SDL_GL_SwapWindow)}
         , lual_newstate{
-            points.lual_newstate,
+            newstate,
             luaL_newstate_hook,
             reinterpret_cast<void**>(&original_luaL_newstate)}
     {
@@ -215,7 +214,7 @@ struct imgui_hooks {
 std::unique_ptr<imgui_hooks> imgui_hooks_lifetime;
 
 extern "C"
-NOITA_DEAR_IMGUI_EXPORT void init_imgui()
+NOITA_DEAR_IMGUI_EXPORT void init_imgui(void* pollevent, void* swapwindow, void* newstate)
 {
     if (imgui_hooks_lifetime)
         return;
@@ -231,12 +230,8 @@ NOITA_DEAR_IMGUI_EXPORT void init_imgui()
         return;
     }
 
-    auto hook_points = get_hook_points_for_exe(file_name_buffer);
-    if (!hook_points) {
-        std::cerr << "Couldn't get ImGui hook points for binary: " << file_name_buffer << '\n';
-        return;
-    }
-
     std::cout << "Initialising ImGui hook points.\n";
-    imgui_hooks_lifetime = std::make_unique<imgui_hooks>(hook_points.value());
+    imgui_hooks_lifetime = std::make_unique<imgui_hooks>(
+        pollevent, swapwindow, newstate
+    );
 }

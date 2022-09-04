@@ -2,9 +2,13 @@ local ffi = require 'ffi'
 
 ffi.cdef([[
 
-void init_imgui();
+void init_imgui(void* pollevent, void* swapwindow, void* newstate);
 
 void* LoadLibraryA(const char*);
+
+int SDL_PollEvent(struct SDL_Event* event);
+void SDL_GL_SwapWindow(struct SDL_Window* window);
+struct lua_State* luaL_newstate();
 
 ]])
 
@@ -17,4 +21,9 @@ void* LoadLibraryA(const char*);
 assert(ffi.C.LoadLibraryA("mods/NoitaDearImGui/noita_dear_imgui.dll") ~= nil)
 
 local dll = ffi.load("mods/NoitaDearImGui/noita_dear_imgui.dll")
-dll.init_imgui()
+local sdl = ffi.load("SDL2.dll")
+dll.init_imgui(
+    sdl.SDL_PollEvent,
+    sdl.SDL_GL_SwapWindow,
+    ffi.C.luaL_newstate
+)
