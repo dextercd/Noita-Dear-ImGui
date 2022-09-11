@@ -37,7 +37,7 @@ void add_imgui_widgets_main(sol::table& imgui)
             [](ImTextureID texid, float size_x, float size_y, float uv0_x, float uv0_y, float uv1_x, float uv1_y, int frame_padding) { return ImGui::ImageButton(texid, {size_x, size_y}, {uv0_x, uv0_y}, {uv1_x, uv1_y}, frame_padding); },
             [](ImTextureID texid, float size_x, float size_y, float uv0_x, float uv0_y, float uv1_x, float uv1_y, int frame_padding, float bg_r, float bg_g, float bg_b, float bg_a) { return ImGui::ImageButton(texid, {size_x, size_y}, {uv0_x, uv0_y}, {uv1_x, uv1_y}, frame_padding, {bg_r, bg_g, bg_b, bg_a}); },
             [](ImTextureID texid, float size_x, float size_y, float uv0_x, float uv0_y, float uv1_x, float uv1_y, int frame_padding, float bg_r, float bg_g, float bg_b, float bg_a, float border_r, float border_g, float border_b, float border_a) { return ImGui::ImageButton(texid, {size_x, size_y}, {uv0_x, uv0_y}, {uv1_x, uv1_y}, frame_padding, {bg_r, bg_g, bg_b, bg_a}, {border_r, border_g, border_b, border_a}); }));
-    imgui.set_function("Checkbox", &ImGui::Checkbox);
+    imgui.set_function("Checkbox", [](const char* label, bool value) { bool changed = ImGui::Checkbox(label, &value); return std::tuple{changed, value}; });
     imgui.set_function("CheckboxFlags",
         [](const char* label, unsigned flags, unsigned flags_value) { auto ret = ImGui::CheckboxFlags(label, &flags, flags_value); return std::tuple{ret, flags}; });
     imgui.set_function("RadioButton", sol::resolve<bool(const char*, bool)>(ImGui::RadioButton));
