@@ -28,4 +28,6 @@ void add_imgui_font(sol::table& imgui)
 
     imgui.set_function("PushFont", sol::resolve<void(ImFont*)>(ImGui::PushFont));
     imgui.set_function("PopFont", sol::resolve<void()>(ImGui::PopFont));
+
+    imgui.set_function("GetFontSize", sol::resolve<float()>(ImGui::GetFontSize));
 }
