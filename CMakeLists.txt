@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.22)
 project(NoitaDearImGui
     VERSION 1.0.2.0
     LANGUAGES CXX C
+    HOMEPAGE_URL "https://github.com/dextercd/Noita-Dear-ImGui"
 )
 
 set(CMAKE_CXX_STANDARD 20)
@@ -126,6 +127,7 @@ add_custom_target(version_info_files ALL
     COMMAND cmake
         -D GIT_PROGRAM=${GIT_PROGRAM}
         -D "FILES=${git_file_list}"
+        -D "PROJECT_HOMEPAGE_URL=${NoitaDearImGui_HOMEPAGE_URL}"
         -D "PROJECT_VERSION=${NoitaDearImGui_VERSION}"
         -D "PROJECT_VERSION_MAJOR=${NoitaDearImGui_VERSION_MAJOR}"
         -D "PROJECT_VERSION_MINOR=${NoitaDearImGui_VERSION_MINOR}"
