@@ -106,7 +106,7 @@ void noita_imgui_style(ImGuiStyle* dst)
     dst->Colors[ImGuiCol_TabUnfocused] = color("#4d4545");
     dst->Colors[ImGuiCol_TabUnfocusedActive] = color("#4d4545");
 
-    dst->Colors[ImGuiCol_TextSelectedBg] = color("#2E8CFFA3");
+    dst->Colors[ImGuiCol_TextSelectedBg] = color("#2e8cffa3");
 
     dst->Colors[ImGuiCol_NavHighlight] = background_frame_active;
 
