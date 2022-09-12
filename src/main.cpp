@@ -35,7 +35,9 @@ void setup_imgui(SDL_Window* window, SDL_GLContext gl_context)
     noita_imgui_style();
 
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
-    ImGui_ImplOpenGL3_Init(glsl_version);
+    if (!ImGui_ImplOpenGL3_Init(glsl_version)) {
+        throw std::runtime_error{"Couldn't init ImGui OpenGL3"};
+    }
 
     io.Fonts->AddFontFromFileTTF("mods/NoitaDearImGui/NoitaPixel.ttf", 20);
     io.Fonts->AddFontDefault();
@@ -49,6 +51,7 @@ void start_frame()
 {
     if (have_frame)
         return;
+
     have_frame = true;
 
     ImGui_ImplOpenGL3_NewFrame();
