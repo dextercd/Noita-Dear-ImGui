@@ -24,8 +24,9 @@ extern "C" {
 char glsl_version[] = "#version 110";
 
 bool imgui_context_initialised = false;
-bool imgui_initialised = false;
+bool imgui_backend_initialised = false;
 
+// Context is initialised as soon as the Noita mod is started
 void init_imgui_context()
 {
     IMGUI_CHECKVERSION();
@@ -37,17 +38,20 @@ void init_imgui_context()
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
     noita_imgui_style();
-    ImGuiStyle& style = ImGui::GetStyle();
+    io.Fonts->AddFontFromFileTTF("mods/NoitaDearImGui/NoitaPixel.ttf", 20);
+    io.Fonts->AddFontDefault();
 
     imgui_context_initialised = true;
 }
 
-void setup_imgui(SDL_Window* window, SDL_GLContext gl_context)
+// Backend is initialised at the first swapwindow call after the context is
+// initialised.
+void setup_imgui_backend(SDL_Window* window, SDL_GLContext gl_context)
 {
     ImGuiIO& io = ImGui::GetIO();
 
     // Need to have this enabled during platform init so this can be enabled/
-    // disabled at runtime.
+    // disabled dynamically
     auto restore_flags = io.ConfigFlags;
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
@@ -57,10 +61,8 @@ void setup_imgui(SDL_Window* window, SDL_GLContext gl_context)
     }
 
     io.ConfigFlags = restore_flags;
-    io.Fonts->AddFontFromFileTTF("mods/NoitaDearImGui/NoitaPixel.ttf", 20);
-    io.Fonts->AddFontDefault();
 
-    imgui_initialised = true;
+    imgui_backend_initialised = true;
 }
 
 void start_frame()
@@ -98,20 +100,22 @@ bool running_for_main_window = false;
 
 void SDL_GL_SwapWindow_hook(SDL_Window* ctx)
 {
-    if (!imgui_initialised && imgui_context_initialised) {
-        auto window = SDL_GL_GetCurrentWindow();
-        auto gl_context = SDL_GL_GetCurrentContext();
-        setup_imgui(window, gl_context);
-        start_frame();
-    }
-
-    if (!imgui_initialised)
-        return;
-
     // RenderPlatformWindowsDefault will also call swapwindow, which makes this
     // function recursive. We have to guard against that.
+    // Don't do anything special if this function is /already/ running for the
+    // main window.
     if (running_for_main_window)
         return original_SDL_GL_SwapWindow(ctx);
+
+    if (!imgui_context_initialised)
+        return original_SDL_GL_SwapWindow(ctx);
+
+    if (imgui_context_initialised && !imgui_backend_initialised) {
+        auto window = SDL_GL_GetCurrentWindow();
+        auto gl_context = SDL_GL_GetCurrentContext();
+        setup_imgui_backend(window, gl_context);
+        start_frame();
+    }
 
     running_for_main_window = true;
 
@@ -160,7 +164,7 @@ int SDL_PollEvent_hook(SDL_Event* event)
 {
     auto ret = original_SDL_PollEvent(event);
 
-    if (imgui_initialised && event && ret) {
+    if (imgui_backend_initialised && event && ret) {
         ImGui_ImplSDL2_ProcessEvent(event);
 
         auto& io = ImGui::GetIO();
