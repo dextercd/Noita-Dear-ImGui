@@ -100,11 +100,11 @@ void noita_imgui_style(ImGuiStyle* dst)
     dst->Colors[ImGuiCol_ResizeGripHovered] = color("#c4bd8cab");
     dst->Colors[ImGuiCol_ResizeGripActive] = color("#f7de82f2");
 
-    dst->Colors[ImGuiCol_Tab] = color("#ffd07f66");
-    dst->Colors[ImGuiCol_TabHovered] = accent_main;
-    dst->Colors[ImGuiCol_TabActive] = accent_light;
-    dst->Colors[ImGuiCol_TabUnfocused] = color("#4d4545");
-    dst->Colors[ImGuiCol_TabUnfocusedActive] = color("#4d4545");
+    dst->Colors[ImGuiCol_Tab] = color("#40352b7c");
+    dst->Colors[ImGuiCol_TabHovered] = color("#a990787d");
+    dst->Colors[ImGuiCol_TabActive] = color("#4d4545ff");
+    dst->Colors[ImGuiCol_TabUnfocused] = dst->Colors[ImGuiCol_Tab];
+    dst->Colors[ImGuiCol_TabUnfocusedActive] = dst->Colors[ImGuiCol_TabActive];
 
     dst->Colors[ImGuiCol_TextSelectedBg] = color("#2e8cffa3");
 
