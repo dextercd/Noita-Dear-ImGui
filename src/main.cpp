@@ -31,8 +31,20 @@ void setup_imgui(SDL_Window* window, SDL_GLContext gl_context)
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
     noita_imgui_style();
+    ImGuiStyle& style = ImGui::GetStyle();
+
+    // When viewports are enabled we tweak WindowRounding/WindowBg so platform
+    // windows can look identical to regular ones.
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+        style.WindowRounding = 0.0f;
+        style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+    }
 
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     if (!ImGui_ImplOpenGL3_Init(glsl_version)) {
@@ -45,15 +57,8 @@ void setup_imgui(SDL_Window* window, SDL_GLContext gl_context)
     imgui_initialised = true;
 }
 
-bool have_frame = false;
-
 void start_frame()
 {
-    if (have_frame)
-        return;
-
-    have_frame = true;
-
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
@@ -63,6 +68,37 @@ void start_frame()
 
 void render()
 {
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+    ImGuiIO& io = ImGui::GetIO();
+
+    // Update and Render additional Platform Windows
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+        SDL_Window* backup_current_window = SDL_GL_GetCurrentWindow();
+        SDL_GLContext backup_current_context = SDL_GL_GetCurrentContext();
+        ImGui::UpdatePlatformWindows();
+        ImGui::RenderPlatformWindowsDefault();
+        SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
+    }
+}
+
+using SDL_GL_SwapWindow_f = void (*)(SDL_Window*);
+
+SDL_GL_SwapWindow_f original_SDL_GL_SwapWindow = nullptr;
+
+
+// RenderPlatformWindowsDefault will also call swapwindow so we need to guard
+// against that.
+bool running_for_main_window = false;
+
+void SDL_GL_SwapWindow_hook(SDL_Window* ctx)
+{
+    if (running_for_main_window)
+        return original_SDL_GL_SwapWindow(ctx);
+
+    running_for_main_window = true;
+
     if (!imgui_initialised) {
         auto window = SDL_GL_GetCurrentWindow();
         auto gl_context = SDL_GL_GetCurrentContext();
@@ -70,24 +106,11 @@ void render()
         start_frame();
     }
 
-    if (!have_frame)
-        return;
-
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-    have_frame = false;
-    start_frame();
-}
-
-using SDL_GL_SwapWindow_f = void (*)(SDL_Window*);
-
-SDL_GL_SwapWindow_f original_SDL_GL_SwapWindow = nullptr;
-
-void SDL_GL_SwapWindow_hook(SDL_Window* ctx)
-{
     render();
-    return original_SDL_GL_SwapWindow(ctx);
+    original_SDL_GL_SwapWindow(ctx);
+    start_frame();
+
+    running_for_main_window = false;
 }
 
 using SDL_PollEvent_f = int(*)(SDL_Event* event);
