@@ -1,8 +1,14 @@
 local ffi = require 'ffi'
 
+local mod_id = "NoitaDearImGui"
+function setting_get(name)
+    return ModSettingGet(mod_id .. "." .. name)
+end
+
 ffi.cdef([[
 
 void init_imgui(void* pollevent, void* swapwindow, void* newstate);
+void settings_imgui(bool viewports);
 
 void* LoadLibraryA(const char*);
 
@@ -22,8 +28,21 @@ assert(ffi.C.LoadLibraryA("mods/NoitaDearImGui/noita_dear_imgui.dll") ~= nil)
 
 local dll = ffi.load("mods/NoitaDearImGui/noita_dear_imgui.dll")
 local sdl = ffi.load("SDL2.dll")
+
 dll.init_imgui(
     sdl.SDL_PollEvent,
     sdl.SDL_GL_SwapWindow,
     ffi.C.luaL_newstate
 )
+
+function configure_settings()
+    dll.settings_imgui(setting_get("multi_viewports"))
+end
+
+configure_settings() -- Initial
+
+
+function OnPausedChanged()
+    -- Mod settings might've been changed
+    configure_settings()
+end

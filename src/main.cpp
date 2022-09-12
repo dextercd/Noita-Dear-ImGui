@@ -20,12 +20,13 @@ extern "C" {
 #include "style.hpp"
 #include "version_compat_window.hpp"
 
-bool imgui_initialised = false;
-
 // GLSL version used in Noita's shaders
 char glsl_version[] = "#version 110";
 
-void setup_imgui(SDL_Window* window, SDL_GLContext gl_context)
+bool imgui_context_initialised = false;
+bool imgui_initialised = false;
+
+void init_imgui_context()
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -34,23 +35,28 @@ void setup_imgui(SDL_Window* window, SDL_GLContext gl_context)
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
     noita_imgui_style();
     ImGuiStyle& style = ImGui::GetStyle();
 
-    // When viewports are enabled we tweak WindowRounding/WindowBg so platform
-    // windows can look identical to regular ones.
-    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
-        style.WindowRounding = 0.0f;
-        style.Colors[ImGuiCol_WindowBg].w = 1.0f;
-    }
+    imgui_context_initialised = true;
+}
+
+void setup_imgui(SDL_Window* window, SDL_GLContext gl_context)
+{
+    ImGuiIO& io = ImGui::GetIO();
+
+    // Need to have this enabled during platform init so this can be enabled/
+    // disabled at runtime.
+    auto restore_flags = io.ConfigFlags;
+    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     if (!ImGui_ImplOpenGL3_Init(glsl_version)) {
         throw std::runtime_error{"Couldn't init ImGui OpenGL3"};
     }
 
+    io.ConfigFlags = restore_flags;
     io.Fonts->AddFontFromFileTTF("mods/NoitaDearImGui/NoitaPixel.ttf", 20);
     io.Fonts->AddFontDefault();
 
@@ -88,23 +94,26 @@ using SDL_GL_SwapWindow_f = void (*)(SDL_Window*);
 SDL_GL_SwapWindow_f original_SDL_GL_SwapWindow = nullptr;
 
 
-// RenderPlatformWindowsDefault will also call swapwindow so we need to guard
-// against that.
 bool running_for_main_window = false;
 
 void SDL_GL_SwapWindow_hook(SDL_Window* ctx)
 {
-    if (running_for_main_window)
-        return original_SDL_GL_SwapWindow(ctx);
-
-    running_for_main_window = true;
-
-    if (!imgui_initialised) {
+    if (!imgui_initialised && imgui_context_initialised) {
         auto window = SDL_GL_GetCurrentWindow();
         auto gl_context = SDL_GL_GetCurrentContext();
         setup_imgui(window, gl_context);
         start_frame();
     }
+
+    if (!imgui_initialised)
+        return;
+
+    // RenderPlatformWindowsDefault will also call swapwindow, which makes this
+    // function recursive. We have to guard against that.
+    if (running_for_main_window)
+        return original_SDL_GL_SwapWindow(ctx);
+
+    running_for_main_window = true;
 
     render();
     original_SDL_GL_SwapWindow(ctx);
@@ -250,14 +259,26 @@ NOITA_DEAR_IMGUI_EXPORT void init_imgui(void* pollevent, void* swapwindow, void*
         return;
     }
 
-    char file_name_buffer[1024];
-    if (GetModuleFileNameA(nullptr, file_name_buffer, sizeof(file_name_buffer)) == 0) {
-        std::cerr << "Couldn't get Noita executable file name! Could not initialise hooks for ImGui\n";
-        return;
-    }
-
     std::cout << "Initialising ImGui hook points.\n";
     imgui_hooks_lifetime = std::make_unique<imgui_hooks>(
         pollevent, swapwindow, newstate
     );
+
+    init_imgui_context();
+}
+
+extern "C"
+NOITA_DEAR_IMGUI_EXPORT void settings_imgui(bool viewports)
+{
+    if (!imgui_context_initialised)
+        return;
+
+    ImGuiConfigFlags turn_on{};
+    ImGuiConfigFlags turn_off{};
+
+    (viewports ? turn_on : turn_off) |= ImGuiConfigFlags_ViewportsEnable;
+
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= turn_on;
+    io.ConfigFlags &= ~turn_off;
 }
