@@ -150,4 +150,12 @@ void add_imgui_keyboard_input(sol::table& imgui)
     imgui.set_function("GetKeyPressedAmount", sol::resolve<int(ImGuiKey, float, float)>(ImGui::GetKeyPressedAmount));
     imgui.set_function("GetKeyName", sol::resolve<const char*(ImGuiKey)>(ImGui::GetKeyName));
     imgui.set_function("SetNextFrameWantCaptureKeyboard", sol::resolve<void(bool)>(ImGui::SetNextFrameWantCaptureKeyboard));
+
+
+    imgui.set_function("PushAllowKeyboardFocus", sol::resolve<void(bool)>(ImGui::PushAllowKeyboardFocus));
+    imgui.set_function("PopAllowKeyboardFocus", sol::resolve<void()>(ImGui::PopAllowKeyboardFocus));
+    imgui.set_function("SetKeyboardFocusHere",
+        sol::overload(
+            []() { return ImGui::SetKeyboardFocusHere(); },
+            sol::resolve<void(int)>(ImGui::SetKeyboardFocusHere)));
 }
