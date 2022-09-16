@@ -47,6 +47,7 @@ add_library(noita_dear_imgui SHARED
     lua_features/imgui_menu.cpp
     lua_features/imgui_mouse_input.cpp
     lua_features/imgui_param_stacks.cpp
+    lua_features/imgui_popup.cpp
     lua_features/imgui_regular_sliders.cpp
     lua_features/imgui_scopes.cpp
     lua_features/imgui_style.cpp
