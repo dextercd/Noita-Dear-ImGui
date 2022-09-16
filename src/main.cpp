@@ -253,7 +253,7 @@ struct imgui_hooks {
 std::unique_ptr<imgui_hooks> imgui_hooks_lifetime;
 
 extern "C"
-NOITA_DEAR_IMGUI_EXPORT void init_imgui(void* pollevent, void* swapwindow, void* newstate)
+NOITA_DEAR_IMGUI_EXPORT void init_imgui(bool reset_ini, void* pollevent, void* swapwindow, void* newstate)
 {
     if (imgui_hooks_lifetime)
         return;
@@ -269,6 +269,10 @@ NOITA_DEAR_IMGUI_EXPORT void init_imgui(void* pollevent, void* swapwindow, void*
     );
 
     init_imgui_context();
+
+    // Loading an empty ini will prevent ImGui from loading from the file
+    if (reset_ini)
+        ImGui::LoadIniSettingsFromMemory("", 0);
 }
 
 extern "C"
