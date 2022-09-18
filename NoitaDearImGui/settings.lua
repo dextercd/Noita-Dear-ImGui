@@ -11,23 +11,47 @@ end
 mod_settings =
 {
     {
-        id = "multi_viewports",
-        ui_name = "Multi viewports enabled",
-        ui_description = "Support dragging ImGui windows outside the game window",
-        value_default = false,
-        scope = MOD_SETTING_SCOPE_RUNTIME,
+        category_id = "preferences",
+        ui_name = "Preferences",
+        ui_description = "User preferences",
+        settings = {
+            {
+                id = "multi_viewports",
+                ui_name = "Multi viewports enabled",
+                ui_description = "Support dragging ImGui windows outside the game window",
+                value_default = false,
+                scope = MOD_SETTING_SCOPE_RUNTIME,
+            },
+            {
+                ui_fn = mod_setting_vertical_spacing,
+                not_setting = true,
+            },
+            {
+                ui_fn = mod_setting_warning,
+                ui_name = "Viewports Warning",
+                ui_description = "\n   You may experience issues when the game is full-screen.\n " ..
+                    "\n   This feature works best when 'Pause the game when unfocused' is" ..
+                    "\n   turned Off in [Game Settings > Input] (option at the bottom).",
+                not_setting = true,
+            },
+        },
     },
+
     {
-        ui_fn = mod_setting_vertical_spacing,
-        not_setting = true,
-    },
-    {
-        ui_fn = mod_setting_warning,
-        ui_name = "Viewports Warning",
-        ui_description = "\n   You may experience issues when the game is full-screen.\n " ..
-            "\n   This feature works best when 'Pause the game when unfocused' is" ..
-            "\n   turned Off in [Game Settings > Input] (option at the bottom).",
-        not_setting = true,
+        category_id = "for_developers",
+        ui_name = "For Developers",
+        ui_description = "Creating a mod that uses Dear ImGui? You may want to change these settings.",
+        settings = {
+            {
+                id = "build_type",
+                ui_name = "Build Type",
+                ui_description = "Switch to debug build which has worse performance but better error reporting.\n"
+                    .. "You must restart the game to apply this change.",
+                value_default = "release",
+                values = { {"release", "Release (optimised)"}, {"debug", "Debug (for devs)"}, },
+                scope = MOD_SETTING_SCOPE_RUNTIME_RESTART,
+            }
+        },
     },
 }
 
