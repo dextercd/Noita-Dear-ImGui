@@ -18,10 +18,12 @@ target_link_libraries(native_test PUBLIC NoitaDearImGui::noita_dear_imgui)
 install(TARGETS native_test
     DESTINATION "NoitaDearImGuiExampleNative"
     COMPONENT NoitaImGui_Example
+    CONFIGURATIONS Release
 )
 
 install(
     DIRECTORY NoitaDearImGuiExampleNative
     DESTINATION "."
     COMPONENT NoitaImGui_Example
+    CONFIGURATIONS Release
 )

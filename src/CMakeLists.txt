@@ -76,6 +76,7 @@ target_compile_features(noita_dear_imgui PUBLIC cxx_std_20)
 
 set_target_properties(noita_dear_imgui PROPERTIES
     PUBLIC_HEADER "${public_headers}"
+    ARCHIVE_OUTPUT_NAME_DEBUG "noita_dear_imgui-debug"
 )
 
 generate_export_header(noita_dear_imgui)
@@ -108,21 +109,38 @@ endif()
 
 install(TARGETS noita_dear_imgui
     EXPORT NoitaDearImGui
-    RUNTIME
-        COMPONENT NoitaImGui
-        DESTINATION "NoitaDearImGui"
-
-    ARCHIVE
-        COMPONENT NoitaImGui_Native
-        DESTINATION "NoitaDearImGui/native/lib"
 
     PUBLIC_HEADER
         COMPONENT NoitaImGui_Native
         DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/noita_imgui"
+
+    ARCHIVE
+        COMPONENT NoitaImGui_Native
+        DESTINATION "NoitaDearImGui/native/lib"
 )
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/noita_dear_imgui_export.h
     DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+    COMPONENT NoitaImGui_Native
+)
+
+install(TARGETS noita_dear_imgui
+    CONFIGURATIONS Release
+    RUNTIME
+        COMPONENT NoitaImGui
+        DESTINATION "NoitaDearImGui"
+)
+
+install(TARGETS noita_dear_imgui
+    CONFIGURATIONS Debug
+    RUNTIME
+        COMPONENT NoitaImGui
+        DESTINATION "NoitaDearImGui/Debug"
+)
+
+install(FILES $<TARGET_PDB_FILE:noita_dear_imgui>
+    DESTINATION "NoitaDearImGui/Debug"
+    CONFIGURATIONS Debug RelWithDebInfo
     COMPONENT NoitaImGui_Native
 )
 
