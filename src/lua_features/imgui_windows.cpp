@@ -1,7 +1,10 @@
 #include <tuple>
+#include <optional>
 
 #include <sol/sol.hpp>
 #include <imgui.h>
+
+namespace {
 
 // imgui.h contains the following disclaimer:
 // [Important: due to legacy reason, this is inconsistent with most other functions such as BeginMenu/EndMenu,
@@ -27,6 +30,8 @@ bool ConsistentBeginChild(const char* str_id, const ImVec2& size = ImVec2(0, 0),
         ImGui::EndChild();
 
     return visible;
+}
+
 }
 
 void add_imgui_windows(sol::table& imgui)
@@ -60,10 +65,11 @@ void add_imgui_windows(sol::table& imgui)
 
     // Windows
     imgui.set_function("Begin",
-        sol::overload(
-            [](const char* name) { return ConsistentBegin(name); },
-            [](const char* name, bool open) { auto ret = ConsistentBegin(name, &open); return std::tuple{ret, open}; },
-            [](const char* name, bool open, ImGuiWindowFlags flags) { auto ret = ConsistentBegin(name, &open, flags); return std::tuple{ret, open}; }));
+        [](const char* name, std::optional<bool> open, std::optional<ImGuiWindowFlags> flags) {
+            bool* p_open = open ? &open.value() : nullptr;
+            auto ret = ConsistentBegin(name, p_open, flags.value_or(0));
+            return std::tuple{ret, open};
+        });
     imgui.set_function("End", &ImGui::End);
 
     // Child Windows
