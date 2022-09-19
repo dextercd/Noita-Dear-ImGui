@@ -68,12 +68,12 @@ void add_imgui_style(sol::table& imgui)
         "AntiAliasedFill", sol::readonly(&ImGuiStyle::AntiAliasedFill),
         "CurveTessellationTol", sol::readonly(&ImGuiStyle::CurveTessellationTol),
         "CircleTessellationMaxError", sol::readonly(&ImGuiStyle::CircleTessellationMaxError),
-        "Color", [](const ImGuiStyle& style, int index) -> std::optional<std::array<float, 4>>{
+        "Color", [](const ImGuiStyle& style, int index) -> std::optional<std::tuple<float, float, float, float>>{
             if (index < 0 || index >= ImGuiCol_COUNT)
                 return std::nullopt;
 
             auto c = style.Colors[index];
-            return std::array{c.x, c.y, c.z, c.w};
+            return std::tuple{c.x, c.y, c.z, c.w};
         }
     );
 
