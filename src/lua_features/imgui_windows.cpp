@@ -58,6 +58,7 @@ void add_imgui_windows(sol::table& imgui)
         "NoNavInputs",               ImGuiWindowFlags_NoNavInputs,
         "NoNavFocus",                ImGuiWindowFlags_NoNavFocus,
         "UnsavedDocument",           ImGuiWindowFlags_UnsavedDocument,
+        "NoDocking",                 ImGuiWindowFlags_NoDocking,
         "NoNav",                     ImGuiWindowFlags_NoNav,
         "NoDecoration",              ImGuiWindowFlags_NoDecoration,
         "NoInputs",                  ImGuiWindowFlags_NoInputs
@@ -118,6 +119,7 @@ void add_imgui_windows(sol::table& imgui)
             &ImGui::SetNextWindowCollapsed));
     imgui.set_function("SetNextWindowFocus", &ImGui::SetNextWindowFocus);
     imgui.set_function("SetNextWindowBgAlpha", &ImGui::SetNextWindowBgAlpha);
+    imgui.set_function("SetNextWindowViewport", sol::resolve<void(ImGuiID)>(ImGui::SetNextWindowViewport));
     imgui.set_function("SetWindowPos",
         sol::overload(
             [](float pos_x, float pos_y) { return ImGui::SetWindowPos({pos_x, pos_y}); },
