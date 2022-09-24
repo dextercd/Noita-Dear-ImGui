@@ -45,6 +45,7 @@ add_library(noita_dear_imgui SHARED
     lua_features/imgui_gui_io.cpp
     lua_features/imgui_keyboard_input.cpp
     lua_features/imgui_layout.cpp
+    lua_features/imgui_list_clipper.cpp
     lua_features/imgui_menu.cpp
     lua_features/imgui_mouse_input.cpp
     lua_features/imgui_param_stacks.cpp
