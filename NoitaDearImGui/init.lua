@@ -2,7 +2,9 @@ local ffi = require 'ffi'
 
 local mod_id = "NoitaDearImGui"
 function setting_get(name)
-    return ModSettingGet(mod_id .. "." .. name)
+    -- Boolean false values don't get initialised to false, but instead stay nil..
+    -- `or false` fixes this.
+    return ModSettingGet(mod_id .. "." .. name) or false
 end
 
 ffi.cdef([[
