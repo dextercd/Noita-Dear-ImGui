@@ -1,4 +1,4 @@
 <Mod
-    name="Noita Dear ImGui"
-    description="Adds DearImGui functions for other mods to use"
+    name="NoitaDearImGui: Main"
+    description="Adds DearImGui functions for other mods to use."
     request_no_api_restrictions="1" />
