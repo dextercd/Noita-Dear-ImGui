@@ -100,11 +100,11 @@ target_link_libraries(noita_dear_imgui
         minhook
 )
 
-target_precompile_headers(noita_dear_imgui PRIVATE
-    <tuple>
-    <sol/sol.hpp>
-    <imgui.h>
-)
+#target_precompile_headers(noita_dear_imgui PRIVATE
+#    <tuple>
+#    <sol/sol.hpp>
+#    <imgui.h>
+#)
 
 if (BUILD_TESTING)
     add_subdirectory(tests)
