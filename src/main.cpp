@@ -48,6 +48,8 @@ void init_imgui_context()
     noita_imgui_style();
     auto font_path = mod_path + "/NoitaPixel.ttf";
     io.Fonts->AddFontFromFileTTF(font_path.c_str(), 20);
+    io.Fonts->AddFontFromFileTTF(font_path.c_str(), 28);
+    io.Fonts->AddFontFromFileTTF(font_path.c_str(), 36);
     io.Fonts->AddFontDefault();
 
     imgui_context_initialised = true;

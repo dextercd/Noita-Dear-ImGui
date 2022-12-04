@@ -20,10 +20,22 @@ void add_imgui_font(sol::table& imgui)
             return io.Fonts->Fonts[0];
         });
 
-    imgui.set_function("GetImGuiFont",
+    imgui.set_function("GetNoitaFont1_4x",
         []() {
             auto& io = ImGui::GetIO();
             return io.Fonts->Fonts[1];
+        });
+
+    imgui.set_function("GetNoitaFont1_8x",
+        []() {
+            auto& io = ImGui::GetIO();
+            return io.Fonts->Fonts[2];
+        });
+
+    imgui.set_function("GetImGuiFont",
+        []() {
+            auto& io = ImGui::GetIO();
+            return io.Fonts->Fonts[3];
         });
 
     imgui.set_function("PushFont", sol::resolve<void(ImFont*)>(ImGui::PushFont));
