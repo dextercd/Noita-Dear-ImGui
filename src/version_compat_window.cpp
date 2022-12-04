@@ -1,4 +1,5 @@
 #include <imgui.h>
+#include <vector>
 
 #include <noita_imgui/version_info.hpp>
 #include "version_compat_window.hpp"
