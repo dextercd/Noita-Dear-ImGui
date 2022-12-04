@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include <sol/sol.hpp>
 
@@ -83,8 +84,10 @@ sol::table load_imgui(sol::this_state s, sol::table load_params)
 }
 
 extern "C"
-NOITA_DEAR_IMGUI_EXPORT void add_lua_features(lua_State* L)
+NOITA_DEAR_IMGUI_EXPORT void add_lua_features(lua_State* L, const std::vector<std::string>& names)
 {
     sol::state_view lua{L};
-    lua.set_function("load_imgui", load_imgui);
+    for (auto& name : names) {
+        lua.set_function("load_" + name, load_imgui);
+    }
 }

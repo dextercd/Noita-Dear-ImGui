@@ -1,5 +1,9 @@
 #include <iostream>
 #include <memory>
+#include <vector>
+
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 
 extern "C" {
 #include <lua.h>
@@ -20,6 +24,10 @@ extern "C" {
 #include "style.hpp"
 #include "version_compat_window.hpp"
 
+bool is_embedded;
+std::vector<std::string> load_names;
+std::string mod_path;
+
 // GLSL version used in Noita's shaders
 char glsl_version[] = "#version 110";
 
@@ -38,7 +46,8 @@ void init_imgui_context()
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
     noita_imgui_style();
-    io.Fonts->AddFontFromFileTTF("mods/NoitaDearImGui/NoitaPixel.ttf", 20);
+    auto font_path = mod_path + "/NoitaPixel.ttf";
+    io.Fonts->AddFontFromFileTTF(font_path.c_str(), 20);
     io.Fonts->AddFontDefault();
 
     imgui_context_initialised = true;
@@ -199,7 +208,7 @@ luaL_newstate_f original_luaL_newstate;
 lua_State* luaL_newstate_hook()
 {
     auto state = original_luaL_newstate();
-    add_lua_features(state);
+    add_lua_features(state, load_names);
     return state;
 }
 
@@ -252,11 +261,39 @@ struct imgui_hooks {
 
 std::unique_ptr<imgui_hooks> imgui_hooks_lifetime;
 
-extern "C"
-NOITA_DEAR_IMGUI_EXPORT void init_imgui(bool reset_ini, void* pollevent, void* swapwindow, void* newstate)
+bool is_loaded()
 {
-    if (imgui_hooks_lifetime)
+    return (bool)imgui_hooks_lifetime;
+}
+
+extern "C"
+NOITA_DEAR_IMGUI_EXPORT void init_imgui(
+        bool reset_ini,
+        const char* path,
+        const char* name,
+        void* pollevent,
+        void* swapwindow,
+        void* newstate)
+{
+    if (!is_loaded() || is_embedded)
+        load_names.push_back(name);
+
+    if (is_loaded())
         return;
+
+    is_embedded = std::string_view{name} != "imgui";
+    if (is_embedded) {
+        mod_path = path;
+    } else {
+        mod_path = "mods/NoitaDearImGui";
+        // No lying!
+        auto attrs = GetFileAttributesA(mod_path.c_str());
+        if (attrs == INVALID_FILE_ATTRIBUTES) {
+            auto error = GetLastError();
+            if (error == ERROR_INVALID_NAME || error == ERROR_FILE_NOT_FOUND)
+                ExitProcess(666);
+        }
+    }
 
     if (MH_Initialize() != MH_OK) {
         std::cerr << "MH_Initialize failed.\n";

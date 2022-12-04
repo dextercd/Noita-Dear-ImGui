@@ -1,52 +1,11 @@
-local ffi = require 'ffi'
+local imgui_ctx = dofile_once("mods/NoitaDearImGui/load.lua")("mods/NoitaDearImGui", "imgui")
 
-local mod_id = "NoitaDearImGui"
-function setting_get(name)
-    -- Boolean false values don't get initialised to false, but instead stay nil..
-    -- `or false` fixes this.
-    return ModSettingGet(mod_id .. "." .. name) or false
+function setting_get(key)
+    return ModSettingGet(imgui_ctx.settings_prefix .. key) or false
 end
-
-ffi.cdef([[
-
-void init_imgui(bool reset_ini, void* pollevent, void* swapwindow, void* newstate);
-void settings_imgui(bool viewports);
-
-void* LoadLibraryA(const char*);
-
-int SDL_PollEvent(struct SDL_Event* event);
-void SDL_GL_SwapWindow(struct SDL_Window* window);
-struct lua_State* luaL_newstate();
-
-]])
-
-local imgui_dll
-if setting_get("build_type") == "debug" then
-    imgui_dll = "mods/NoitaDearImGui/Debug/noita_dear_imgui.dll"
-else
-    imgui_dll = "mods/NoitaDearImGui/noita_dear_imgui.dll"
-end
-
--- LuaJIT frees the OS library handle when the `ffi.load` handle is garbage
--- collected. We need to increase the library's reference count to prevent it
--- from getting unloaded.
---
--- Without this, Noita crashes in JIT-ed Lua code when you use the "New Game"
--- option, probably because some Lua states are preserved across new runs.
-assert(ffi.C.LoadLibraryA(imgui_dll) ~= nil)
-
-local dll = ffi.load(imgui_dll)
-local sdl = ffi.load("SDL2.dll")
-
-dll.init_imgui(
-    false,
-    sdl.SDL_PollEvent,
-    sdl.SDL_GL_SwapWindow,
-    ffi.C.luaL_newstate
-)
 
 function configure_settings()
-    dll.settings_imgui(setting_get("multi_viewports"))
+    imgui_ctx.imgui_dll.settings_imgui(setting_get("multi_viewports"))
 end
 
 configure_settings() -- Initial configure
