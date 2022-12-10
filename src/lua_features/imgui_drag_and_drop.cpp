@@ -3,6 +3,7 @@
 #include <iostream>
 
 enum class drag_drop_type {
+    boolean,
     string,
     number,
     object
@@ -21,7 +22,16 @@ bool SetDragDropPayload(sol::this_state s, const char* type, sol::object payload
     sol::state_view lua{s};
     auto globals = lua.globals();
 
-    if (payload.is<std::string_view>()) {
+    if (payload.is<bool>()) {
+        auto data_type = drag_drop_type::boolean;
+        auto value = payload.as<bool>();
+
+        char data[sizeof(data_type) + sizeof(value)];
+        std::memcpy(data, &data_type, sizeof(data_type));
+        std::memcpy(data + sizeof(data_type), &value, sizeof(value));
+
+        return ImGui::SetDragDropPayload(type, &data, sizeof(data), cond);
+    } else if (payload.is<std::string_view>()) {
         auto data_type = drag_drop_type::string;
         bool ret = ImGui::SetDragDropPayload(type, &data_type, sizeof(data_type), cond);
         if (ret)
@@ -30,7 +40,7 @@ bool SetDragDropPayload(sol::this_state s, const char* type, sol::object payload
         return ret;
     } else if (payload.is<double>()) {
         auto data_type = drag_drop_type::number;
-        double value = payload.as<double>();
+        auto value = payload.as<double>();
 
         char data[sizeof(data_type) + sizeof(value)];
         std::memcpy(data, &data_type, sizeof(data_type));
@@ -63,6 +73,18 @@ sol::object value_from_payload(sol::state_view lua, const ImGuiPayload* payload)
 
     drag_drop_type data_type;
     std::memcpy(&data_type, payload->Data, sizeof(data_type));
+
+    if (data_type == drag_drop_type::boolean &&
+        payload->DataSize == sizeof(data_type) + sizeof(bool))
+    {
+        bool value;
+        std::memcpy(
+            &value,
+            (const char*)payload->Data + sizeof(data_type),
+            sizeof(value));
+
+        return sol::make_object(lua, value);
+    }
 
     if (data_type == drag_drop_type::string &&
         payload->DataSize == sizeof(data_type))
