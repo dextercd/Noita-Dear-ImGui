@@ -194,8 +194,17 @@ int SDL_PollEvent_hook(SDL_Event* event)
 
         previous_want_capture_mouse = io.WantCaptureMouse;
 
-        if (io.WantCaptureMouse && is_mouse_event(event))
-            return SDL_PollEvent_hook(event);
+        if (is_mouse_event(event)) {
+            if (io.WantCaptureMouse)
+                return SDL_PollEvent_hook(event);
+
+            if (event->type == SDL_MOUSEBUTTONDOWN && io.WantCaptureKeyboard) {
+                // The player should be able to restore the game's keyboard access
+                // by clicking outside of any imgui window. When they do this it
+                // shouldn't fire a wand or throw a flask.
+                return SDL_PollEvent_hook(event);
+            }
+        }
 
         if (io.WantCaptureKeyboard && is_keyboard_event(event))
             return SDL_PollEvent_hook(event);
