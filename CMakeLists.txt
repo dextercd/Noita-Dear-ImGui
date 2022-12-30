@@ -72,7 +72,7 @@ if (MSVC)
     list(APPEND LUAJIT_OUTPUT lua51.lib)
 else()
     # Not MSVC so try the Makefile instead
-    find_program(MAKE_EXECUTABLE NAMES nmake gmake make)
+    find_program(MAKE_EXECUTABLE NAMES gmake make)
     set(LUAJIT_BUILD
         ${MAKE_EXECUTABLE}
             CC=${CMAKE_C_COMPILER}
