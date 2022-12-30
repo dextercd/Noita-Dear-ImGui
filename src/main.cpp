@@ -258,15 +258,15 @@ struct imgui_hooks {
     imgui_hooks(void* pollevent, void* swapwindow, void* newstate)
         : sdl_pollevent{
             pollevent,
-            SDL_PollEvent_hook,
+            (void*)SDL_PollEvent_hook,
             reinterpret_cast<void**>(&original_SDL_PollEvent)}
         , sdl_gl_swapwindow{
             swapwindow,
-            SDL_GL_SwapWindow_hook,
+            (void*)SDL_GL_SwapWindow_hook,
             reinterpret_cast<void**>(&original_SDL_GL_SwapWindow)}
         , lual_newstate{
             newstate,
-            luaL_newstate_hook,
+            (void*)luaL_newstate_hook,
             reinterpret_cast<void**>(&original_luaL_newstate)}
     {
     }

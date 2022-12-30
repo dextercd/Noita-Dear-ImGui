@@ -7,7 +7,7 @@ struct wine_detector {
     wine_detector()
     {
         auto ntdll = GetModuleHandleA("ntdll.dll");
-        void* wine_get_version = GetProcAddress(ntdll, "wine_get_version");
+        auto wine_get_version = GetProcAddress(ntdll, "wine_get_version");
         on_wine = wine_get_version != nullptr;
     }
 };
