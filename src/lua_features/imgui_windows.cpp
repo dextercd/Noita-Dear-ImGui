@@ -64,6 +64,16 @@ void add_imgui_windows(sol::table& imgui)
         "NoInputs",                  ImGuiWindowFlags_NoInputs
     );
 
+    imgui.new_enum("FocusedFlags",
+        "None",                ImGuiFocusedFlags_None,
+        "ChildWindows",        ImGuiFocusedFlags_ChildWindows,
+        "RootWindow",          ImGuiFocusedFlags_RootWindow,
+        "AnyWindow",           ImGuiFocusedFlags_AnyWindow,
+        "NoPopupHierarchy",    ImGuiFocusedFlags_NoPopupHierarchy,
+        "DockHierarchy",       ImGuiFocusedFlags_DockHierarchy,
+        "RootAndChildWindows", ImGuiFocusedFlags_RootAndChildWindows
+    );
+
     // Windows
     imgui.set_function("Begin",
         [](const char* name, std::optional<bool> open, std::optional<ImGuiWindowFlags> flags) {
@@ -88,7 +98,7 @@ void add_imgui_windows(sol::table& imgui)
     imgui.set_function("IsWindowFocused",
         sol::overload(
             []() { return ImGui::IsWindowFocused(); },
-            &ImGui::IsWindowFocused));
+            sol::resolve<bool(ImGuiFocusedFlags)>(ImGui::IsWindowFocused)));
     imgui.set_function("IsWindowHovered",
         sol::overload(
             []() { return ImGui::IsWindowHovered(); },
