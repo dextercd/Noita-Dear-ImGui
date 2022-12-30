@@ -1,13 +1,12 @@
 # Noita Dear ImGui bindings
 
-## How to use this mod in your own mod?
+## How to use this in your own mod?
 
-You are not expected to bundle this mod with your own mod! You should instead
+You are not expected to bundle this mod with your own mod, you should instead
 instruct people to install this themselves alongside your mod.
 
-Any mod below this mod in the mod load order can use the ImGui bindings. This mod
-requires 'unsafe' mode, mods that use this ImGui bindings don't need to enable unsafe
-mode themselves!
+Any mod below this mod in the load order can use the ImGui bindings. This mod requires 'unsafe' mode,
+but mods that use the ImGui bindings don't need unsafe mode themselves.
 
 There's not really any documentation on how to use these bindings. I suggest you
 use the [ImGui demo/example file](https://github.com/ocornut/imgui/blob/9aae45eb4a05a5a1f96be1ef37eb503a12ceb889/imgui_demo.cpp)
@@ -19,8 +18,7 @@ a lot of stuff there also applies to these bindings.
 
 There's also an example mod that shows the basics: https://github.com/dextercd/Noita-Dear-ImGui/blob/main/ExampleMod/init.lua
 
-The bindings are a relatively close 1:1 mapping of the normal ImGui functions
-except:
+The bindings are a relatively close 1:1 mapping of the normal ImGui functions except:
 
 - References are used in ImGui to pass data in and alter it. Lua doesn't have
   references so this is turned into by-value arguments and additional return
