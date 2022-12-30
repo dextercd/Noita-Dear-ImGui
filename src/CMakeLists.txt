@@ -142,11 +142,13 @@ install(TARGETS noita_dear_imgui
         DESTINATION "NoitaDearImGui/Debug"
 )
 
-install(FILES $<TARGET_PDB_FILE:noita_dear_imgui>
-    DESTINATION "NoitaDearImGui/Debug"
-    CONFIGURATIONS Debug RelWithDebInfo
-    COMPONENT NoitaImGui_Native
-)
+if (CMAKE_CXX_LINKER_SUPPORTS_PDB)
+    install(FILES $<TARGET_PDB_FILE:noita_dear_imgui>
+        DESTINATION "NoitaDearImGui/Debug"
+        CONFIGURATIONS Debug RelWithDebInfo
+        COMPONENT NoitaImGui_Native
+    )
+endif()
 
 install(FILES ${dear_imgui_headers}
     DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
