@@ -164,15 +164,16 @@ bool is_keyboard_event(SDL_Event* event)
     return false;
 }
 
-// Cursor state, used to restore old cursor settings when you move your mouse
-// off all ImGui windows.
-SDL_Cursor* restore_cursor = nullptr;
-bool restore_show_cursor = false;
-
-bool previous_want_capture_mouse = false;
-
 int SDL_PollEvent_hook(SDL_Event* event)
 {
+    // Cursor state, used to restore old cursor settings when you move your mouse
+    // off all ImGui windows.
+    static SDL_Cursor* restore_cursor = nullptr;
+    static bool restore_show_cursor = false;
+
+    static bool previous_want_capture_mouse = false;
+    static bool previous_want_capture_keyboard = false;
+
     auto ret = original_SDL_PollEvent(event);
 
     if (imgui_backend_initialised && event && ret) {
@@ -193,6 +194,7 @@ int SDL_PollEvent_hook(SDL_Event* event)
         }
 
         previous_want_capture_mouse = io.WantCaptureMouse;
+        previous_want_capture_keyboard = io.WantCaptureKeyboard;
 
         if (is_mouse_event(event)) {
             if (io.WantCaptureMouse)
