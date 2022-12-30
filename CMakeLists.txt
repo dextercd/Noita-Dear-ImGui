@@ -66,6 +66,29 @@ if (NOT dearimgui_POPULATED)
     FetchContent_Populate(DearImGui)
 endif()
 
+set(LUAJIT_OUTPUT luajit.exe lua51.dll)
+if (MSVC)
+    set(LUAJIT_BUILD ${CMAKE_COMMAND} -E chdir "<SOURCE_DIR>/src" "msvcbuild.bat")
+    list(APPEND LUAJIT_OUTPUT lua51.lib)
+else()
+    # Not MSVC so try the Makefile instead
+    find_program(MAKE_EXECUTABLE NAMES nmake gmake make)
+    set(LUAJIT_BUILD
+        ${MAKE_EXECUTABLE}
+            CC=${CMAKE_C_COMPILER}
+            TARGET_SYS=Windows
+            MINILUA_T=host/minilua.exe
+            BUILDVM_T=host/buildvm.exe
+    )
+endif()
+
+set(LUAJIT_SOURCE_PATHS)
+set(LUAJIT_INSTALL_PATHS)
+foreach(OUT IN LISTS LUAJIT_OUTPUT)
+    list(APPEND LUAJIT_SOURCE_PATHS "<SOURCE_DIR>/src/${OUT}")
+    list(APPEND LUAJIT_INSTALL_PATHS "<INSTALL_DIR>/${OUT}")
+endforeach()
+
 ExternalProject_Add(LuaJIT
     URL https://luajit.org/download/LuaJIT-2.0.4.zip
     URL_HASH SHA224=163def4ec3ad502702760c703bb81da7932573a6f4b2ff482d04ccb6
@@ -73,17 +96,13 @@ ExternalProject_Add(LuaJIT
     INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/LuaJIT
 
     CONFIGURE_COMMAND ""
-    BUILD_COMMAND ${CMAKE_COMMAND} -E chdir "<SOURCE_DIR>/src" "msvcbuild.bat"
+    BUILD_COMMAND ${LUAJIT_BUILD}
     INSTALL_COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        <SOURCE_DIR>/src/luajit.exe
-        <SOURCE_DIR>/src/lua51.dll
-        <SOURCE_DIR>/src/lua51.lib
+        ${LUAJIT_SOURCE_PATHS}
         <INSTALL_DIR>
 
     BUILD_BYPRODUCTS
-        <INSTALL_DIR>/luajit.exe
-        <INSTALL_DIR>/lua51.dll
-        <INSTALL_DIR>/lua51.lib
+        ${LUAJIT_INSTALL_PATHS}
 )
 
 ExternalProject_Add_Step(LuaJIT install-lua-files
@@ -94,10 +113,18 @@ ExternalProject_Add_Step(LuaJIT install-lua-files
 ExternalProject_Get_Property(LuaJIT INSTALL_DIR SOURCE_DIR)
 
 add_library(LuaJIT_library SHARED IMPORTED)
-set_target_properties(LuaJIT_library PROPERTIES
-    IMPORTED_LOCATION ${INSTALL_DIR}/lua51.dll
-    IMPORTED_IMPLIB   ${INSTALL_DIR}/lua51.lib
-)
+
+if (lua51.lib IN_LIST LUAJIT_OUTPUT)
+    set_target_properties(LuaJIT_library PROPERTIES
+        IMPORTED_LOCATION ${INSTALL_DIR}/lua51.dll
+        IMPORTED_IMPLIB   ${INSTALL_DIR}/lua51.lib
+    )
+else()
+    set_target_properties(LuaJIT_library PROPERTIES
+        IMPORTED_LOCATION ${INSTALL_DIR}/lua51.dll
+        IMPORTED_IMPLIB   ${INSTALL_DIR}/lua51.dll
+    )
+endif()
 
 # Bit of a hack, include dir won't exist yet after the generate stage but CMake
 # requires it to be.
