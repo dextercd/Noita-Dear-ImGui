@@ -8,6 +8,11 @@ project(NoitaDearImGui
 
 set(CMAKE_CXX_STANDARD 20)
 
+# Default to 'DOWNLOAD_EXTRACT_TIMESTAMP TRUE' when available
+if(POLICY CMP0135)
+    cmake_policy(SET CMP0135 NEW)
+endif()
+
 include(CTest)
 include(FetchContent)
 include(ExternalProject)
