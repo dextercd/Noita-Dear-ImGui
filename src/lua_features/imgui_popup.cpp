@@ -3,6 +3,8 @@
 #include <sol/sol.hpp>
 #include <imgui.h>
 
+#include <noita_imgui/pause.hpp>
+
 void add_imgui_popup(sol::table& imgui)
 {
     imgui.new_enum<ImGuiPopupFlags>("PopupFlags", {
@@ -27,7 +29,12 @@ void add_imgui_popup(sol::table& imgui)
         sol::overload(
             [](const char* str_id) { return ImGui::BeginPopupModal(str_id); },
             [](const char* str_id, bool open) { auto ret = ImGui::BeginPopupModal(str_id, &open); return std::tuple{ret, open}; },
-            [](const char* str_id, bool open, ImGuiWindowFlags flags) { auto ret = ImGui::BeginPopupModal(str_id, &open, flags); return std::tuple{ret, open}; }));
+            [](const char* str_id, bool open, ImGuiWindowFlags flags) {
+                if (just_unpaused)
+                    flags |= ImGuiWindowFlags_NoFocusOnAppearing;
+                auto ret = ImGui::BeginPopupModal(str_id, &open, flags);
+                return std::tuple{ret, open};
+            }));
     imgui.set_function("EndPopup", sol::resolve<void()>(ImGui::EndPopup));
     imgui.set_function("OpenPopup",
         sol::overload(

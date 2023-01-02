@@ -22,6 +22,7 @@ return function(path, name)
     );
 
     void settings_imgui(bool viewports);
+    void imgui_signal_unpause();
 
     void* LoadLibraryA(const char*);
 

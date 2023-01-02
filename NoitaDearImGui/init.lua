@@ -10,7 +10,11 @@ end
 
 configure_settings() -- Initial configure
 
-function OnPausedChanged()
+function OnPausedChanged(is_paused, is_inventory_paused)
     -- Mod settings might've been changed
     configure_settings()
+
+    if not is_paused and not is_inventory_paused then
+        imgui_ctx.imgui_dll.imgui_signal_unpause()
+    end
 end

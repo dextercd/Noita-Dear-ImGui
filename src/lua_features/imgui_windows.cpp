@@ -4,6 +4,8 @@
 #include <sol/sol.hpp>
 #include <imgui.h>
 
+#include <noita_imgui/pause.hpp>
+
 namespace {
 
 // imgui.h contains the following disclaimer:
@@ -16,6 +18,9 @@ namespace {
 
 bool ConsistentBegin(const char* name, bool* p_open = nullptr, ImGuiWindowFlags flags = 0)
 {
+    if (just_unpaused)
+        flags |= ImGuiWindowFlags_NoFocusOnAppearing;
+
     auto visible = ImGui::Begin(name, p_open, flags);
     if (!visible)
         ImGui::End();
@@ -25,6 +30,9 @@ bool ConsistentBegin(const char* name, bool* p_open = nullptr, ImGuiWindowFlags 
 
 bool ConsistentBeginChild(const char* str_id, const ImVec2& size = ImVec2(0, 0), bool border = false, ImGuiWindowFlags flags = 0)
 {
+    if (just_unpaused)
+        flags |= ImGuiWindowFlags_NoFocusOnAppearing;
+
     auto visible = ImGui::BeginChild(str_id, size, border, flags);
     if (!visible)
         ImGui::EndChild();

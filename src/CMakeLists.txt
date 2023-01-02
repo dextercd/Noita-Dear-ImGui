@@ -5,6 +5,7 @@ set(public_headers
     include/noita_imgui/version_info.hpp
     include/noita_imgui/version_number.hpp
     include/noita_imgui/imgui_config.hpp
+    include/noita_imgui/pause.hpp
 )
 
 set(dear_imgui_headers
@@ -23,6 +24,7 @@ add_library(noita_dear_imgui SHARED
     style.cpp
     wine_compat.cpp
     version_compat_window.cpp
+    pause.cpp
 
     # Dear ImGui sources
     ${dearimgui_SOURCE_DIR}/imgui.cpp

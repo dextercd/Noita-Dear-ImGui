@@ -20,6 +20,7 @@ extern "C" {
 #include <MinHook.h>
 
 #include <noita_imgui/add_lua_features.hpp>
+#include <noita_imgui/pause.hpp>
 #include <noita_dear_imgui_export.h>
 #include "style.hpp"
 #include "version_compat_window.hpp"
@@ -100,6 +101,9 @@ void render()
         ImGui::RenderPlatformWindowsDefault();
         SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
     }
+
+    // Reset pause status for next frame
+    imgui_clear_pause_state();
 }
 
 using SDL_GL_SwapWindow_f = void (*)(SDL_Window*);
