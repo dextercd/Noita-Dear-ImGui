@@ -161,7 +161,7 @@ bool is_keyboard_event(SDL_Event* event)
 {
     switch (event->type) {
         case SDL_KEYDOWN:
-        case SDL_KEYUP:
+        //case SDL_KEYUP: -- allow key up events so the game doesn't think the key is 'stuck'
             return true;
     }
 
