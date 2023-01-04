@@ -29,6 +29,7 @@ void add_imgui_regular_sliders(sol::table&);
 void add_imgui_scopes(sol::table&);
 void add_imgui_style(sol::table&);
 void add_imgui_tables(sol::table&);
+void add_imgui_tabs(sol::table&);
 void add_imgui_text(sol::table&);
 void add_imgui_text_input(sol::table&);
 void add_imgui_tooltips(sol::table&);
@@ -53,12 +54,12 @@ sol::table load_imgui(sol::this_state s, sol::table load_params)
     sol::state_view lua{s};
     sol::table imgui = lua.create_table();
 
-    add_imgui_drag_and_drop(imgui);
     add_imgui_clipboard(imgui);
     add_imgui_color_editor(imgui);
     add_imgui_combo_box(imgui);
     add_imgui_common(imgui);
     add_imgui_disable(imgui);
+    add_imgui_drag_and_drop(imgui);
     add_imgui_drag_sliders(imgui);
     add_imgui_font(imgui);
     add_imgui_gui_io(imgui);
@@ -73,6 +74,7 @@ sol::table load_imgui(sol::this_state s, sol::table load_params)
     add_imgui_scopes(imgui);
     add_imgui_style(imgui);
     add_imgui_tables(imgui);
+    add_imgui_tabs(imgui);
     add_imgui_text(imgui);
     add_imgui_text_input(imgui);
     add_imgui_tooltips(imgui);

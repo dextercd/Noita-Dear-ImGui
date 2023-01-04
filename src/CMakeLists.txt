@@ -57,6 +57,7 @@ add_library(noita_dear_imgui SHARED
     lua_features/imgui_scopes.cpp
     lua_features/imgui_style.cpp
     lua_features/imgui_tables.cpp
+    lua_features/imgui_tabs.cpp
     lua_features/imgui_text.cpp
     lua_features/imgui_text_input.cpp
     lua_features/imgui_tooltips.cpp
