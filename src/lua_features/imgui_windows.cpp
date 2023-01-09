@@ -1,5 +1,6 @@
-#include <tuple>
+#include <cstddef>
 #include <optional>
+#include <tuple>
 
 #include <sol/sol.hpp>
 #include <imgui.h>
@@ -156,7 +157,10 @@ void add_imgui_windows(sol::table& imgui)
             [](bool collapsed, ImGuiCond cond) { return ImGui::SetWindowCollapsed(collapsed, cond); },
             [](const char* name, bool collapsed) { return ImGui::SetWindowCollapsed(name, collapsed); },
             [](const char* name, bool collapsed, ImGuiCond cond) { return ImGui::SetWindowCollapsed(name, collapsed, cond); }));
-    imgui.set_function("SetWindowFocus", sol::resolve<void(const char*)>(ImGui::SetWindowFocus));
+    imgui.set_function("SetWindowFocus",
+        sol::overload(
+            sol::resolve<void(const char*)>(ImGui::SetWindowFocus),
+            [](std::nullptr_t) { return ImGui::SetWindowFocus((const char*)nullptr); }));
 
     // Content region
     imgui.set_function("GetContentRegionAvail", []() { auto size = ImGui::GetContentRegionAvail(); return std::tuple{size.x, size.y}; });
