@@ -143,7 +143,7 @@ set_target_properties(LuaJIT_exe PROPERTIES
 
 FetchContent_Declare(sol
     GIT_REPOSITORY https://github.com/ThePhD/sol2.git
-    GIT_TAG dca62a0f02bb45f3de296de3ce00b1275eb34c25
+    GIT_TAG 19898d8d3e6c3def33625082343428be1bb9387b
 )
 
 FetchContent_MakeAvailable(sol)
