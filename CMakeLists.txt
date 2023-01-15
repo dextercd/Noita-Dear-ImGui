@@ -77,6 +77,8 @@ else()
     set(LUAJIT_BUILD
         ${MAKE_EXECUTABLE}
             CC=${CMAKE_C_COMPILER}
+            "CFLAGS=-static"
+            "LDFLAGS=-static"
             TARGET_SYS=Windows
             MINILUA_T=host/minilua.exe
             BUILDVM_T=host/buildvm.exe

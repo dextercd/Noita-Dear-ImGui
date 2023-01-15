@@ -14,9 +14,18 @@ set(noita_imgui_lib_dir "$<SHELL_PATH:$<TARGET_FILE_DIR:noita_dear_imgui>>")
 set(noita_imgui_sdl_lib_dir "$<SHELL_PATH:$<TARGET_FILE_DIR:SDL2>>")
 set(noita_imgui_lua_lib_dir "$<SHELL_PATH:$<TARGET_FILE_DIR:LuaJIT_library>>")
 
-set_property(TEST noita_imgui_test APPEND PROPERTY
-    ENVIRONMENT_MODIFICATION
-        PATH=path_list_prepend:${noita_imgui_lib_dir}
-        PATH=path_list_prepend:${noita_imgui_sdl_lib_dir}
-        PATH=path_list_prepend:${noita_imgui_lua_lib_dir}
-)
+if (CMAKE_HOST_WIN32)
+    set_property(TEST noita_imgui_test APPEND PROPERTY
+        ENVIRONMENT_MODIFICATION
+            PATH=path_list_prepend:${noita_imgui_lib_dir}
+            PATH=path_list_prepend:${noita_imgui_sdl_lib_dir}
+            PATH=path_list_prepend:${noita_imgui_lua_lib_dir}
+    )
+else()
+    set_property(TEST noita_imgui_test APPEND PROPERTY
+        ENVIRONMENT_MODIFICATION
+            "WINEPATH=string_prepend:${noita_imgui_lib_dir}\;"
+            "WINEPATH=string_prepend:${noita_imgui_sdl_lib_dir}\;"
+            "WINEPATH=string_prepend:${noita_imgui_lua_lib_dir}\;"
+    )
+endif()
