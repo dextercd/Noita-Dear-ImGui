@@ -9,10 +9,10 @@
 namespace ndi {
 
 NOITA_DEAR_IMGUI_EXPORT
-extern constinit const std::string_view git_sha;
+extern /* constinit */ const std::string_view git_sha;
 
 NOITA_DEAR_IMGUI_EXPORT
-extern constinit const version_number version;
+extern /* constinit */ const version_number version;
 
 } // namespace ndi
 
