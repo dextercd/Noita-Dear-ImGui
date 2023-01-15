@@ -15,7 +15,53 @@ struct version_number {
     int patch = -1;
     int tweak = -1;
 
-    friend std::weak_ordering operator<=>(const version_number&, const version_number&) = default;
+    // friend std::weak_ordering operator<=>(const version_number&, const version_number&) = default;
+
+    friend bool operator==(const version_number& a, const version_number& b)
+    {
+        return
+            a.major == b.major &&
+            a.minor == b.minor &&
+            a.patch == b.patch &&
+            a.tweak == b.tweak;
+    }
+
+    friend bool operator!=(const version_number& a, const version_number& b)
+    {
+        return !(a == b);
+    }
+
+    friend bool operator<(const version_number& a, const version_number& b)
+    {
+        if (a.major < b.major) return true;
+        if (a.major > b.major) return false;
+
+        if (a.minor < b.minor) return true;
+        if (a.minor > b.minor) return false;
+
+        if (a.patch < b.patch) return true;
+        if (a.patch > b.patch) return false;
+
+        if (a.tweak < b.tweak) return true;
+        if (a.tweak > b.tweak) return false;
+
+        return false;
+    }
+
+    friend bool operator>(const version_number& a, const version_number& b)
+    {
+        return b < a;
+    }
+
+    friend bool operator<=(const version_number& a, const version_number& b)
+    {
+        return !(a > b);
+    }
+
+    friend bool operator>=(const version_number& a, const version_number& b)
+    {
+        return !(a < b);
+    }
 
     NOITA_DEAR_IMGUI_EXPORT
     static std::optional<version_number> from_string(std::string_view version_str);
