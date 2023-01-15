@@ -10,8 +10,6 @@
 #include "noita_dear_imgui_export.h"
 
 struct version_number {
-    constexpr static std::string_view sep = ".";
-
     int major = -1;
     int minor = -1;
     int patch = -1;

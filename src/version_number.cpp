@@ -1,13 +1,35 @@
 #include <cassert>
 #include <charconv>
 #include <optional>
-#include <ranges>
 #include <sstream>
 #include <string>
 #include <string_view>
 
 #include <noita_dear_imgui_export.h>
 #include <noita_imgui/version_number.hpp>
+
+namespace {
+
+std::vector<std::string> split_by(std::string_view str, char sep)
+{
+    std::vector<std::string> result;
+
+    auto it = str.begin();
+    while(true) {
+        auto start = it;
+        it = std::find(it, str.end(), sep);
+        result.emplace_back(start, it);
+
+        if (it == str.end())
+            break;
+
+        ++it;
+    }
+
+    return result;
+}
+
+}
 
 NOITA_DEAR_IMGUI_EXPORT
 std::optional<version_number> version_number::from_string(
@@ -18,10 +40,7 @@ std::optional<version_number> version_number::from_string(
     auto const version_end = version_str.data() + version_str.size();
 
     int component_nr = 0;
-    for (const auto crange : std::views::split(version_str, sep)) {
-        auto component = std::string_view(crange.begin(), crange.end());
-        auto component_end = component.data() + component.size();
-
+    for (const auto component : split_by(version_str, '.')) {
         int* assigning_component = nullptr;
         if (component_nr == 0) assigning_component = &ver.major;
         if (component_nr == 1) assigning_component = &ver.minor;
@@ -33,7 +52,7 @@ std::optional<version_number> version_number::from_string(
             return std::nullopt;
 
         auto [parse_end, ec] = std::from_chars(
-            component.data(), component.data() + component.size(),
+            component.c_str(), component.c_str() + component.size(),
             *assigning_component
         );
 
@@ -46,7 +65,7 @@ std::optional<version_number> version_number::from_string(
             return std::nullopt;
 
         // Junk at the end of the number
-        if (parse_end != component_end)
+        if (parse_end != component.c_str() + component.size())
             return std::nullopt;
 
         // Nothing after the digits, continue with next component
