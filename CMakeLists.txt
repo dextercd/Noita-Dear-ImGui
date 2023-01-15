@@ -80,6 +80,8 @@ else()
             TARGET_SYS=Windows
             MINILUA_T=host/minilua.exe
             BUILDVM_T=host/buildvm.exe
+            "MINILUA_X=${CMAKE_CROSSCOMPILING_EMULATOR} host/minilua.exe"
+            "BUILDVM_X=${CMAKE_CROSSCOMPILING_EMULATOR} host/buildvm.exe"
     )
 endif()
 

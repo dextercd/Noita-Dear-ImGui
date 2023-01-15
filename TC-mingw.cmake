@@ -10,6 +10,9 @@ set(CMAKE_CXX_COMPILER i686-w64-mingw32-g++)
 # where is the target environment located
 set(CMAKE_FIND_ROOT_PATH  /usr/i686-w64-mingw32)
 
+# So that tests and codegen programs can be run
+set(CMAKE_CROSSCOMPILING_EMULATOR wine)
+
 # adjust the default behavior of the FIND_XXX() commands:
 # search programs in the host environment
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
