@@ -22,7 +22,7 @@ void report_incompatibility(std::string mod_name, std::string version, incompati
     if (mod_name == "")
         mod_name = "<no name given>";
 
-    reports.emplace_back(std::move(mod_name), std::move(version), reason);
+    reports.push_back(incompatibility_report{std::move(mod_name), std::move(version), reason});
     if (!dismissed)
         open = true;
 }
