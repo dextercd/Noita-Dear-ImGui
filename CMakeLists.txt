@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 
 project(NoitaDearImGui
-    VERSION 1.7.2.0
+    VERSION 1.8.0.0
     LANGUAGES CXX C
     HOMEPAGE_URL "https://github.com/dextercd/Noita-Dear-ImGui"
 )
