@@ -34,6 +34,7 @@ void add_imgui_text(sol::table&);
 void add_imgui_text_input(sol::table&);
 void add_imgui_tooltips(sol::table&);
 void add_imgui_trees(sol::table&);
+void add_imgui_version_info(sol::state_view, sol::table&);
 void add_imgui_viewports(sol::table&);
 void add_imgui_widget_utils(sol::table&);
 void add_imgui_widgets_main(sol::table&);
@@ -79,6 +80,7 @@ sol::table load_imgui(sol::this_state s, sol::table load_params)
     add_imgui_text_input(imgui);
     add_imgui_tooltips(imgui);
     add_imgui_trees(imgui);
+    add_imgui_version_info(lua, imgui);
     add_imgui_viewports(imgui);
     add_imgui_widget_utils(imgui);
     add_imgui_widgets_main(imgui);
