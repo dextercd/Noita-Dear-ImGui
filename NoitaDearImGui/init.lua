@@ -5,7 +5,10 @@ function setting_get(key)
 end
 
 function configure_settings()
-    imgui_ctx.imgui_dll.settings_imgui(setting_get("multi_viewports"))
+    imgui_ctx.imgui_dll.settings_imgui(
+        setting_get("multi_viewports"),
+        setting_get("navigation")
+    )
 end
 
 configure_settings() -- Initial configure

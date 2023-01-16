@@ -42,8 +42,6 @@ void init_imgui_context()
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
     noita_imgui_style();
@@ -330,7 +328,7 @@ NOITA_DEAR_IMGUI_EXPORT void init_imgui(
 }
 
 extern "C"
-NOITA_DEAR_IMGUI_EXPORT void settings_imgui(bool viewports)
+NOITA_DEAR_IMGUI_EXPORT void settings_imgui(bool viewports, bool navigation)
 {
     if (!imgui_context_initialised)
         return;
@@ -339,6 +337,10 @@ NOITA_DEAR_IMGUI_EXPORT void settings_imgui(bool viewports)
     ImGuiConfigFlags turn_off{};
 
     (viewports ? turn_on : turn_off) |= ImGuiConfigFlags_ViewportsEnable;
+
+    (navigation ? turn_on : turn_off) |= ImGuiConfigFlags_NavEnableKeyboard;
+    (navigation ? turn_on : turn_off) |= ImGuiConfigFlags_NavEnableGamepad;
+    (navigation ? turn_off : turn_on) |= ImGuiConfigFlags_NavNoCaptureKeyboard;
 
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= turn_on;

@@ -23,16 +23,23 @@ mod_settings =
                 scope = MOD_SETTING_SCOPE_RUNTIME,
             },
             {
-                ui_fn = mod_setting_vertical_spacing,
-                not_setting = true,
-            },
-            {
                 ui_fn = mod_setting_warning,
                 ui_name = "Viewports Warning",
                 ui_description = "\n   You may experience issues when the game is full-screen.\n " ..
                     "\n   This feature works best when 'Pause the game when unfocused' is" ..
                     "\n   turned Off in [Game Settings > Input] (option at the bottom).",
                 not_setting = true,
+            },
+            {
+                ui_fn = mod_setting_vertical_spacing,
+                not_setting = true,
+            },
+            {
+                id = "navigation",
+                ui_name = "Keyboard/Controller navigation",
+                ui_description = "Allow focused windows to steal inputs from the game for navigating within the window.",
+                value_default = false,
+                scope = MOD_SETTING_SCOPE_RUNTIME,
             },
         },
     },

@@ -21,7 +21,7 @@ return function(path, name)
         void* newstate
     );
 
-    void settings_imgui(bool viewports);
+    void settings_imgui(bool viewports, bool navigation);
     void imgui_signal_unpause();
 
     void* LoadLibraryA(const char*);
