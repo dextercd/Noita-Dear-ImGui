@@ -68,29 +68,30 @@ ImGuiInputTextFlags remove_callback_bits(ImGuiInputTextFlags flags)
 
 void add_imgui_text_input(sol::table& imgui)
 {
-    imgui.new_enum("InputTextFlags",
-        "None",                ImGuiInputTextFlags_None,
-        "CharsDecimal",        ImGuiInputTextFlags_CharsDecimal,
-        "CharsHexadecimal",    ImGuiInputTextFlags_CharsHexadecimal,
-        "CharsUppercase",      ImGuiInputTextFlags_CharsUppercase,
-        "CharsNoBlank",        ImGuiInputTextFlags_CharsNoBlank,
-        "AutoSelectAll",       ImGuiInputTextFlags_AutoSelectAll,
-        "EnterReturnsTrue",    ImGuiInputTextFlags_EnterReturnsTrue,
-        "CallbackCompletion",  ImGuiInputTextFlags_CallbackCompletion,
-        "CallbackHistory",     ImGuiInputTextFlags_CallbackHistory,
-        "CallbackAlways",      ImGuiInputTextFlags_CallbackAlways,
-        "CallbackCharFilter",  ImGuiInputTextFlags_CallbackCharFilter,
-        "AllowTabInput",       ImGuiInputTextFlags_AllowTabInput,
-        "CtrlEnterForNewLine", ImGuiInputTextFlags_CtrlEnterForNewLine,
-        "NoHorizontalScroll",  ImGuiInputTextFlags_NoHorizontalScroll,
-        "AlwaysOverwrite",     ImGuiInputTextFlags_AlwaysOverwrite,
-        "ReadOnly",            ImGuiInputTextFlags_ReadOnly,
-        "Password",            ImGuiInputTextFlags_Password,
-        "NoUndoRedo",          ImGuiInputTextFlags_NoUndoRedo,
-        "CharsScientific",     ImGuiInputTextFlags_CharsScientific,
-        "CallbackResize",      ImGuiInputTextFlags_CallbackResize,
-        "CallbackEdit",        ImGuiInputTextFlags_CallbackEdit
-    );
+    imgui.new_enum<ImGuiInputTextFlags_>("InputTextFlags", {
+        {"None",                ImGuiInputTextFlags_None},
+        {"CharsDecimal",        ImGuiInputTextFlags_CharsDecimal},
+        {"CharsHexadecimal",    ImGuiInputTextFlags_CharsHexadecimal},
+        {"CharsUppercase",      ImGuiInputTextFlags_CharsUppercase},
+        {"CharsNoBlank",        ImGuiInputTextFlags_CharsNoBlank},
+        {"AutoSelectAll",       ImGuiInputTextFlags_AutoSelectAll},
+        {"EnterReturnsTrue",    ImGuiInputTextFlags_EnterReturnsTrue},
+        {"CallbackCompletion",  ImGuiInputTextFlags_CallbackCompletion},
+        {"CallbackHistory",     ImGuiInputTextFlags_CallbackHistory},
+        {"CallbackAlways",      ImGuiInputTextFlags_CallbackAlways},
+        {"CallbackCharFilter",  ImGuiInputTextFlags_CallbackCharFilter},
+        {"AllowTabInput",       ImGuiInputTextFlags_AllowTabInput},
+        {"CtrlEnterForNewLine", ImGuiInputTextFlags_CtrlEnterForNewLine},
+        {"NoHorizontalScroll",  ImGuiInputTextFlags_NoHorizontalScroll},
+        {"AlwaysOverwrite",     ImGuiInputTextFlags_AlwaysOverwrite},
+        {"ReadOnly",            ImGuiInputTextFlags_ReadOnly},
+        {"Password",            ImGuiInputTextFlags_Password},
+        {"NoUndoRedo",          ImGuiInputTextFlags_NoUndoRedo},
+        {"CharsScientific",     ImGuiInputTextFlags_CharsScientific},
+        {"CallbackResize",      ImGuiInputTextFlags_CallbackResize},
+        {"CallbackEdit",        ImGuiInputTextFlags_CallbackEdit},
+        {"EscapeClearsAll",     ImGuiInputTextFlags_EscapeClearsAll},
+    });
 
     imgui.set_function("InputText",
         sol::overload(
