@@ -38,6 +38,9 @@ struct ImGui_ImplSDL2_Data
     int             MouseButtonsDown;
     SDL_Cursor*     MouseCursors[ImGuiMouseCursor_COUNT];
     SDL_Cursor*     LastMouseCursor;
+    SDL_Cursor*     GameCursor;
+    int             GameShowCursor;
+    bool            PrevFrameWantCaptureMouse;
     int             PendingMouseLeaveFrame;
     char*           ClipboardTextData;
     bool            MouseCanUseGlobalState;
@@ -357,6 +360,10 @@ static bool ImGui_ImplSDL2_Init(SDL_Window* window, SDL_Renderer* renderer, void
     bd->MouseCursors[ImGuiMouseCursor_Hand] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
     bd->MouseCursors[ImGuiMouseCursor_NotAllowed] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NO);
 
+    // Load configuration set by game to restore to
+    bd->GameCursor = SDL_GetCursor();
+    bd->GameShowCursor = SDL_ShowCursor(SDL_QUERY);
+
     // Set platform dependent data in viewport
     // Our mouse update function expect PlatformHandle to be filled for the main viewport
     ImGuiViewport* main_viewport = ImGui::GetMainViewport();
@@ -531,6 +538,13 @@ static void ImGui_ImplSDL2_UpdateMouseCursor()
         return;
     ImGui_ImplSDL2_Data* bd = ImGui_ImplSDL2_GetBackendData();
 
+    if (!bd->PrevFrameWantCaptureMouse && io.WantCaptureMouse) {
+        // In case the user changed their mouse cursor render settings
+        bd->GameCursor = SDL_GetCursor();
+        bd->GameShowCursor = SDL_ShowCursor(SDL_QUERY);
+    }
+    bd->PrevFrameWantCaptureMouse = io.WantCaptureMouse;
+
     ImGuiMouseCursor imgui_cursor = ImGui::GetMouseCursor();
     if (io.MouseDrawCursor || imgui_cursor == ImGuiMouseCursor_None)
     {
@@ -540,13 +554,23 @@ static void ImGui_ImplSDL2_UpdateMouseCursor()
     else
     {
         // Show OS mouse cursor
-        SDL_Cursor* expected_cursor = bd->MouseCursors[imgui_cursor] ? bd->MouseCursors[imgui_cursor] : bd->MouseCursors[ImGuiMouseCursor_Arrow];
+        SDL_Cursor* expected_cursor;
+        int show_cursor;
+
+        if (io.WantCaptureMouse) {
+            expected_cursor = bd->MouseCursors[imgui_cursor] ? bd->MouseCursors[imgui_cursor] : bd->MouseCursors[ImGuiMouseCursor_Arrow];
+            show_cursor = true;
+        } else {
+            expected_cursor = bd->GameCursor;
+            show_cursor = bd->GameShowCursor;
+        }
+
         if (bd->LastMouseCursor != expected_cursor)
         {
             SDL_SetCursor(expected_cursor); // SDL function doesn't have an early out (see #6113)
             bd->LastMouseCursor = expected_cursor;
+            SDL_ShowCursor(show_cursor);
         }
-        SDL_ShowCursor(SDL_TRUE);
     }
 }
 
