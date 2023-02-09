@@ -40,6 +40,7 @@ void add_imgui_widget_utils(sol::table& imgui)
     imgui.set_function("IsAnyItemHovered", sol::resolve<bool()>(ImGui::IsAnyItemHovered));
     imgui.set_function("IsAnyItemActive", sol::resolve<bool()>(ImGui::IsAnyItemActive));
     imgui.set_function("IsAnyItemFocused", sol::resolve<bool()>(ImGui::IsAnyItemFocused));
+    imgui.set_function("GetItemID", sol::resolve<ImGuiID()>(ImGui::GetItemID));
     imgui.set_function("GetItemRectMin", []() { auto ret = ImGui::GetItemRectMin(); return std::tuple{ret.x, ret.y}; });
     imgui.set_function("GetItemRectMax", []() { auto ret = ImGui::GetItemRectMax(); return std::tuple{ret.x, ret.y}; });
     imgui.set_function("GetItemRectSize", []() { auto ret = ImGui::GetItemRectSize(); return std::tuple{ret.x, ret.y}; });
