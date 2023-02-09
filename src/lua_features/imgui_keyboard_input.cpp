@@ -110,35 +110,71 @@ void add_imgui_keyboard_input(sol::table& imgui)
         {"KeypadAdd", ImGuiKey_KeypadAdd},
         {"KeypadEnter", ImGuiKey_KeypadEnter},
         {"KeypadEqual", ImGuiKey_KeypadEqual},
+
         {"GamepadStart", ImGuiKey_GamepadStart},
         {"GamepadBack", ImGuiKey_GamepadBack},
-        {"GamepadFaceUp", ImGuiKey_GamepadFaceUp},
-        {"GamepadFaceDown", ImGuiKey_GamepadFaceDown},
         {"GamepadFaceLeft", ImGuiKey_GamepadFaceLeft},
         {"GamepadFaceRight", ImGuiKey_GamepadFaceRight},
-        {"GamepadDpadUp", ImGuiKey_GamepadDpadUp},
-        {"GamepadDpadDown", ImGuiKey_GamepadDpadDown},
+        {"GamepadFaceUp", ImGuiKey_GamepadFaceUp},
+        {"GamepadFaceDown", ImGuiKey_GamepadFaceDown},
         {"GamepadDpadLeft", ImGuiKey_GamepadDpadLeft},
         {"GamepadDpadRight", ImGuiKey_GamepadDpadRight},
+        {"GamepadDpadUp", ImGuiKey_GamepadDpadUp},
+        {"GamepadDpadDown", ImGuiKey_GamepadDpadDown},
         {"GamepadL1", ImGuiKey_GamepadL1},
         {"GamepadR1", ImGuiKey_GamepadR1},
         {"GamepadL2", ImGuiKey_GamepadL2},
         {"GamepadR2", ImGuiKey_GamepadR2},
         {"GamepadL3", ImGuiKey_GamepadL3},
         {"GamepadR3", ImGuiKey_GamepadR3},
-        {"GamepadLStickUp", ImGuiKey_GamepadLStickUp},
-        {"GamepadLStickDown", ImGuiKey_GamepadLStickDown},
         {"GamepadLStickLeft", ImGuiKey_GamepadLStickLeft},
         {"GamepadLStickRight", ImGuiKey_GamepadLStickRight},
-        {"GamepadRStickUp", ImGuiKey_GamepadRStickUp},
-        {"GamepadRStickDown", ImGuiKey_GamepadRStickDown},
+        {"GamepadLStickUp", ImGuiKey_GamepadLStickUp},
+        {"GamepadLStickDown", ImGuiKey_GamepadLStickDown},
         {"GamepadRStickLeft", ImGuiKey_GamepadRStickLeft},
         {"GamepadRStickRight", ImGuiKey_GamepadRStickRight},
+        {"GamepadRStickUp", ImGuiKey_GamepadRStickUp},
+        {"GamepadRStickDown", ImGuiKey_GamepadRStickDown},
+
+        {"MouseLeft", ImGuiKey_MouseLeft},
+        {"MouseRight", ImGuiKey_MouseRight},
+        {"MouseMiddle", ImGuiKey_MouseMiddle},
+        {"MouseX1", ImGuiKey_MouseX1},
+        {"MouseX2", ImGuiKey_MouseX2},
+        {"MouseWheelX", ImGuiKey_MouseWheelX},
+        {"MouseWheelY", ImGuiKey_MouseWheelY},
+
+        // {"ReservedForModCtrl", ImGuiKey_ReservedForModCtrl},
+        // {"ReservedForModShift", ImGuiKey_ReservedForModShift},
+        // {"ReservedForModAlt", ImGuiKey_ReservedForModAlt},
+        // {"ReservedForModSuper", ImGuiKey_ReservedForModSuper},
+
+        {"COUNT", ImGuiKey_COUNT},
+
+        // {"NamedKey_BEGIN", ImGuiKey_NamedKey_BEGIN},
+        // {"NamedKey_END", ImGuiKey_NamedKey_END},
+        // {"NamedKey_COUNT", ImGuiKey_NamedKey_COUNT},
+
+        // {"KeysData_SIZE", ImGuiKey_KeysData_SIZE},
+        // {"KeysData_OFFSET", ImGuiKey_KeysData_OFFSET},
+
+        // WARNING: These keys are deprecated
+        // Prefer to use imgui.Mod.Ctrl, etc..
         {"ModCtrl", ImGuiMod_Ctrl},
         {"ModShift", ImGuiMod_Shift},
         {"ModAlt", ImGuiMod_Alt},
         {"ModSuper", ImGuiMod_Super},
-        {"COUNT", ImGuiKey_COUNT},
+        {"KeyPadEnter", ImGuiKey_KeypadEnter}, // Prefer KeypadEnter with lower case p
+    });
+
+    imgui.new_enum<ImGuiKey>("Mod", {
+        {"None", ImGuiMod_None},
+        {"Ctrl", ImGuiMod_Ctrl},
+        {"Shift", ImGuiMod_Shift},
+        {"Alt", ImGuiMod_Alt},
+        {"Super", ImGuiMod_Super},
+        {"Shortcut", ImGuiMod_Shortcut},
+        {"Mask_", ImGuiMod_Mask_},
     });
 
     imgui.set_function("IsKeyDown", sol::resolve<bool(ImGuiKey)>(ImGui::IsKeyDown));
