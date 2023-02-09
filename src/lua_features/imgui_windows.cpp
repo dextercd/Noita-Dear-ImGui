@@ -191,4 +191,6 @@ void add_imgui_windows(sol::table& imgui)
         sol::overload(
             [](float local_y) { return ImGui::SetScrollFromPosY(local_y); },
             &ImGui::SetScrollFromPosY));
+    imgui.set_function("SetNextWindowScroll",
+        [](float x, float y) { return ImGui::SetNextWindowScroll({x, y}); });
 }
