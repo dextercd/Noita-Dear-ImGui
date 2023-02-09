@@ -3,7 +3,7 @@
 
 void add_imgui_keyboard_input(sol::table& imgui)
 {
-    imgui.new_enum<ImGuiKey_>("Key", {
+    imgui.new_enum<ImGuiKey>("Key", {
         {"None", ImGuiKey_None},
         {"Tab", ImGuiKey_Tab},
         {"LeftArrow", ImGuiKey_LeftArrow},
@@ -134,10 +134,10 @@ void add_imgui_keyboard_input(sol::table& imgui)
         {"GamepadRStickDown", ImGuiKey_GamepadRStickDown},
         {"GamepadRStickLeft", ImGuiKey_GamepadRStickLeft},
         {"GamepadRStickRight", ImGuiKey_GamepadRStickRight},
-        {"ModCtrl", ImGuiKey_ModCtrl},
-        {"ModShift", ImGuiKey_ModShift},
-        {"ModAlt", ImGuiKey_ModAlt},
-        {"ModSuper", ImGuiKey_ModSuper},
+        {"ModCtrl", ImGuiMod_Ctrl},
+        {"ModShift", ImGuiMod_Shift},
+        {"ModAlt", ImGuiMod_Alt},
+        {"ModSuper", ImGuiMod_Super},
         {"COUNT", ImGuiKey_COUNT},
     });
 
