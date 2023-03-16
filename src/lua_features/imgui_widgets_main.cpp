@@ -15,7 +15,7 @@ void add_imgui_widgets_main(sol::table& imgui)
     imgui.set_function("Button",
         sol::overload(
             [](const char* label) { return ImGui::Button(label); },
-            &ImGui::Button));
+            [](const char* label, float width, float height) { return ImGui::Button(label, {width, height}); }));
     imgui.set_function("SmallButton", &ImGui::SmallButton);
     imgui.set_function("InvisibleButton",
         sol::overload(
