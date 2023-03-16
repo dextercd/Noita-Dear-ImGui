@@ -112,7 +112,7 @@ void add_imgui_windows(sol::table& imgui)
         sol::overload(
             []() { return ImGui::IsWindowHovered(); },
             &ImGui::IsWindowHovered));
-    imgui.set_function("GetWindowDrawList", &ImGui::GetWindowDrawList);
+    // GetWindowDrawList
     imgui.set_function("GetWindowPos", []() { auto pos = ImGui::GetWindowPos(); return std::tuple{pos.x, pos.y}; });
     imgui.set_function("GetWindowSize", []() { auto size = ImGui::GetWindowSize(); return std::tuple{size.x, size.y}; });
     imgui.set_function("GetWindowWidth", &ImGui::GetWindowWidth);
