@@ -5,15 +5,15 @@
 
 void add_imgui_menu(sol::table& imgui)
 {
-    imgui.set_function("BeginMenuBar", &ImGui::BeginMenuBar);
-    imgui.set_function("EndMenuBar", &ImGui::EndMenuBar);
-    imgui.set_function("BeginMainMenuBar", &ImGui::BeginMainMenuBar);
-    imgui.set_function("EndMainMenuBar", &ImGui::EndMainMenuBar);
+    imgui.set_function("BeginMenuBar", sol::resolve<bool()>(ImGui::BeginMenuBar));
+    imgui.set_function("EndMenuBar", sol::resolve<void()>(ImGui::EndMenuBar));
+    imgui.set_function("BeginMainMenuBar", sol::resolve<bool()>(ImGui::BeginMainMenuBar));
+    imgui.set_function("EndMainMenuBar", sol::resolve<void()>(ImGui::EndMainMenuBar));
     imgui.set_function("BeginMenu",
         sol::overload(
             [](const char* label) { return ImGui::BeginMenu(label); },
             &ImGui::BeginMenu));
-    imgui.set_function("EndMenu", &ImGui::EndMenu);
+    imgui.set_function("EndMenu", sol::resolve<void()>(ImGui::EndMenu));
     imgui.set_function("MenuItem",
         sol::overload(
             [](const char* label) { return ImGui::MenuItem(label); },
