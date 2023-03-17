@@ -166,7 +166,7 @@ void add_imgui_drag_and_drop(sol::table& imgui)
     imgui.set_function("AcceptDragDropPayload",
         sol::overload(
             [](sol::this_state s, const char* type) { return AcceptDragDropPayload(s, type); },
-            AcceptDragDropPayload
+            sol::resolve<sol::object(sol::this_state s, const char* type, ImGuiDragDropFlags)>(AcceptDragDropPayload)
         ));
 
     imgui.set_function("BeginDragDropTarget", sol::resolve<bool()>(ImGui::BeginDragDropTarget));
