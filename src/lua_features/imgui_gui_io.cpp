@@ -65,5 +65,5 @@ void add_imgui_gui_io(sol::table& imgui)
         "MouseDelta", sol::readonly(&ImGuiIO::MouseDelta)
     );
 
-    imgui.set_function("GetIO", []() { return &ImGui::GetIO(); });
+    imgui.set_function("GetIO", sol::resolve<ImGuiIO&()>(ImGui::GetIO));
 }

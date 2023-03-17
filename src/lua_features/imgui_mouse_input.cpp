@@ -22,22 +22,27 @@ void add_imgui_mouse_input(sol::table& imgui)
     imgui.set_function("GetMouseClickedCount", sol::resolve<int(ImGuiMouseButton)>(ImGui::GetMouseClickedCount));
     imgui.set_function("IsMousePosValid",
         sol::overload(
-            []() { return ImGui::IsMousePosValid(); },
+            []() -> bool { return ImGui::IsMousePosValid(); },
             [](float posx, float posy) { ImVec2 pos{posx, posy}; return ImGui::IsMousePosValid(&pos); }));
-    imgui.set_function("GetMousePos", []() { auto ret = ImGui::GetMousePos(); return std::tuple{ret.x, ret.y}; });
-    imgui.set_function("GetMousePosOnOpeningCurrentPopup", []() { auto ret = ImGui::GetMousePosOnOpeningCurrentPopup(); return std::tuple{ret.x, ret.y}; });
+
+    imgui.set_function("GetMousePos",
+        []() -> std::tuple<float, float> { auto ret = ImGui::GetMousePos(); return std::tuple{ret.x, ret.y}; });
+
+    imgui.set_function("GetMousePosOnOpeningCurrentPopup",
+        []() -> std::tuple<float, float> { auto ret = ImGui::GetMousePosOnOpeningCurrentPopup(); return std::tuple{ret.x, ret.y}; });
+
     imgui.set_function("IsMouseDragging",
         sol::overload(
             [](ImGuiMouseButton button) { return ImGui::IsMouseDragging(button); },
             sol::resolve<bool(ImGuiMouseButton, float)>(ImGui::IsMouseDragging)));
     imgui.set_function("GetMouseDragDelta",
         sol::overload(
-            []() { auto ret = ImGui::GetMouseDragDelta(); return std::tuple{ret.x, ret.y}; },
+            []() -> std::tuple<float, float> { auto ret = ImGui::GetMouseDragDelta(); return std::tuple{ret.x, ret.y}; },
             [](ImGuiMouseButton button) { auto ret = ImGui::GetMouseDragDelta(button); return std::tuple{ret.x, ret.y}; },
             [](ImGuiMouseButton button, float lock_threshold) { auto ret = ImGui::GetMouseDragDelta(button, lock_threshold); return std::tuple{ret.x, ret.y}; }));
     imgui.set_function("ResetMouseDragDelta",
         sol::overload(
-            []() { return ImGui::ResetMouseDragDelta(); },
+            []() -> void { return ImGui::ResetMouseDragDelta(); },
             sol::resolve<void(ImGuiMouseButton)>(ImGui::ResetMouseDragDelta)));
 
     imgui.new_enum("MouseCursor",

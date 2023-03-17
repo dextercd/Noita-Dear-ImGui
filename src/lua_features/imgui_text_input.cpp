@@ -95,26 +95,26 @@ void add_imgui_text_input(sol::table& imgui)
 
     imgui.set_function("InputText",
         sol::overload(
-            [](const char* label, std::string str) { auto ret = ImGui_InputText(label, &str); return std::tuple{ret, str}; },
+            [](const char* label, std::string str) -> std::tuple<bool, std::string> { auto ret = ImGui_InputText(label, &str); return std::tuple{ret, str}; },
             [](const char* label, std::string str, ImGuiInputTextFlags flags) { auto ret = ImGui_InputText(label, &str, remove_callback_bits(flags)); return std::tuple{ret, str}; }
         ));
 
     imgui.set_function("InputTextMultiline",
         sol::overload(
-            [](const char* label, std::string str) { auto ret = ImGui_InputTextMultiline(label, &str); return std::tuple{ret, str}; },
+            [](const char* label, std::string str) -> std::tuple<bool, std::string> { auto ret = ImGui_InputTextMultiline(label, &str); return std::tuple{ret, str}; },
             [](const char* label, std::string str, float size_x, float size_y) { auto ret = ImGui_InputTextMultiline(label, &str, {size_x, size_y}); return std::tuple{ret, str}; },
             [](const char* label, std::string str, float size_x, float size_y, ImGuiInputTextFlags flags) { auto ret = ImGui_InputTextMultiline(label, &str, {size_x, size_y}, remove_callback_bits(flags)); return std::tuple{ret, str}; }
         ));
 
     imgui.set_function("InputTextWithHint",
         sol::overload(
-            [](const char* label, const char* hint, std::string str) { auto ret = ImGui_InputTextWithHint(label, hint, &str); return std::tuple{ret, str}; },
+            [](const char* label, const char* hint, std::string str) -> std::tuple<bool, std::string> { auto ret = ImGui_InputTextWithHint(label, hint, &str); return std::tuple{ret, str}; },
             [](const char* label, const char* hint, std::string str, ImGuiInputTextFlags flags) { auto ret = ImGui_InputTextWithHint(label, hint, &str, remove_callback_bits(flags)); return std::tuple{ret, str}; }
         ));
 
     imgui.set_function("InputFloat",
         sol::overload(
-            [](const char* label, float v) { auto ret = ImGui::InputFloat(label, &v); return std::tuple{ret, v}; },
+            [](const char* label, float v) -> std::tuple<bool, float> { auto ret = ImGui::InputFloat(label, &v); return std::tuple{ret, v}; },
             [](const char* label, float v, float step) { auto ret = ImGui::InputFloat(label, &v, step); return std::tuple{ret, v}; },
             [](const char* label, float v, float step, float step_fast) { auto ret = ImGui::InputFloat(label, &v, step, step_fast); return std::tuple{ret, v}; },
             [](const char* label, float v, float step, float step_fast, const char* format) { auto ret = ImGui::InputFloat(label, &v, step, step_fast, format); return std::tuple{ret, v}; },
@@ -122,47 +122,47 @@ void add_imgui_text_input(sol::table& imgui)
 
     imgui.set_function("InputFloat2",
         sol::overload(
-            [](const char* label, float v1, float v2) { float v[2]{v1, v2}; auto ret = ImGui::InputFloat2(label, v); return std::tuple{ret, v[0], v[1]}; },
+            [](const char* label, float v1, float v2) -> std::tuple<bool, float, float> { float v[2]{v1, v2}; auto ret = ImGui::InputFloat2(label, v); return std::tuple{ret, v[0], v[1]}; },
             [](const char* label, float v1, float v2, const char* format) { float v[2]{v1, v2}; auto ret = ImGui::InputFloat2(label, v, format); return std::tuple{ret, v[0], v[1]}; },
             [](const char* label, float v1, float v2, const char* format, ImGuiInputTextFlags flags) { float v[2]{v1, v2}; auto ret = ImGui::InputFloat2(label, v, format, remove_callback_bits(flags)); return std::tuple{ret, v[0], v[1]}; }));
 
     imgui.set_function("InputFloat3",
         sol::overload(
-            [](const char* label, float v1, float v2, float v3) { float v[3]{v1, v2, v3}; auto ret = ImGui::InputFloat3(label, v); return std::tuple{ret, v[0], v[1], v[2]}; },
+            [](const char* label, float v1, float v2, float v3) -> std::tuple<bool, float, float, float> { float v[3]{v1, v2, v3}; auto ret = ImGui::InputFloat3(label, v); return std::tuple{ret, v[0], v[1], v[2]}; },
             [](const char* label, float v1, float v2, float v3, const char* format) { float v[3]{v1, v2, v3}; auto ret = ImGui::InputFloat3(label, v, format); return std::tuple{ret, v[0], v[1], v[2]}; },
             [](const char* label, float v1, float v2, float v3, const char* format, ImGuiInputTextFlags flags) { float v[3]{v1, v2, v3}; auto ret = ImGui::InputFloat3(label, v, format, remove_callback_bits(flags)); return std::tuple{ret, v[0], v[1], v[2]}; }));
 
     imgui.set_function("InputFloat4",
         sol::overload(
-            [](const char* label, float v1, float v2, float v3, float v4) { float v[4]{v1, v2, v3, v4}; auto ret = ImGui::InputFloat4(label, v); return std::tuple{ret, v[0], v[1], v[2], v[3]}; },
+            [](const char* label, float v1, float v2, float v3, float v4) -> std::tuple<bool, float, float, float, float> { float v[4]{v1, v2, v3, v4}; auto ret = ImGui::InputFloat4(label, v); return std::tuple{ret, v[0], v[1], v[2], v[3]}; },
             [](const char* label, float v1, float v2, float v3, float v4, const char* format) { float v[4]{v1, v2, v3, v4}; auto ret = ImGui::InputFloat4(label, v, format); return std::tuple{ret, v[0], v[1], v[2], v[3]}; },
             [](const char* label, float v1, float v2, float v3, float v4, const char* format, ImGuiInputTextFlags flags) { float v[4]{v1, v2, v3, v4}; auto ret = ImGui::InputFloat4(label, v, format, remove_callback_bits(flags)); return std::tuple{ret, v[0], v[1], v[2], v[3]}; }));
 
     imgui.set_function("InputInt",
         sol::overload(
-            [](const char* label, int v) { auto ret = ImGui::InputInt(label, &v); return std::tuple{ret, v}; },
+            [](const char* label, int v) -> std::tuple<bool, int> { auto ret = ImGui::InputInt(label, &v); return std::tuple{ret, v}; },
             [](const char* label, int v, int step) { auto ret = ImGui::InputInt(label, &v, step); return std::tuple{ret, v}; },
             [](const char* label, int v, int step, int step_fast) { auto ret = ImGui::InputInt(label, &v, step, step_fast); return std::tuple{ret, v}; },
             [](const char* label, int v, int step, int step_fast, ImGuiInputTextFlags flags) { auto ret = ImGui::InputInt(label, &v, step, step_fast, remove_callback_bits(flags)); return std::tuple{ret, v}; }));
 
     imgui.set_function("InputInt2",
         sol::overload(
-            [](const char* label, int v1, int v2) { int v[2]{v1, v2}; auto ret = ImGui::InputInt2(label, v); return std::tuple{ret, v[0], v[1]}; },
+            [](const char* label, int v1, int v2) -> std::tuple<bool, int, int> { int v[2]{v1, v2}; auto ret = ImGui::InputInt2(label, v); return std::tuple{ret, v[0], v[1]}; },
             [](const char* label, int v1, int v2, ImGuiInputTextFlags flags) { int v[2]{v1, v2}; auto ret = ImGui::InputInt2(label, v, remove_callback_bits(flags)); return std::tuple{ret, v[0], v[1]}; }));
 
     imgui.set_function("InputInt3",
         sol::overload(
-            [](const char* label, int v1, int v2, int v3) { int v[3]{v1, v2, v3}; auto ret = ImGui::InputInt3(label, v); return std::tuple{ret, v[0], v[1], v[2]}; },
+            [](const char* label, int v1, int v2, int v3) -> std::tuple<bool, int, int, int> { int v[3]{v1, v2, v3}; auto ret = ImGui::InputInt3(label, v); return std::tuple{ret, v[0], v[1], v[2]}; },
             [](const char* label, int v1, int v2, int v3, ImGuiInputTextFlags flags) { int v[3]{v1, v2, v3}; auto ret = ImGui::InputInt3(label, v, remove_callback_bits(flags)); return std::tuple{ret, v[0], v[1], v[2]}; }));
 
     imgui.set_function("InputInt4",
         sol::overload(
-            [](const char* label, int v1, int v2, int v3, int v4) { int v[4]{v1, v2, v3, v4}; auto ret = ImGui::InputInt4(label, v); return std::tuple{ret, v[0], v[1], v[2], v[3]}; },
+            [](const char* label, int v1, int v2, int v3, int v4) -> std::tuple<bool, int, int, int, int> { int v[4]{v1, v2, v3, v4}; auto ret = ImGui::InputInt4(label, v); return std::tuple{ret, v[0], v[1], v[2], v[3]}; },
             [](const char* label, int v1, int v2, int v3, int v4, ImGuiInputTextFlags flags) { int v[4]{v1, v2, v3, v4}; auto ret = ImGui::InputInt4(label, v, remove_callback_bits(flags)); return std::tuple{ret, v[0], v[1], v[2], v[3]}; }));
 
     imgui.set_function("InputDouble",
         sol::overload(
-            [](const char* label, double v) { auto ret = ImGui::InputDouble(label, &v); return std::tuple{ret, v}; },
+            [](const char* label, double v) -> std::tuple<bool, double> { auto ret = ImGui::InputDouble(label, &v); return std::tuple{ret, v}; },
             [](const char* label, double v, double step) { auto ret = ImGui::InputDouble(label, &v, step); return std::tuple{ret, v}; },
             [](const char* label, double v, double step, double step_fast) { auto ret = ImGui::InputDouble(label, &v, step, step_fast); return std::tuple{ret, v}; },
             [](const char* label, double v, double step, double step_fast, const char* format) { auto ret = ImGui::InputDouble(label, &v, step, step_fast, format); return std::tuple{ret, v}; },

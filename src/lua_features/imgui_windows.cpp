@@ -85,7 +85,7 @@ void add_imgui_windows(sol::table& imgui)
 
     // Windows
     imgui.set_function("Begin",
-        [](const char* name, std::optional<bool> open, std::optional<ImGuiWindowFlags> flags) {
+        [](const char* name, std::optional<bool> open, std::optional<ImGuiWindowFlags> flags) -> std::tuple<bool, std::optional<bool>> {
             bool* p_open = open ? &open.value() : nullptr;
             auto ret = ConsistentBegin(name, p_open, flags.value_or(0));
             return std::tuple{ret, open};
@@ -95,7 +95,7 @@ void add_imgui_windows(sol::table& imgui)
     // Child Windows
     imgui.set_function("BeginChild",
         sol::overload(
-            [](const char* str_id) { return ConsistentBeginChild(str_id); },
+            [](const char* str_id) -> bool { return ConsistentBeginChild(str_id); },
             [](const char* str_id, float size_x, float size_y) { return ConsistentBeginChild(str_id, {size_x, size_y}); },
             [](const char* str_id, float size_x, float size_y, bool border) { return ConsistentBeginChild(str_id, {size_x, size_y}, border); },
             [](const char* str_id, float size_x, float size_y, bool border, ImGuiWindowFlags flags) { return ConsistentBeginChild(str_id, {size_x, size_y}, border, flags); }));
@@ -113,25 +113,25 @@ void add_imgui_windows(sol::table& imgui)
             []() { return ImGui::IsWindowHovered(); },
             sol::resolve<bool(ImGuiHoveredFlags)>(ImGui::IsWindowHovered)));
     // GetWindowDrawList
-    imgui.set_function("GetWindowPos", []() { auto pos = ImGui::GetWindowPos(); return std::tuple{pos.x, pos.y}; });
-    imgui.set_function("GetWindowSize", []() { auto size = ImGui::GetWindowSize(); return std::tuple{size.x, size.y}; });
+    imgui.set_function("GetWindowPos", []() -> std::tuple<float, float> { auto pos = ImGui::GetWindowPos(); return std::tuple{pos.x, pos.y}; });
+    imgui.set_function("GetWindowSize", []() -> std::tuple<float, float> { auto size = ImGui::GetWindowSize(); return std::tuple{size.x, size.y}; });
     imgui.set_function("GetWindowWidth", sol::resolve<float()>(ImGui::GetWindowWidth));
     imgui.set_function("GetWindowHeight", sol::resolve<float()>(ImGui::GetWindowHeight));
 
     // Window manipulation
     imgui.set_function("SetNextWindowPos",
         sol::overload(
-            [](float pos_x, float pos_y) { return ImGui::SetNextWindowPos({pos_x, pos_y}); },
-            [](float pos_x, float pos_y, ImGuiCond cond) { return ImGui::SetNextWindowPos({pos_x, pos_y}, cond); },
-            [](float pos_x, float pos_y, ImGuiCond cond, float pivot_x, float pivot_y) { return ImGui::SetNextWindowPos({pos_x, pos_y}, cond, {pivot_x, pivot_y}); }));
+            [](float pos_x, float pos_y) -> void  { ImGui::SetNextWindowPos({pos_x, pos_y}); },
+            [](float pos_x, float pos_y, ImGuiCond cond) { ImGui::SetNextWindowPos({pos_x, pos_y}, cond); },
+            [](float pos_x, float pos_y, ImGuiCond cond, float pivot_x, float pivot_y) { ImGui::SetNextWindowPos({pos_x, pos_y}, cond, {pivot_x, pivot_y}); }));
     imgui.set_function("SetNextWindowSize",
         sol::overload(
-            [](float size_x, float size_y) { return ImGui::SetNextWindowSize({size_x, size_y}); },
-            [](float size_x, float size_y, ImGuiCond cond) { return ImGui::SetNextWindowSize({size_x, size_y}, cond); }));
+            [](float size_x, float size_y) -> void { ImGui::SetNextWindowSize({size_x, size_y}); },
+            [](float size_x, float size_y, ImGuiCond cond) { ImGui::SetNextWindowSize({size_x, size_y}, cond); }));
     imgui.set_function("SetNextWindowSizeConstraints",
-        [](float min_x, float min_y, float max_x, float max_y) { return ImGui::SetNextWindowSizeConstraints({min_x, min_y}, {max_x, max_y}); });
+        [](float min_x, float min_y, float max_x, float max_y) -> void { ImGui::SetNextWindowSizeConstraints({min_x, min_y}, {max_x, max_y}); });
     imgui.set_function("SetNextWindowContentSize",
-        [](float size_x, float size_y) { return ImGui::SetNextWindowContentSize({size_x, size_y}); });
+        [](float size_x, float size_y) -> void { ImGui::SetNextWindowContentSize({size_x, size_y}); });
     imgui.set_function("SetNextWindowCollapsed",
         sol::overload(
             [](bool collapsed) { return ImGui::SetNextWindowCollapsed(collapsed); },
@@ -141,32 +141,32 @@ void add_imgui_windows(sol::table& imgui)
     imgui.set_function("SetNextWindowViewport", sol::resolve<void(ImGuiID)>(ImGui::SetNextWindowViewport));
     imgui.set_function("SetWindowPos",
         sol::overload(
-            [](float pos_x, float pos_y) { return ImGui::SetWindowPos({pos_x, pos_y}); },
-            [](float pos_x, float pos_y, ImGuiCond cond) { return ImGui::SetWindowPos({pos_x, pos_y}, cond); },
-            [](const char* name, float pos_x, float pos_y) { return ImGui::SetWindowPos(name, {pos_x, pos_y}); },
-            [](const char* name, float pos_x, float pos_y, ImGuiCond cond) { return ImGui::SetWindowPos(name, {pos_x, pos_y}, cond); }));
+            [](float pos_x, float pos_y) -> void { ImGui::SetWindowPos({pos_x, pos_y}); },
+            [](float pos_x, float pos_y, ImGuiCond cond) { ImGui::SetWindowPos({pos_x, pos_y}, cond); },
+            [](const char* name, float pos_x, float pos_y) { ImGui::SetWindowPos(name, {pos_x, pos_y}); },
+            [](const char* name, float pos_x, float pos_y, ImGuiCond cond) { ImGui::SetWindowPos(name, {pos_x, pos_y}, cond); }));
     imgui.set_function("SetWindowSize",
         sol::overload(
-            [](float pos_x, float pos_y) { return ImGui::SetWindowSize({pos_x, pos_y}); },
-            [](float pos_x, float pos_y, ImGuiCond cond) { return ImGui::SetWindowSize({pos_x, pos_y}, cond); },
-            [](const char* name, float pos_x, float pos_y) { return ImGui::SetWindowSize(name, {pos_x, pos_y}); },
-            [](const char* name, float pos_x, float pos_y, ImGuiCond cond) { return ImGui::SetWindowSize(name, {pos_x, pos_y}, cond); }));
+            [](float pos_x, float pos_y) -> void { ImGui::SetWindowSize({pos_x, pos_y}); },
+            [](float pos_x, float pos_y, ImGuiCond cond) { ImGui::SetWindowSize({pos_x, pos_y}, cond); },
+            [](const char* name, float pos_x, float pos_y) { ImGui::SetWindowSize(name, {pos_x, pos_y}); },
+            [](const char* name, float pos_x, float pos_y, ImGuiCond cond) { ImGui::SetWindowSize(name, {pos_x, pos_y}, cond); }));
     imgui.set_function("SetWindowCollapsed",
         sol::overload(
-            [](bool collapsed) { return ImGui::SetWindowCollapsed(collapsed); },
-            [](bool collapsed, ImGuiCond cond) { return ImGui::SetWindowCollapsed(collapsed, cond); },
-            [](const char* name, bool collapsed) { return ImGui::SetWindowCollapsed(name, collapsed); },
-            [](const char* name, bool collapsed, ImGuiCond cond) { return ImGui::SetWindowCollapsed(name, collapsed, cond); }));
+            [](bool collapsed) -> void { ImGui::SetWindowCollapsed(collapsed); },
+            [](bool collapsed, ImGuiCond cond) { ImGui::SetWindowCollapsed(collapsed, cond); },
+            [](const char* name, bool collapsed) { ImGui::SetWindowCollapsed(name, collapsed); },
+            [](const char* name, bool collapsed, ImGuiCond cond) { ImGui::SetWindowCollapsed(name, collapsed, cond); }));
     imgui.set_function("SetWindowFocus",
         sol::overload(
             sol::resolve<void(const char*)>(ImGui::SetWindowFocus),
-            [](std::nullptr_t) { return ImGui::SetWindowFocus((const char*)nullptr); }));
+            [](std::nullptr_t) { ImGui::SetWindowFocus((const char*)nullptr); }));
 
     // Content region
-    imgui.set_function("GetContentRegionAvail", []() { auto size = ImGui::GetContentRegionAvail(); return std::tuple{size.x, size.y}; });
-    imgui.set_function("GetContentRegionMax", []() { auto size = ImGui::GetContentRegionMax(); return std::tuple{size.x, size.y}; });
-    imgui.set_function("GetWindowContentRegionMin", []() { auto size = ImGui::GetWindowContentRegionMin(); return std::tuple{size.x, size.y}; });
-    imgui.set_function("GetWindowContentRegionMax", []() { auto size = ImGui::GetWindowContentRegionMax(); return std::tuple{size.x, size.y}; });
+    imgui.set_function("GetContentRegionAvail", []() -> std::tuple<float, float> { auto size = ImGui::GetContentRegionAvail(); return std::tuple{size.x, size.y}; });
+    imgui.set_function("GetContentRegionMax", []() -> std::tuple<float, float> { auto size = ImGui::GetContentRegionMax(); return std::tuple{size.x, size.y}; });
+    imgui.set_function("GetWindowContentRegionMin", []() -> std::tuple<float, float> { auto size = ImGui::GetWindowContentRegionMin(); return std::tuple{size.x, size.y}; });
+    imgui.set_function("GetWindowContentRegionMax", []() -> std::tuple<float, float> { auto size = ImGui::GetWindowContentRegionMax(); return std::tuple{size.x, size.y}; });
 
     // Windows Scrolling
     imgui.set_function("GetScrollX", sol::resolve<float()>(ImGui::GetScrollX));
@@ -186,5 +186,5 @@ void add_imgui_windows(sol::table& imgui)
             [](float local_y) { return ImGui::SetScrollFromPosY(local_y); },
             sol::resolve<void(float, float)>(ImGui::SetScrollFromPosY)));
     imgui.set_function("SetNextWindowScroll",
-        [](float x, float y) { return ImGui::SetNextWindowScroll({x, y}); });
+        [](float x, float y) -> void { ImGui::SetNextWindowScroll({x, y}); });
 }

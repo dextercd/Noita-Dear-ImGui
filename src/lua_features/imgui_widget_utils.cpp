@@ -41,8 +41,8 @@ void add_imgui_widget_utils(sol::table& imgui)
     imgui.set_function("IsAnyItemActive", sol::resolve<bool()>(ImGui::IsAnyItemActive));
     imgui.set_function("IsAnyItemFocused", sol::resolve<bool()>(ImGui::IsAnyItemFocused));
     imgui.set_function("GetItemID", sol::resolve<ImGuiID()>(ImGui::GetItemID));
-    imgui.set_function("GetItemRectMin", []() { auto ret = ImGui::GetItemRectMin(); return std::tuple{ret.x, ret.y}; });
-    imgui.set_function("GetItemRectMax", []() { auto ret = ImGui::GetItemRectMax(); return std::tuple{ret.x, ret.y}; });
-    imgui.set_function("GetItemRectSize", []() { auto ret = ImGui::GetItemRectSize(); return std::tuple{ret.x, ret.y}; });
+    imgui.set_function("GetItemRectMin", []() -> std::tuple<float, float> { auto ret = ImGui::GetItemRectMin(); return std::tuple{ret.x, ret.y}; });
+    imgui.set_function("GetItemRectMax", []() -> std::tuple<float, float> { auto ret = ImGui::GetItemRectMax(); return std::tuple{ret.x, ret.y}; });
+    imgui.set_function("GetItemRectSize", []() -> std::tuple<float, float> { auto ret = ImGui::GetItemRectSize(); return std::tuple{ret.x, ret.y}; });
     imgui.set_function("SetItemAllowOverlap", sol::resolve<void()>(ImGui::SetItemAllowOverlap));
 }

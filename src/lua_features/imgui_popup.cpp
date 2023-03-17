@@ -27,7 +27,7 @@ void add_imgui_popup(sol::table& imgui)
             sol::resolve<bool(const char*, ImGuiWindowFlags)>(ImGui::BeginPopup)));
     imgui.set_function("BeginPopupModal",
         sol::overload(
-            [](const char* str_id) { return ImGui::BeginPopupModal(str_id); },
+            [](const char* str_id) -> bool { return ImGui::BeginPopupModal(str_id); },
             [](const char* str_id, bool open) { auto ret = ImGui::BeginPopupModal(str_id, &open); return std::tuple{ret, open}; },
             [](const char* str_id, bool open, ImGuiWindowFlags flags) {
                 if (just_unpaused)

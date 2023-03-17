@@ -36,7 +36,7 @@ void add_imgui_trees(sol::table& imgui)
 
     imgui.set_function("CollapsingHeader",
         sol::overload(
-            [](const char* label) { return ImGui::CollapsingHeader(label); },
+            [](const char* label) -> bool { return ImGui::CollapsingHeader(label); },
             [](const char* label, ImGuiTreeNodeFlags flags) { return ImGui::CollapsingHeader(label, flags); },
             [](const char* label, bool visible) { auto ret = ImGui::CollapsingHeader(label, &visible); return std::tuple{ret, visible}; },
             [](const char* label, bool visible, ImGuiTreeNodeFlags flags) { auto ret = ImGui::CollapsingHeader(label, &visible, flags); return std::tuple{ret, visible}; }

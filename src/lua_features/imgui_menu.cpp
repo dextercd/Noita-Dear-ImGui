@@ -12,7 +12,7 @@ void add_imgui_menu(sol::table& imgui)
     imgui.set_function("BeginMenu",
         sol::overload(
             [](const char* label) { return ImGui::BeginMenu(label); },
-            &ImGui::BeginMenu));
+            sol::resolve<bool(const char*, bool)>(ImGui::BeginMenu)));
     imgui.set_function("EndMenu", sol::resolve<void()>(ImGui::EndMenu));
     imgui.set_function("MenuItem",
         sol::overload(

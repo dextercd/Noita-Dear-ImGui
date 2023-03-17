@@ -15,25 +15,25 @@ void add_imgui_font(sol::table& imgui)
         });
 
     imgui.set_function("GetNoitaFont",
-        []() {
+        []() -> ImFont* {
             auto& io = ImGui::GetIO();
             return io.Fonts->Fonts[0];
         });
 
     imgui.set_function("GetNoitaFont1_4x",
-        []() {
+        []() -> ImFont* {
             auto& io = ImGui::GetIO();
             return io.Fonts->Fonts[1];
         });
 
     imgui.set_function("GetNoitaFont1_8x",
-        []() {
+        []() -> ImFont* {
             auto& io = ImGui::GetIO();
             return io.Fonts->Fonts[2];
         });
 
     imgui.set_function("GetImGuiFont",
-        []() {
+        []() -> ImFont* {
             auto& io = ImGui::GetIO();
             return io.Fonts->Fonts[3];
         });

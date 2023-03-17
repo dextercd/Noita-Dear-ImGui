@@ -81,14 +81,14 @@ void add_imgui_tables(sol::table& imgui)
 
     imgui.set_function("BeginTable",
         sol::overload(
-            [](const char* str_id, int column) { return ImGui::BeginTable(str_id, column); },
+            [](const char* str_id, int column) -> bool { return ImGui::BeginTable(str_id, column); },
             [](const char* str_id, int column, ImGuiTableFlags flags) { return ImGui::BeginTable(str_id, column, flags); },
             [](const char* str_id, int column, ImGuiTableFlags flags, float outer_size_x, float outer_size_y) { return ImGui::BeginTable(str_id, column, flags, {outer_size_x, outer_size_y}); },
             [](const char* str_id, int column, ImGuiTableFlags flags, float outer_size_x, float outer_size_y, float inner_size) { return ImGui::BeginTable(str_id, column, flags, {outer_size_x, outer_size_y}, inner_size); }));
     imgui.set_function("EndTable", sol::resolve<void()>(ImGui::EndTable));
     imgui.set_function("TableNextRow",
         sol::overload(
-            []() { return ImGui::TableNextRow(); },
+            []() -> void { return ImGui::TableNextRow(); },
             [](ImGuiTableRowFlags row_flags) { return ImGui::TableNextRow(row_flags); },
             sol::resolve<void(ImGuiTableRowFlags, float)>(ImGui::TableNextRow)));
     imgui.set_function("TableNextColumn", sol::resolve<bool()>(ImGui::TableNextColumn));
@@ -117,6 +117,6 @@ void add_imgui_tables(sol::table& imgui)
     imgui.set_function("TableSetColumnEnabled", sol::resolve<void(int, bool)>(ImGui::TableSetColumnEnabled));
     imgui.set_function("TableSetBgColor",
         sol::overload(
-            [](ImGuiTableBgTarget target, float r, float g, float b, float a) { return ImGui::TableSetBgColor(target, ImGui::GetColorU32(ImVec4{r, g, b, a})); },
+            [](ImGuiTableBgTarget target, float r, float g, float b, float a) -> void { return ImGui::TableSetBgColor(target, ImGui::GetColorU32(ImVec4{r, g, b, a})); },
             [](ImGuiTableBgTarget target, float r, float g, float b, float a, int column_n) { return ImGui::TableSetBgColor(target, ImGui::GetColorU32(ImVec4{r, g, b, a}), column_n); }));
 }

@@ -91,7 +91,7 @@ void add_imgui_param_stacks(sol::table& imgui)
 
     imgui.set_function("PushStyleColor",
         sol::overload(
-            [](ImGuiCol idx, float r, float g, float b) { ImGui::PushStyleColor(idx, ImVec4{r, g, b, 1.0f}); },
+            [](ImGuiCol idx, float r, float g, float b) -> void { ImGui::PushStyleColor(idx, ImVec4{r, g, b, 1.0f}); },
             [](ImGuiCol idx, float r, float g, float b, float a) { ImGui::PushStyleColor(idx, ImVec4{r, g, b, a}); }));
 
     imgui.set_function("PopStyleColor",
