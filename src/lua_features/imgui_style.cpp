@@ -78,6 +78,6 @@ void add_imgui_style(sol::table& imgui)
     );
 
     // Only return a copy for now
-    imgui.set_function("GetStyle", []() { return ImGui::GetStyle(); });
+    imgui.set_function("GetStyle", []() -> ImGuiStyle { return ImGui::GetStyle(); });
 
 }
