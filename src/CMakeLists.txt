@@ -80,8 +80,6 @@ target_compile_definitions(noita_dear_imgui
         IMGUI_USER_CONFIG=<noita_imgui/imgui_config.hpp>
 )
 
-target_compile_features(noita_dear_imgui PUBLIC cxx_std_20)
-
 set_target_properties(noita_dear_imgui PROPERTIES
     PUBLIC_HEADER "${public_headers}"
     ARCHIVE_OUTPUT_NAME_DEBUG "noita_dear_imgui-debug"
