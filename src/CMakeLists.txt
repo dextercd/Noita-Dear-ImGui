@@ -103,6 +103,13 @@ target_link_libraries(noita_dear_imgui
         minhook
 )
 
+if (MINGW)
+    # sol2 include some headers that transitively includes pthread stuff
+    find_package(Threads REQUIRED)
+    target_link_libraries(noita_dear_imgui PUBLIC Threads::Threads)
+endif()
+
+
 target_precompile_headers(noita_dear_imgui PRIVATE
     <tuple>
     <sol/sol.hpp>

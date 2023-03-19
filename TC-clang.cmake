@@ -21,14 +21,38 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
-set(COMMON_FLAGS "--sysroot /usr/i686-w64-mingw32 -I /usr/i686-w64-mingw32/include/c++/12.2.0/ -I /usr/i686-w64-mingw32/include/c++/12.2.0/i686-w64-mingw32")
+set(TC_COMMON_FLAGS "")
+set(TC_COMPILE_FLAGS "")
+set(TC_LINK_FLAGS "")
 
-set(COMPILE_FLAGS "-static -target i686-pc-windows-gnu -fuse-ld=lld -fms-extensions -DCOMPAT53_HAVE_STRERROR_R=0 ${COMMON_FLAGS}")
+# We're building for 32 bit Windows using MinGW runtime
+string(APPEND TC_COMMON_FLAGS "--sysroot /usr/i686-w64-mingw32 -target i686-pc-windows-gnu")
 
-set(CMAKE_C_FLAGS_INIT "${COMPILE_FLAGS}")
-set(CMAKE_CXX_FLAGS_INIT "${COMPILE_FLAGS}")
 
-set(LINK_FLAGS "-target i686-pc-windows-gnu -fuse-ld=lld -L /usr/lib/gcc/i686-w64-mingw32/12.2.0 -lpthread ${COMMON_FLAGS}")
-set(CMAKE_EXE_LINKER_FLAGS_INIT "${LINK_FLAGS}")
-set(CMAKE_MODULE_LINKER_FLAGS_INIT "${LINK_FLAGS}")
-set(CMAKE_SHARED_LINKER_FLAGS_INIT "${LINK_FLAGS}")
+# Common flags
+string(APPEND TC_COMPILE_FLAGS "${TC_COMMON_FLAGS}")
+# Use static linking so the DLL's are self-contained
+string(APPEND TC_COMPILE_FLAGS " -static")
+# Need __decltype(dllexport) and probably some other stuff
+string(APPEND TC_COMPILE_FLAGS " -fms-extensions")
+# sol2's autodetection of strerror_r existence is wrong
+string(APPEND TC_COMPILE_FLAGS " -DCOMPAT53_HAVE_STRERROR_R=0")
+# The runtime library already contains the typeinfo== operator, we can't have a
+# duplicate symbol by defining it again.
+string(APPEND TC_COMPILE_FLAGS " -D__GXX_TYPEINFO_EQUALITY_INLINE=0")
+# MinGW include paths
+string(APPEND TC_COMPILE_FLAGS " -I /usr/i686-w64-mingw32/include/c++/12.2.0/ -I /usr/i686-w64-mingw32/include/c++/12.2.0/i686-w64-mingw32")
+
+set(CMAKE_C_FLAGS_INIT "${TC_COMPILE_FLAGS}")
+set(CMAKE_CXX_FLAGS_INIT "${TC_COMPILE_FLAGS}")
+
+# Common flags
+string(APPEND TC_LINK_FLAGS "${TC_COMMON_FLAGS}")
+# Use ldd linker
+string(APPEND TC_LINK_FLAGS " -fuse-ld=lld")
+# MinGW library path
+string(APPEND TC_LINK_FLAGS " -L /usr/lib/gcc/i686-w64-mingw32/12.2.0")
+
+set(CMAKE_EXE_LINKER_FLAGS_INIT "${TC_LINK_FLAGS}")
+set(CMAKE_MODULE_LINKER_FLAGS_INIT "${TC_LINK_FLAGS}")
+set(CMAKE_SHARED_LINKER_FLAGS_INIT "${TC_LINK_FLAGS}")
