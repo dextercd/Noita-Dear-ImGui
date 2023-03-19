@@ -1,9 +1,11 @@
+#include <algorithm>
 #include <cassert>
 #include <charconv>
 #include <optional>
 #include <sstream>
 #include <string>
 #include <string_view>
+#include <vector>
 
 #include <noita_dear_imgui_export.h>
 #include <noita_imgui/version_number.hpp>
