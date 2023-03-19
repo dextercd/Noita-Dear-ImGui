@@ -10,6 +10,7 @@ if [ ! -d clang-build ]; then
         -G 'Ninja Multi-Config' \
         -DCMAKE_INSTALL_PREFIX="$HOME/.local/share/Steam/steamapps/common/Noita/mods" \
         -DCMAKE_TOOLCHAIN_FILE="$project_path/TC-clang.cmake" \
+        -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
         -DCMAKE_DISABLE_PRECOMPILE_HEADERS=ON
 
     popd
