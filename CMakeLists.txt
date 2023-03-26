@@ -102,9 +102,11 @@ ExternalProject_Add(LuaJIT
 
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ${LUAJIT_BUILD}
-    INSTALL_COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
         ${LUAJIT_SOURCE_PATHS}
         <INSTALL_DIR>
+
+    INSTALL_COMMAND ""
 
     BUILD_BYPRODUCTS
         ${LUAJIT_INSTALL_PATHS}
