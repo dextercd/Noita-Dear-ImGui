@@ -76,14 +76,14 @@ else()
     find_program(MAKE_EXECUTABLE NAMES gmake make)
     set(LUAJIT_BUILD
         ${MAKE_EXECUTABLE}
-            CC=${CMAKE_C_COMPILER}
-            "CFLAGS=${CMAKE_C_FLAGS}"
-            "LDFLAGS=${CMAKE_EXE_LINKER_FLAGS}"
+            HOST_CC=cc
+            HOST_CFLAGS=-m32
+            HOST_LDFLAGS=-m32
+            "CC=${CMAKE_C_COMPILER}"
+            "TARGET_CFLAGS=${CMAKE_C_FLAGS}"
+            "TARGET_LDFLAGS=${CMAKE_EXE_LINKER_FLAGS}"
+            "TARGET_SHLDFLAGS=${CMAKE_SHARED_LINKER_FLAGS}"
             TARGET_SYS=Windows
-            MINILUA_T=host/minilua.exe
-            BUILDVM_T=host/buildvm.exe
-            "MINILUA_X=${CMAKE_CROSSCOMPILING_EMULATOR} host/minilua.exe"
-            "BUILDVM_X=${CMAKE_CROSSCOMPILING_EMULATOR} host/buildvm.exe"
     )
 endif()
 
