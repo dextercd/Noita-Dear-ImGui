@@ -20,6 +20,8 @@ a lot of stuff there also applies to these bindings.
 
 There's generated [documentation containing all the function signatures](Documentation.md).
 
+### Bindings
+
 The bindings are a relatively close 1:1 mapping of the normal ImGui functions except:
 
 - References are used in ImGui to pass data in and alter it. Lua doesn't have
