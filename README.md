@@ -66,4 +66,4 @@ Many thanks to 🌸Rain🌸 (vexx32) on the Noita Discord for the Noita font ttf
 
 - This repo hosts a slightly altered version with '{', '}', and '~' characters added.
 
-Thanks to Kaedenn for the documentation using [this script](https://github.com/Kaedenn/noita/blob/main/tools/imgui_parse_api.py) that he created.
+Thanks to Kaedenn for the signatures documentation created using [this script](https://github.com/Kaedenn/noita/blob/main/tools/imgui_parse_api.py) that he made.
