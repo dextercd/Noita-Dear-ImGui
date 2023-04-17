@@ -346,22 +346,23 @@
 
 Unlike standard ImGui, you must only call [End](#void-end) if the window is visible (indicated by the first return value).
 
-So this is wrong:
-
-```lua
-if imgui.Begin("Chat") then
-    -- ...
-end
-imgui.End() -- BAD BAD shouldn't run `End` if the window isn't visible.
-```
-
-This is correct:
+So this is correct:
 
 ```lua
 if imgui.Begin("Chat") then
     -- ...
     imgui.End()
 end
+```
+
+But this is wrong:
+
+```lua
+-- DON'T DO THIS
+if imgui.Begin("Chat") then
+    -- ...
+end
+imgui.End() -- BAD BAD shouldn't run `End` if the window isn't visible.
 ```
 
 #### void End()
