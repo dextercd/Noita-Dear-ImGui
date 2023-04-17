@@ -45,7 +45,7 @@ void add_imgui_tabs(sol::table& imgui)
             const char* label,
             std::optional<bool> open,
             std::optional<ImGuiTabItemFlags> flags
-        ) {
+        ) -> std::tuple<bool, std::optional<bool>> {
             sol::state_view lua{s};
 
             bool* p_open = nullptr;
@@ -55,9 +55,9 @@ void add_imgui_tabs(sol::table& imgui)
             auto ret = ImGui::BeginTabItem(label, p_open, flags.value_or(0));
 
             if (p_open)
-                return sol::make_object(lua, std::tuple{ret, *p_open});
+                return std::tuple{ret, *p_open};
 
-            return sol::make_object(lua, ret);
+            return std::tuple{ret, std::nullopt};
         }
     );
 

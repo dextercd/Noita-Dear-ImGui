@@ -49,12 +49,12 @@ void add_imgui_combo_box(sol::table& imgui)
             [](const char* label, const char* preview_value) { return ImGui::BeginCombo(label, preview_value); },
             sol::resolve<bool(const char*, const char*, ImGuiComboFlags)>(ImGui::BeginCombo)));
 
-    imgui.set_function("EndCombo", ImGui::EndCombo);
+    imgui.set_function("EndCombo", sol::resolve<void()>(ImGui::EndCombo));
 
     imgui.set_function("Combo",
         sol::overload(
-            [](const char* label, int current_item, sol::table items) { return ImGui_Combo(label, current_item, items); },
-            [](const char* label, int current_item, sol::table items, int popup_max_height_in_items) { return ImGui_Combo(label, current_item, items, popup_max_height_in_items); }));
+            [](const char* label, int current_item, sol::table items) -> std::tuple<bool, int> { return ImGui_Combo(label, current_item, items); },
+            [](const char* label, int current_item, sol::table items, int popup_max_height_in_items) -> std::tuple<bool, int> { return ImGui_Combo(label, current_item, items, popup_max_height_in_items); }));
 
     imgui.new_enum("SelectableFlags",
         "None",             ImGuiSelectableFlags_None,
@@ -67,7 +67,7 @@ void add_imgui_combo_box(sol::table& imgui)
 
     imgui.set_function("Selectable",
         sol::overload(
-            [](const char* label) { return ImGui::Selectable(label); },
+            [](const char* label) -> bool { return ImGui::Selectable(label); },
             [](const char* label, bool selected) { return ImGui::Selectable(label, selected); },
             [](const char* label, bool selected, ImGuiSelectableFlags flags) { return ImGui::Selectable(label, selected, flags); },
             [](const char* label, bool selected, ImGuiSelectableFlags flags, float size_x, float size_y) { return ImGui::Selectable(label, selected, flags, {size_x, size_y}); }

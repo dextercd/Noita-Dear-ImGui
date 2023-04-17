@@ -16,9 +16,9 @@ void add_imgui_menu(sol::table& imgui)
     imgui.set_function("EndMenu", sol::resolve<void()>(ImGui::EndMenu));
     imgui.set_function("MenuItem",
         sol::overload(
-            [](const char* label) { return ImGui::MenuItem(label); },
-            [](const char* label, const char* shortcut) { return ImGui::MenuItem(label, shortcut); },
-            [](const char* label, const char* shortcut, bool selected) { auto ret = ImGui::MenuItem(label, shortcut, &selected); return std::tuple{ret, selected}; },
-            [](const char* label, const char* shortcut, bool selected, bool enabled) { auto ret = ImGui::MenuItem(label, shortcut, &selected, enabled); return std::tuple{ret, selected}; }
+            [](const char* label) -> bool { return ImGui::MenuItem(label); },
+            [](const char* label, const char* shortcut) -> bool { return ImGui::MenuItem(label, shortcut); },
+            [](const char* label, const char* shortcut, bool selected) -> std::tuple<bool, bool> { auto ret = ImGui::MenuItem(label, shortcut, &selected); return std::tuple{ret, selected}; },
+            [](const char* label, const char* shortcut, bool selected, bool enabled) -> std::tuple<bool, bool> { auto ret = ImGui::MenuItem(label, shortcut, &selected, enabled); return std::tuple{ret, selected}; }
         ));
 }
