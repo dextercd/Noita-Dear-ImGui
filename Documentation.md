@@ -592,6 +592,12 @@ Indicates the End of a window started by [Begin](#bool-bool-beginstring-name-boo
 
 #### bool SetDragDropPayload(string type, object payload)
 
+Set the drag and drop payload which can be retrieved using one of the Accept/Get -DragAndDropPayload functions.
+
+Booleans, strings, and doubles can be dragged and dropped between Lua contexts
+(e.g. to a different LuaComponent or whole different mod.)
+Other values such as tables or userdata can only be retrieved by the same mod.
+
 #### bool SetDragDropPayload(string, object, ImGuiCond)
 
 #### void EndDragDropSource()
