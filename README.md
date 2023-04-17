@@ -16,7 +16,9 @@ source code of this mod to see how to use it from Lua.
 Also check out the ImGui FAQ: https://github.com/ocornut/imgui/blob/master/docs/FAQ.md
 a lot of stuff there also applies to these bindings.
 
-There's also an example mod that shows the basics: https://github.com/dextercd/Noita-Dear-ImGui/blob/main/ExampleMod/init.lua
+## Documentation
+
+There's generated [documentation containing all the function signatures](Documentation.md).
 
 The bindings are a relatively close 1:1 mapping of the normal ImGui functions except:
 
@@ -49,6 +51,11 @@ _, r, g, b = imgui.ColorEdit3("Colour", r, g, b,
     bit.bor(imgui.ColorEditFlags.PickerHueWheel, imgui.ColorEditFlags.NoSidePreview, imgui.ColorEditFlags.NoAlpha))
 ```
 
+## Example mod
+
+There's an example mod that shows the basics: https://github.com/dextercd/Noita-Dear-ImGui/blob/main/ExampleMod/init.lua
+
+
 ## Credit
 
 Many thanks to 🌸Rain🌸 (vexx32) on the Noita Discord for the Noita font ttf that she created:
@@ -56,3 +63,5 @@ Many thanks to 🌸Rain🌸 (vexx32) on the Noita Discord for the Noita font ttf
     ([Download](https://cdn.discordapp.com/attachments/626791912443084801/794756926973411338/NoitaPixel.ttf)).
 
 - This repo hosts a slightly altered version with '{', '}', and '~' characters added.
+
+Thanks to Kaedenn for the documentation using [this script](https://github.com/Kaedenn/noita/blob/main/tools/imgui_parse_api.py) that he created.
