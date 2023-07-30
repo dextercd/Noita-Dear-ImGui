@@ -14,6 +14,8 @@ extern "C" {
 #include <backends/imgui_impl_sdl2.h>
 #include <backends/imgui_impl_opengl3.h>
 
+#include <implot.h>
+
 #include <SDL.h>
 #include <SDL_opengl.h>
 
@@ -40,6 +42,7 @@ void init_imgui_context()
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
+    ImPlot::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 

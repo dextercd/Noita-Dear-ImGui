@@ -67,6 +67,16 @@ if (NOT dearimgui_POPULATED)
     FetchContent_Populate(DearImGui)
 endif()
 
+
+FetchContent_Declare(ImPlot
+    GIT_REPOSITORY https://github.com/epezent/implot.git
+    GIT_TAG cc5e1daa5c7f2335a9460ae79c829011dc5cef2d
+)
+FetchContent_GetProperties(ImPlot)
+if (NOT implot_POPULATED)
+    FetchContent_Populate(ImPlot)
+endif()
+
 set(LUAJIT_OUTPUT luajit.exe lua51.dll)
 if (MSVC)
     set(LUAJIT_BUILD ${CMAKE_COMMAND} -E chdir "<SOURCE_DIR>/src" "msvcbuild.bat")

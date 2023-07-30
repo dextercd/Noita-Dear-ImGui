@@ -15,6 +15,8 @@ set(dear_imgui_headers
     ${dearimgui_SOURCE_DIR}/imstb_rectpack.h
     ${dearimgui_SOURCE_DIR}/imstb_textedit.h
     ${dearimgui_SOURCE_DIR}/imstb_truetype.h
+    ${implot_SOURCE_DIR}/implot.h
+    ${implot_SOURCE_DIR}/implot_internal.h
 )
 
 add_library(noita_dear_imgui SHARED
@@ -34,6 +36,11 @@ add_library(noita_dear_imgui SHARED
     ${dearimgui_SOURCE_DIR}/imgui_widgets.cpp
     imgui_impl_sdl2.cpp
     ${dearimgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
+
+    # ImPlot
+    ${implot_SOURCE_DIR}/implot.cpp
+    ${implot_SOURCE_DIR}/implot_items.cpp
+    ${implot_SOURCE_DIR}/implot_demo.cpp
 
     # Lua features
     add_lua_features.cpp
@@ -92,6 +99,7 @@ target_include_directories(noita_dear_imgui
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
         $<BUILD_INTERFACE:${dearimgui_SOURCE_DIR}>
+        $<BUILD_INTERFACE:${implot_SOURCE_DIR}>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
