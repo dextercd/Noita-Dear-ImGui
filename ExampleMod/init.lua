@@ -18,6 +18,32 @@ local clearing = false
 local itemix = 1
 local r, g, b, a = 1, 1, 1, 1
 
+function GetEntityCount(tag, name)
+    local entities = EntityGetWithTag(tag) or {}
+    local cnt = 0
+    for _, e in ipairs(entities) do
+        if EntityGetName(e) == name then
+            cnt = cnt + 1
+        end
+    end
+    return cnt
+end
+
+local discarded = 0
+
+local hamis_count = 0
+local hamis_history = {}
+
+local zombie_count = 0
+local zombie_history = {}
+
+local miner_count = 0
+local miner_history = {}
+
+local shotgunner_count = 0
+local shotgunner_history = {}
+
+
 -- You must call the Widgets functions on every frame that you want your UI to
 -- be shown. Here we use OnWorldPostUpdate.
 function OnWorldPostUpdate()
@@ -62,21 +88,39 @@ function OnWorldPostUpdate()
         imgui.End()
     end
 
-    local function map(list, f)
-        local result = {}
-        for _, v in ipairs(list) do
-            table.insert(result, f(v))
+    -- Collect data to show in graph
+    if GameGetFrameNum() % 30 == 0 then
+        hamis_count = GetEntityCount("enemy", "$animal_longleg")
+        zombie_count = GetEntityCount("enemy", "$animal_zombie")
+        miner_count = GetEntityCount("enemy", "$animal_miner")
+        shotgunner_count = GetEntityCount("enemy", "$animal_shotgunner")
+
+        table.insert(hamis_history, hamis_count)
+        table.insert(zombie_history, zombie_count)
+        table.insert(miner_history, miner_count)
+        table.insert(shotgunner_history, shotgunner_count)
+
+        while #hamis_history > 200 do
+            table.remove(hamis_history, 1)
+            table.remove(zombie_history, 1)
+            table.remove(miner_history, 1)
+            table.remove(shotgunner_history, 1)
+            discarded = discarded + 1
         end
-        return result
     end
 
     local implot = imgui.implot
-    if imgui.Begin("ImPlot") then
-        if implot.BeginPlot("Line Plots") then
-            implot.SetupAxes("x", "y");
-            local xs = {1,2,3,4,5,6,7,8,9,10}
-            local ys = map(xs, function(x) return x * x end)
-            implot.PlotLine("x*x", xs, ys)
+    imgui.SetNextWindowSize(800, 400, imgui.Cond.Once)
+    if imgui.Begin("Enemy Tracker") then
+        if implot.BeginPlot("Enemies") then
+
+            implot.SetupAxes("time", "enemy count", implot.PlotAxisFlags.AutoFit);
+            implot.SetupAxisLimits(implot.Axis.Y1, 0, 20)
+
+            implot.PlotLine("Hämis", hamis_history, 1, discarded)
+            implot.PlotLine("Zombie", zombie_history, 1, discarded)
+            implot.PlotLine("Miner", miner_history, 1, discarded)
+            implot.PlotLine("Shotgunner", shotgunner_history, 1, discarded)
             implot.EndPlot()
         end
         imgui.End()
