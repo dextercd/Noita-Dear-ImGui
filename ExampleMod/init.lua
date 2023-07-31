@@ -61,4 +61,24 @@ function OnWorldPostUpdate()
 
         imgui.End()
     end
+
+    local function map(list, f)
+        local result = {}
+        for _, v in ipairs(list) do
+            table.insert(result, f(v))
+        end
+        return result
+    end
+
+    local implot = imgui.implot
+    if imgui.Begin("ImPlot") then
+        if implot.BeginPlot("Line Plots") then
+            implot.SetupAxes("x", "y");
+            local xs = {1,2,3,4,5,6,7,8,9,10}
+            local ys = map(xs, function(x) return x * x end)
+            implot.PlotLine("x*x", xs, ys)
+            implot.EndPlot()
+        end
+        imgui.End()
+    end
 end

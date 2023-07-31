@@ -39,6 +39,7 @@ void add_imgui_viewports(sol::table&);
 void add_imgui_widget_utils(sol::table&);
 void add_imgui_widgets_main(sol::table&);
 void add_imgui_windows(sol::table&);
+void add_implot(sol::state_view, sol::table&);
 
 sol::table load_imgui(sol::this_state s, sol::table load_params)
 {
@@ -85,6 +86,7 @@ sol::table load_imgui(sol::this_state s, sol::table load_params)
     add_imgui_widget_utils(imgui);
     add_imgui_widgets_main(imgui);
     add_imgui_windows(imgui);
+    add_implot(lua, imgui);
 
     return imgui;
 }
