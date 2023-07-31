@@ -1,9 +1,22 @@
 #include <algorithm>
 #include <optional>
 #include <string>
+#include <tuple>
 #include <vector>
 
 #include <implot.h>
+
+ImVec4 from_optional(
+        std::optional<float> r,
+        std::optional<float> g,
+        std::optional<float> b,
+        std::optional<float> a
+) {
+    if (r && g && b && a)
+        return ImVec4{*r, *g, *b, *a};
+
+    return IMPLOT_AUTO_COL;
+}
 
 void add_implot(sol::state_view lua, sol::table& imgui)
 {
@@ -315,6 +328,24 @@ void add_implot(sol::state_view lua, sol::table& imgui)
         "Scott", ImPlotBin_Scott
     );
 
+    implot.new_usertype<ImPlotPoint>("PlotPoint",
+        sol::constructors<ImPlotPoint(), ImPlotPoint(double, double)>(),
+        "x", &ImPlotPoint::x,
+        "y", &ImPlotPoint::y
+    );
+
+    implot.new_usertype<ImPlotRect>("PlotRect",
+        sol::constructors<ImPlotRect(), ImPlotRect(double, double, double, double)>(),
+        "X", &ImPlotRect::X,
+        "Y", &ImPlotRect::Y
+    );
+
+    implot.new_usertype<ImPlotRange>("PlotRange",
+        sol::constructors<ImPlotRange(), ImPlotRange(double, double)>(),
+        "Min", &ImPlotRange::Min,
+        "Max", &ImPlotRange::Max
+    );
+
     implot.set_function("BeginPlot",
         sol::overload(
             [](const char* title_id) -> bool { return ImPlot::BeginPlot(title_id); },
@@ -470,6 +501,296 @@ void add_implot(sol::state_view lua, sol::table& imgui)
                     return ImPlot::PlotErrorBars(label_id, std::data(xs), std::data(ys), std::data(neg), std::data(pos), count);
             }
         ));
+
+    implot.set_function("PlotStems",
+        sol::overload(
+            [](const char* label_id, std::vector<double> values, std::optional<double> ref, std::optional<double> scale, std::optional<double> start, std::optional<ImPlotStemsFlags> flags) -> void {
+                auto count = (int)std::size(values);
+
+                if (!ref) return ImPlot::PlotStems(label_id, std::data(values), count);
+                if (!scale) return ImPlot::PlotStems(label_id, std::data(values), count, *ref);
+                if (!start) return ImPlot::PlotStems(label_id, std::data(values), count, *ref, *scale);
+                if (!flags) return ImPlot::PlotStems(label_id, std::data(values), count, *ref, *scale, *start);
+                return ImPlot::PlotStems(label_id, std::data(values), count, *ref, *scale, *start, *flags);
+            },
+            [](const char* label_id, std::vector<double> xs, std::vector<double> ys, std::optional<double> ref, std::optional<ImPlotStemsFlags> flags) {
+                auto count = (int)std::min(std::size(xs), std::size(ys));
+                if (!ref) return ImPlot::PlotStems(label_id, std::data(xs), std::data(ys), count);
+                if (!flags) return ImPlot::PlotStems(label_id, std::data(xs), std::data(ys), count, *ref);
+                return ImPlot::PlotStems(label_id, std::data(xs), std::data(ys), count, *ref, *flags);
+            }
+        ));
+
+    implot.set_function("PlotInfLines",
+        [](const char* label_id, std::vector<double> values, std::optional<ImPlotInfLinesFlags> flags) -> void {
+            if (!flags) return ImPlot::PlotInfLines(label_id, std::data(values), std::size(values));
+            return ImPlot::PlotInfLines(label_id, std::data(values), std::size(values), *flags);
+        });
+
+    implot.set_function("PlotPieChart",
+        [](std::vector<const char*> label_ids, std::vector<double> values, double x, double y, double radius, std::optional<const char*> label_fmt, std::optional<double> angle0, std::optional<ImPlotPieChartFlags> flags) -> void {
+            auto count = (int)std::min(std::size(label_ids), std::size(values));
+            if (!label_fmt) return ImPlot::PlotPieChart(std::data(label_ids), std::data(values), count, x, y, radius);
+            if (!angle0) return ImPlot::PlotPieChart(std::data(label_ids), std::data(values), count, x, y, radius, *label_fmt);
+            if (!flags) return ImPlot::PlotPieChart(std::data(label_ids), std::data(values), count, x, y, radius, *label_fmt, *angle0);
+            return ImPlot::PlotPieChart(std::data(label_ids), std::data(values), count, x, y, radius, *label_fmt, *angle0, *flags);
+        });
+
+    implot.set_function("PlotHeatmap",
+        [](const char* label_id, std::vector<double> values, int rows, int cols,
+            std::optional<double> scale_min, std::optional<double> scale_max,
+            std::optional<const char*> label_fmt,
+            std::optional<ImPlotPoint> bounds_min, std::optional<ImPlotPoint> bounds_max,
+            std::optional<ImPlotHeatmapFlags> flags) -> void
+        {
+            if (std::size(values) < rows * cols)
+                return;
+
+            if (!scale_min) return ImPlot::PlotHeatmap(label_id, std::data(values), rows, cols);
+            if (!scale_max) return ImPlot::PlotHeatmap(label_id, std::data(values), rows, cols, *scale_min);
+            if (!label_fmt) return ImPlot::PlotHeatmap(label_id, std::data(values), rows, cols, *scale_min, *scale_max);
+            if (!bounds_min) return ImPlot::PlotHeatmap(label_id, std::data(values), rows, cols, *scale_min, *scale_max, *label_fmt);
+            if (!bounds_max) return ImPlot::PlotHeatmap(label_id, std::data(values), rows, cols, *scale_min, *scale_max, *label_fmt, *bounds_min);
+            if (!flags) return ImPlot::PlotHeatmap(label_id, std::data(values), rows, cols, *scale_min, *scale_max, *label_fmt, *bounds_min, *bounds_max);
+            return ImPlot::PlotHeatmap(label_id, std::data(values), rows, cols, *scale_min, *scale_max, *label_fmt, *bounds_min, *bounds_max, *flags);
+        });
+
+    implot.set_function("PlotHistogram",
+        [](const char* label_id, std::vector<double> values, std::optional<ImPlotBin> bins, std::optional<double> bar_scale, std::optional<ImPlotRange> range, std::optional<ImPlotHistogramFlags> flags) -> double {
+            auto count = (int)std::size(values);
+            if (!bins) return ImPlot::PlotHistogram(label_id, std::data(values), count);
+            if (!bar_scale) return ImPlot::PlotHistogram(label_id, std::data(values), count, *bins);
+            if (!range) return ImPlot::PlotHistogram(label_id, std::data(values), count, *bins, *bar_scale);
+            if (!flags) return ImPlot::PlotHistogram(label_id, std::data(values), count, *bins, *bar_scale, *range);
+            return ImPlot::PlotHistogram(label_id, std::data(values), count, *bins, *bar_scale, *range, *flags);
+        });
+
+    implot.set_function("PlotHistogram2D",
+        [](const char* label_id, std::vector<double> xs, std::vector<double> ys, std::optional<ImPlotBin> x_bins, std::optional<ImPlotBin> y_bins, std::optional<ImPlotRect> range, std::optional<ImPlotHistogramFlags> flags) -> double {
+            auto count = (int)std::min(std::size(xs), std::size(ys));
+            if (!x_bins) return ImPlot::PlotHistogram2D(label_id, std::data(xs), std::data(ys), count);
+            if (!y_bins) return ImPlot::PlotHistogram2D(label_id, std::data(xs), std::data(ys), count, *x_bins);
+            if (!range) return ImPlot::PlotHistogram2D(label_id, std::data(xs), std::data(ys), count, *x_bins, *y_bins);
+            if (!flags) return ImPlot::PlotHistogram2D(label_id, std::data(xs), std::data(ys), count, *x_bins, *y_bins, *range);
+            return ImPlot::PlotHistogram2D(label_id, std::data(xs), std::data(ys), count, *x_bins, *y_bins, *range, *flags);
+        });
+
+    implot.set_function("PlotDigital",
+        [](const char* label_id, std::vector<double> xs, std::vector<double> ys, std::optional<ImPlotDigitalFlags> flags) -> void {
+            auto count = (int)std::min(std::size(xs), std::size(ys));
+            if (!flags) return ImPlot::PlotDigital(label_id, std::data(xs), std::data(ys), count);
+            return ImPlot::PlotDigital(label_id, std::data(xs), std::data(ys), count, *flags);
+        });
+
+    implot.set_function("PlotText",
+        sol::overload(
+            [](const char* text, double x, double y) -> void { return ImPlot::PlotText(text, x, y); },
+            [](const char* text, double x, double y, float pix_offset_x, float pix_offset_y) { ImPlot::PlotText(text, x, y, {pix_offset_x, pix_offset_y}); },
+            [](const char* text, double x, double y, float pix_offset_x, float pix_offset_y, ImPlotTextFlags flags) { ImPlot::PlotText(text, x, y, {pix_offset_x, pix_offset_y}, flags); }));
+
+    implot.set_function("PlotDummy",
+        sol::overload(
+            [](const char* label_id) -> void { return ImPlot::PlotDummy(label_id); },
+            [](const char* label_id, ImPlotDummyFlags flags) { ImPlot::PlotDummy(label_id, flags); }));
+
+
+    implot.set_function("DragPoint",
+        sol::overload(
+            [](int id, double x, double y, float r, float g, float b, float a) -> std::tuple<bool, double, double> { auto ret = ImPlot::DragPoint(id, &x, &y, {r, g, b, a}); return std::tuple{ret, x, y}; },
+            [](int id, double x, double y, float r, float g, float b, float a, float size) { auto ret = ImPlot::DragPoint(id, &x, &y, {r, g, b, a}, size); return std::tuple{ret, x, y}; },
+            [](int id, double x, double y, float r, float g, float b, float a, float size, ImPlotDragToolFlags flags) { auto ret = ImPlot::DragPoint(id, &x, &y, {r, g, b, a}, size, flags); return std::tuple{ret, x, y}; }));
+
+    implot.set_function("DragLineX",
+        sol::overload(
+            [](int id, double x, float r, float g, float b, float a) -> std::tuple<bool, double> { auto ret = ImPlot::DragLineX(id, &x, {r, g, b, a}); return std::tuple{ret, x}; },
+            [](int id, double x, float r, float g, float b, float a, float thickness) { auto ret = ImPlot::DragLineX(id, &x, {r, g, b, a}, thickness); return std::tuple{ret, x}; },
+            [](int id, double x, float r, float g, float b, float a, float thickness, ImPlotDragToolFlags flags) { auto ret = ImPlot::DragLineX(id, &x, {r, g, b, a}, thickness, flags); return std::tuple{ret, x}; }));
+
+    implot.set_function("DragLineY",
+        sol::overload(
+            [](int id, double y, float r, float g, float b, float a) -> std::tuple<bool, double> { auto ret = ImPlot::DragLineY(id, &y, {r, g, b, a}); return std::tuple{ret, y}; },
+            [](int id, double y, float r, float g, float b, float a, float thickness) { auto ret = ImPlot::DragLineY(id, &y, {r, g, b, a}, thickness); return std::tuple{ret, y}; },
+            [](int id, double y, float r, float g, float b, float a, float thickness, ImPlotDragToolFlags flags) { auto ret = ImPlot::DragLineY(id, &y, {r, g, b, a}, thickness, flags); return std::tuple{ret, y}; }));
+
+    implot.set_function("DragRect",
+        sol::overload(
+            [](int id, double x1, double y1, double x2, double y2, float r, float g, float b, float a) -> std::tuple<bool, double, double, double, double> { auto ret = ImPlot::DragRect(id, &x1, &y1, &x2, &y2, {r, g, b, a}); return std::tuple{ret, x1, y1, x2, y2}; },
+            [](int id, double x1, double y1, double x2, double y2, float r, float g, float b, float a, ImPlotDragToolFlags flags) { auto ret = ImPlot::DragRect(id, &x1, &y1, &x2, &y2, {r, g, b, a}, flags); return std::tuple{ret, x1, y1, x2, y2}; }));
+
+
+    implot.set_function("Annotation",
+        sol::overload(
+            [](double x, double y, float r, float g, float b, float a, float pix_offset_x, float pix_offset_y, bool clamp) -> void { return ImPlot::Annotation(x, y, {r, g, b, a}, {pix_offset_x, pix_offset_y}, clamp); },
+            [](double x, double y, float r, float g, float b, float a, float pix_offset_x, float pix_offset_y, bool clamp, bool round) { ImPlot::Annotation(x, y, {r, g, b, a}, {pix_offset_x, pix_offset_y}, clamp, round); },
+            [](double x, double y, float r, float g, float b, float a, float pix_offset_x, float pix_offset_y, bool clamp, const char* text) { ImPlot::Annotation(x, y, {r, g, b, a}, {pix_offset_x, pix_offset_y}, clamp, "%s", text); }));
+
+    implot.set_function("TagX",
+        sol::overload(
+            [](double x, float r, float g, float b, float a) -> void { return ImPlot::TagX(x, {r, g, b, a}); },
+            [](double x, float r, float g, float b, float a, bool round) { ImPlot::TagX(x, {r, g, b, a}, round); },
+            [](double x, float r, float g, float b, float a, const char* text) { ImPlot::TagX(x, {r, g, b, a}, "%s", text); }));
+
+    implot.set_function("TagY",
+        sol::overload(
+            [](double y, float r, float g, float b, float a) -> void { return ImPlot::TagY(y, {r, g, b, a}); },
+            [](double y, float r, float g, float b, float a, bool round) { ImPlot::TagY(y, {r, g, b, a}, round); },
+            [](double y, float r, float g, float b, float a, const char* text) { ImPlot::TagY(y, {r, g, b, a}, "%s", text); }));
+
+
+    implot.set_function("SetAxis", sol::resolve<void(ImAxis)>(ImPlot::SetAxis));
+    implot.set_function("SetAxes", sol::resolve<void(ImAxis, ImAxis)>(ImPlot::SetAxes));
+
+
+    implot.set_function("PixelsToPlot",
+        sol::overload(
+            [](float x, float y) -> std::tuple<double, double> { auto ret = ImPlot::PixelsToPlot(x, y); return std::tuple{ret.x, ret.y}; },
+            [](float x, float y, ImAxis x_axis) { auto ret = ImPlot::PixelsToPlot(x, y, x_axis); return std::tuple{ret.x, ret.y}; },
+            [](float x, float y, ImAxis x_axis, ImAxis y_axis) { auto ret = ImPlot::PixelsToPlot(x, y, x_axis, y_axis); return std::tuple{ret.x, ret.y}; }));
+
+    implot.set_function("PlotToPixels",
+        sol::overload(
+            [](double x, double y) -> std::tuple<float, float> { auto ret = ImPlot::PlotToPixels(x, y); return std::tuple{ret.x, ret.y}; },
+            [](double x, double y, ImAxis x_axis) { auto ret = ImPlot::PlotToPixels(x, y, x_axis); return std::tuple{ret.x, ret.y}; },
+            [](double x, double y, ImAxis x_axis, ImAxis y_axis) { auto ret = ImPlot::PlotToPixels(x, y, x_axis, y_axis); return std::tuple{ret.x, ret.y}; },
+            [](ImPlotPoint plt) -> std::tuple<float, float> { auto ret = ImPlot::PlotToPixels(plt); return std::tuple{ret.x, ret.y}; },
+            [](ImPlotPoint plt, ImAxis x_axis) { auto ret = ImPlot::PlotToPixels(plt, x_axis); return std::tuple{ret.x, ret.y}; },
+            [](ImPlotPoint plt, ImAxis x_axis, ImAxis y_axis) { auto ret = ImPlot::PlotToPixels(plt, x_axis, y_axis); return std::tuple{ret.x, ret.y}; }));
+
+
+    implot.set_function("GetPlotPos", []() -> std::tuple<float, float> { auto ret = ImPlot::GetPlotPos(); return std::tuple{ret.x, ret.y}; });
+    implot.set_function("GetPlotSize", []() -> std::tuple<float, float> { auto ret = ImPlot::GetPlotSize(); return std::tuple{ret.x, ret.y}; });
+
+    implot.set_function("GetPlotMousePos",
+        sol::overload(
+            []() -> std::tuple<double, double> { auto ret = ImPlot::GetPlotMousePos(); return std::tuple{ret.x, ret.y}; },
+            [](ImAxis x_axis) { auto ret = ImPlot::GetPlotMousePos(x_axis); return std::tuple{ret.x, ret.y}; },
+            [](ImAxis x_axis, ImAxis y_axis) { auto ret = ImPlot::GetPlotMousePos(x_axis, y_axis); return std::tuple{ret.x, ret.y}; }));
+
+    implot.set_function("GetPlotLimits",
+        sol::overload(
+            []() -> ImPlotRect { return ImPlot::GetPlotLimits(); },
+            [](ImAxis x_axis) { return ImPlot::GetPlotLimits(x_axis); },
+            [](ImAxis x_axis, ImAxis y_axis) { return ImPlot::GetPlotLimits(x_axis, y_axis); }));
+
+    implot.set_function("IsPlotHovered", sol::resolve<bool()>(ImPlot::IsPlotHovered));
+    implot.set_function("IsAxisHovered", sol::resolve<bool(ImAxis)>(ImPlot::IsAxisHovered));
+    implot.set_function("IsSubplotsHovered", sol::resolve<bool()>(ImPlot::IsSubplotsHovered));
+    implot.set_function("IsPlotSelected", sol::resolve<bool()>(ImPlot::IsPlotSelected));
+    implot.set_function("GetPlotSelection",
+        sol::overload(
+            []() { return ImPlot::GetPlotSelection(); },
+            [](ImAxis x_axis) { return ImPlot::GetPlotSelection(x_axis); },
+            [](ImAxis x_axis, ImAxis y_axis) { return ImPlot::GetPlotSelection(x_axis, y_axis); },
+            sol::resolve<ImPlotRect(ImAxis, ImAxis)>(ImPlot::GetPlotSelection)));
+
+    implot.set_function("CancelPlotSelection", sol::resolve<void()>(ImPlot::CancelPlotSelection));
+    implot.set_function("HideNextItem",
+        sol::overload(
+            []() { ImPlot::HideNextItem(); },
+            [](bool hidden) { ImPlot::HideNextItem(hidden); },
+            sol::resolve<void(bool, ImPlotCond)>(ImPlot::HideNextItem)));
+
+    implot.set_function("BeginAlignedPlots",
+        sol::overload(
+            [](const char* group_id) { return ImPlot::BeginAlignedPlots(group_id); },
+            sol::resolve<bool(const char*, bool)>(ImPlot::BeginAlignedPlots)));
+    implot.set_function("EndAlignedPlots", sol::resolve<void()>(ImPlot::EndAlignedPlots));
+
+    implot.set_function("BeginLegendPopup",
+        sol::overload(
+            [](const char* label_id) { return ImPlot::BeginLegendPopup(label_id); },
+            sol::resolve<bool(const char*, ImGuiMouseButton)>(ImPlot::BeginLegendPopup)));
+    implot.set_function("EndLegendPopup", sol::resolve<void()>(ImPlot::EndLegendPopup));
+    implot.set_function("IsLegendEntryHovered", sol::resolve<bool(const char*)>(ImPlot::IsLegendEntryHovered));
+
+
+    implot.set_function("BeginDragDropTargetPlot", sol::resolve<bool()>(ImPlot::BeginDragDropTargetPlot));
+    implot.set_function("BeginDragDropTargetAxis", sol::resolve<bool(ImAxis)>(ImPlot::BeginDragDropTargetAxis));
+    implot.set_function("BeginDragDropTargetLegend", sol::resolve<bool()>(ImPlot::BeginDragDropTargetLegend));
+    implot.set_function("EndDragDropTarget", sol::resolve<void()>(ImPlot::EndDragDropTarget));
+
+
+    implot.set_function("PushStyleColor",
+        sol::overload(
+            [](ImPlotCol idx, float r, float g, float b, float a) { ImPlot::PushStyleColor(idx, {r, g, b, a}); },
+            sol::resolve<void(ImPlotCol, ImU32)>(ImPlot::PushStyleColor)));
+    implot.set_function("PopStyleColor",
+        sol::overload(
+            []() { ImPlot::PopStyleColor(); },
+            sol::resolve<void(int)>(ImPlot::PopStyleColor)));
+
+    implot.set_function("PushStyleVarFloat", sol::resolve<void(ImPlotStyleVar, float)>(ImPlot::PushStyleVar));
+    implot.set_function("PushStyleVarInt", sol::resolve<void(ImPlotStyleVar, int)>(ImPlot::PushStyleVar));
+    implot.set_function("PushStyleVarVec2", [](ImPlotStyleVar idx, float x, float y) { ImPlot::PushStyleVar(idx, {x, y}); });
+    implot.set_function("PopStyleVar",
+        sol::overload(
+            []() { ImPlot::PopStyleVar(); },
+            sol::resolve<void(int)>(ImPlot::PopStyleVar)));
+
+    implot.set_function("SetNextLineStyle",
+        [](std::optional<float> r, std::optional<float> g, std::optional<float> b, std::optional<float> a, std::optional<float> weight) -> void {
+            return ImPlot::SetNextLineStyle(from_optional(r, g, b, a), weight.value_or(IMPLOT_AUTO));
+        });
+
+    implot.set_function("SetNextFillStyle",
+        [](std::optional<float> r, std::optional<float> g, std::optional<float> b, std::optional<float> a, std::optional<float> alpha_mod) -> void {
+            return ImPlot::SetNextFillStyle(from_optional(r, g, b, a), alpha_mod.value_or(IMPLOT_AUTO));
+        });
+
+    implot.set_function("SetNextMarkerStyle",
+        [](std::optional<ImPlotMarker> marker, std::optional<float> size,
+            std::optional<float> fill_r, std::optional<float> fill_g, std::optional<float> fill_b, std::optional<float> fill_a,
+            std::optional<float> weight,
+            std::optional<float> outline_r, std::optional<float> outline_g, std::optional<float> outline_b, std::optional<float> outline_a
+        ) -> void
+        {
+            return ImPlot::SetNextMarkerStyle(
+                marker.value_or(IMPLOT_AUTO),
+                size.value_or(IMPLOT_AUTO),
+                from_optional(fill_r, fill_g, fill_b, fill_a),
+                weight.value_or(IMPLOT_AUTO),
+                from_optional(outline_r, outline_g, outline_b, outline_a)
+            );
+        });
+
+    implot.set_function("SetNextErrorBarStyle",
+        [](std::optional<float> r, std::optional<float> g, std::optional<float> b, std::optional<float> a, std::optional<float> size, std::optional<float> weight) -> void {
+            return ImPlot::SetNextErrorBarStyle(from_optional(r, g, b, a), size.value_or(IMPLOT_AUTO), weight.value_or(IMPLOT_AUTO));
+        });
+
+    implot.set_function("GetLastItemColor",
+        []() -> std::tuple<float, float, float, float> { auto ret = ImPlot::GetLastItemColor(); return std::tuple{ret.x, ret.y, ret.z, ret.w}; });
+
+    implot.set_function("GetStyleColorName", sol::resolve<const char*(ImPlotCol)>(ImPlot::GetStyleColorName));
+    implot.set_function("GetMarkerName", sol::resolve<const char*(ImPlotMarker)>(ImPlot::GetMarkerName));
+
+
+    implot.set_function("ItemIcon",
+        sol::overload(
+            sol::resolve<void(ImU32)>(ImPlot::ItemIcon),
+            [](float r, float g, float b, float a) { ImPlot::ItemIcon({r, g, b, a}); }));
+    implot.set_function("ColormapIcon", sol::resolve<void(ImPlotColormap)>(ImPlot::ColormapIcon));
+
+
+    implot.set_function("PushPlotClipRect",
+        sol::overload(
+            []() { ImPlot::PushPlotClipRect(); },
+            sol::resolve<void(float)>(ImPlot::PushPlotClipRect)));
+    implot.set_function("PopPlotClipRect", sol::resolve<void()>(ImPlot::PopPlotClipRect));
+
+    implot.set_function("ShowStyleSelector", sol::resolve<bool(const char*)>(ImPlot::ShowStyleSelector));
+    implot.set_function("ShowColormapSelector", sol::resolve<bool(const char*)>(ImPlot::ShowColormapSelector));
+    implot.set_function("ShowInputMapSelector", sol::resolve<bool(const char*)>(ImPlot::ShowInputMapSelector));
+    implot.set_function("ShowUserGuide", sol::resolve<void()>(ImPlot::ShowUserGuide));
+    implot.set_function("ShowMetricsWindow",
+        sol::overload(
+            []() -> void { return ImPlot::ShowMetricsWindow(); },
+            [](bool open) -> bool { ImPlot::ShowMetricsWindow(&open); return open; }));
+
+    implot.set_function("ShowDemoWindow",
+        sol::overload(
+            []() -> void { return ImPlot::ShowDemoWindow(); },
+            [](bool open) -> bool { ImPlot::ShowDemoWindow(&open); return open; }));
 
     imgui["implot"] = implot;
 }
