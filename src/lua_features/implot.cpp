@@ -4,6 +4,8 @@
 #include <tuple>
 #include <vector>
 
+#include <sol/sol.hpp>
+#include <imgui.h>
 #include <implot.h>
 
 ImVec4 from_optional(
