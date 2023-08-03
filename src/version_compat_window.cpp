@@ -58,9 +58,9 @@ void show_version_compat_window()
 
     std::string version_text = "Installed version of NoitaDearImGui: ";
     version_text += to_string(ndi::version.without_tweak());
-    ImGui::TextWrapped(version_text.c_str());
+    ImGui::TextWrapped("%s", version_text.c_str());
 
-    ImGui::TextWrapped(
+    ImGui::TextWrapped("%s",
         "One or more mods are not compatible with this version of "
         "NoitaDearImGui. See the table below for more details:"
     );
@@ -73,25 +73,25 @@ void show_version_compat_window()
 
         for (auto& report : reports) {
             ImGui::TableNextColumn();
-            ImGui::Text(report.mod_name.c_str());
+            ImGui::Text("%s", report.mod_name.c_str());
 
             ImGui::TableNextColumn();
-            ImGui::Text(report.version.c_str());
+            ImGui::Text("%s", report.version.c_str());
 
             ImGui::TableNextColumn();
-            ImGui::Text(to_cstring(report.reason));
+            ImGui::Text("%s", to_cstring(report.reason));
         }
 
         ImGui::EndTable();
     }
 
     ImGui::Spacing();
-    ImGui::TextWrapped(
+    ImGui::TextWrapped("%s",
         "If a newer version of NoitaDearImGui is available, you should "
         "consider installing it. The mods in the table above may misbehave due "
         "to a version mismatch."
     );
-    ImGui::TextWrapped(
+    ImGui::TextWrapped("%s",
         "You should also check if a newer version of any of the mods in the "
         "table above is available."
     );
