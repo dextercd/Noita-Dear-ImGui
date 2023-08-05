@@ -336,16 +336,16 @@ void add_implot(sol::state_view lua, sol::table& imgui)
         "y", &ImPlotPoint::y
     );
 
-    implot.new_usertype<ImPlotRect>("PlotRect",
-        sol::constructors<ImPlotRect(), ImPlotRect(double, double, double, double)>(),
-        "X", &ImPlotRect::X,
-        "Y", &ImPlotRect::Y
-    );
-
     implot.new_usertype<ImPlotRange>("PlotRange",
         sol::constructors<ImPlotRange(), ImPlotRange(double, double)>(),
         "Min", &ImPlotRange::Min,
         "Max", &ImPlotRange::Max
+    );
+
+    implot.new_usertype<ImPlotRect>("PlotRect",
+        sol::constructors<ImPlotRect(), ImPlotRect(double, double, double, double)>(),
+        "X", &ImPlotRect::X,
+        "Y", &ImPlotRect::Y
     );
 
     implot.set_function("BeginPlot",
