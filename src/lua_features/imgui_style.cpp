@@ -15,7 +15,7 @@ void add_imgui_style(sol::table& imgui)
         "COUNT", ImGuiDir_COUNT
     );
 
-    auto style_type = imgui.new_usertype<ImGuiStyle>("ImGuiStyle", sol::no_constructor,
+    auto style_type = imgui.new_usertype<ImGuiStyle>("Style", sol::no_constructor,
         "Alpha", sol::readonly(&ImGuiStyle::Alpha),
         "DisabledAlpha", sol::readonly(&ImGuiStyle::DisabledAlpha),
         "WindowPadding_x", sol::property([](const ImGuiStyle& style) { return style.WindowPadding.x; }),
