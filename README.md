@@ -8,17 +8,25 @@ instruct people to install this themselves alongside your mod.
 Any mod below this mod in the load order can use the ImGui bindings. This mod requires 'unsafe' mode,
 but mods that use the ImGui bindings don't need unsafe mode themselves.
 
-There's not really any documentation on how to use these bindings. I suggest you
-use the [ImGui demo/example file](https://github.com/ocornut/imgui/blob/9aae45eb4a05a5a1f96be1ef37eb503a12ceb889/imgui_demo.cpp)
-to search for functions/widgets that look useful to you and then check out the
-source code of this mod to see how to use it from Lua.
+Make sure to occassionally switch the build type to 'Debug (for devs)' during development or if the game starts crashing. This often helps identify mistakes in use of the bindings.
 
 Also check out the ImGui FAQ: https://github.com/ocornut/imgui/blob/master/docs/FAQ.md
 a lot of stuff there also applies to these bindings.
 
 ## Documentation
 
-There's generated [documentation containing all the function signatures](Documentation.md).
+There's generated [documentation containing all the function signatures](imguidoc/imgui_definitions.lua).
+
+You can just refer to this file manually, but it's also possible to load into VS Code or any other editor that supports the [LuaLS/Lua Language Server](https://github.com/LuaLS/lua-language-server).
+
+VS Code is pretty easy to setup:
+
+1. Get the Lua language server extension. https://marketplace.visualstudio.com/items?itemName=sumneko.lua
+   ![](imguidoc/vscode-lua-extension.png)
+2. Go into the extension's settings and add the `imguidoc` directory. This is included in the mod release zip.
+   ![](imguidoc/vscode-lua-setup.png)
+3. It should now be working. Press ctrl+space to trigger autocomplete.
+   ![](imguidoc/vscode-suggestion.png)
 
 ### Bindings
 
@@ -66,4 +74,4 @@ Many thanks to 🌸Rain🌸 (vexx32) on the Noita Discord for the Noita font ttf
 
 - This repo hosts a slightly altered version with '{', '}', and '~' characters added.
 
-Thanks to Kaedenn for the signatures documentation created using [this script](https://github.com/Kaedenn/noita/blob/main/tools/imgui_parse_api.py) that he made.
+Thanks to Kaedenn for creating the initial documentation using [this script](https://github.com/Kaedenn/noita/blob/main/tools/imgui_parse_api.py) he made.
