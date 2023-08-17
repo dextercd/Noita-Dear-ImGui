@@ -2499,6 +2499,16 @@ function ImPlot.PlotBars(label_id, xs, ys, bar_size) end
 function ImPlot.PlotBars(label_id, xs, ys, flags, bar_size) end
 
 
+---@param labels string[]
+---@param values number[]
+---@param item_count integer
+---@param group_count integer
+---@param group_size number?
+---@param shift number?
+---@param flags PlotBarGroupsFlags?
+function ImPlot.PlotBarGroups(labels, values, item_count, group_count, group_size, shift, flags) end
+
+
 ---@param label_id string
 ---@param xs number[]
 ---@param ys number[]

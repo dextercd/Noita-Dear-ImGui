@@ -484,7 +484,17 @@ void add_implot(sol::state_view lua, sol::table& imgui)
             [](const char* label_id, std::vector<double> xs, std::vector<double> ys, double bar_size) { ImPlot::PlotBars(label_id, std::data(xs), std::data(ys), std::min(std::size(xs), std::size(ys)), bar_size); },
             [](const char* label_id, std::vector<double> xs, std::vector<double> ys, ImPlotBarsFlags flags, double bar_size) { ImPlot::PlotBars(label_id, std::data(xs), std::data(ys), std::min(std::size(xs), std::size(ys)), bar_size, flags); }));
 
-    // PlotBarGroups
+    implot.set_function("PlotBarGroups",
+        [](std::vector<const char*> labels, std::vector<double> values, int item_count, int group_count, std::optional<double> group_size, std::optional<double> shift, std::optional<ImPlotBarGroupsFlags> flags) {
+            auto count = (int)std::min(std::size(labels), std::size(values));
+            if (item_count * group_count > count)
+                return;
+
+            if (!group_size) return ImPlot::PlotBarGroups(std::data(labels), std::data(values), item_count, group_count);
+            if (!shift) return ImPlot::PlotBarGroups(std::data(labels), std::data(values), item_count, group_count, *group_size);
+            if (!flags) return ImPlot::PlotBarGroups(std::data(labels), std::data(values), item_count, group_count, *group_size, *shift);
+            return ImPlot::PlotBarGroups(std::data(labels), std::data(values), item_count, group_count, *group_size, *shift, *flags);
+        });
 
     implot.set_function("PlotErrorBars",
         sol::overload(
