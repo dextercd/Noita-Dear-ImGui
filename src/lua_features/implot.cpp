@@ -486,8 +486,10 @@ void add_implot(sol::state_view lua, sol::table& imgui)
 
     implot.set_function("PlotBarGroups",
         [](std::vector<const char*> labels, std::vector<double> values, int item_count, int group_count, std::optional<double> group_size, std::optional<double> shift, std::optional<ImPlotBarGroupsFlags> flags) {
-            auto count = (int)std::min(std::size(labels), std::size(values));
-            if (item_count * group_count > count)
+            if (item_count * group_count > std::size(values))
+                return;
+
+            if (item_count > std::size(labels))
                 return;
 
             if (!group_size) return ImPlot::PlotBarGroups(std::data(labels), std::data(values), item_count, group_count);
