@@ -6,7 +6,7 @@ project(NoitaDearImGui
     HOMEPAGE_URL "https://github.com/dextercd/Noita-Dear-ImGui"
 )
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 # Don't add lib suffix when crosscompiling from Linux
 set(CMAKE_SHARED_LIBRARY_PREFIX "")
