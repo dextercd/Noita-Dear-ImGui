@@ -10,6 +10,11 @@ def enum_name(name):
 
 def clang_to_lua(typ: Type):
     # ImPlot uses typedefs instead of real enums in its parameters.
+    if typ.kind == TypeKind.ELABORATED:
+        nt = typ.get_named_type()
+        if nt.kind == TypeKind.TYPEDEF:
+            typ = nt
+
     if typ.kind == TypeKind.TYPEDEF:
         if (
             typ.spelling != "ImGuiID"
