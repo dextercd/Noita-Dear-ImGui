@@ -394,6 +394,17 @@ function ImGui.ListClipper.ForceDisplayRangeByIndices(item_min, item_max) end
 ---@field Color fun(index: integer): (number, number, number, number)?
 
 
+---@class ImGui.ColumnSortSpecs
+---@field ColumnUserID integer
+---@field ColumnIndex integer
+---@field SortOrder integer
+---@field SortDirection SortDirection
+
+
+---@class ImGui.TableSortSpecs
+---@field Specs ImGui.ColumnSortSpecs[]
+
+
 ---@class ModSpec
 ---@field mod string Name of the mod that wants to use imgui.
 ---@field version string Version of imgui that the mod requires. e.g. "1.0.0"

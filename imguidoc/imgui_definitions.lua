@@ -125,6 +125,17 @@ function ImGui.ListClipper.ForceDisplayRangeByIndices(item_min, item_max) end
 ---@field Color fun(index: integer): (number, number, number, number)?
 
 
+---@class ImGui.ColumnSortSpecs
+---@field ColumnUserID integer
+---@field ColumnIndex integer
+---@field SortOrder integer
+---@field SortDirection SortDirection
+
+
+---@class ImGui.TableSortSpecs
+---@field Specs ImGui.ColumnSortSpecs[]
+
+
 ---@class ModSpec
 ---@field mod string Name of the mod that wants to use imgui.
 ---@field version string Version of imgui that the mod requires. e.g. "1.0.0"
@@ -1545,6 +1556,14 @@ ImGui.TableBgTarget = {
 }
 
 
+---@enum SortDirection
+ImGui.SortDirection = {
+    None = 0,
+    Ascending = 1,
+    Descending = 2,
+}
+
+
 ---@param str_id string
 ---@param column integer
 ---@return boolean
@@ -1674,6 +1693,14 @@ function ImGui.TableSetBgColor(target, r, g, b, a) end
 ---@param a number
 ---@param column_n integer
 function ImGui.TableSetBgColor(target, r, g, b, a, column_n) end
+
+
+---@return boolean?
+---@return ImGui.TableSortSpecs?
+function ImGui.TableGetSortSpecs() end
+
+
+function ImGui.TableSortSpecsMarkClean() end
 
 
 ---@enum HoveredFlags

@@ -1,8 +1,36 @@
 #include <sol/sol.hpp>
 #include <imgui.h>
 
+#include <optional>
+#include <utility>
+
+struct ColumnSortSpecs {
+    ImGuiID ColumnUserID;
+    ImS16 ColumnIndex;
+    ImS16 SortOrder;
+    ImGuiSortDirection SortDirection;
+};
+
+struct TableSortSpecs {
+    std::vector<ColumnSortSpecs> Specs;
+};
+
+int sol_lua_push(lua_State* L, const TableSortSpecs& ts) {
+    sol::state_view lua{L};
+    int amount = sol::stack::push(L,
+            lua.create_table_with("Specs", sol::as_table(ts.Specs)));
+    return amount;
+}
+
 void add_imgui_tables(sol::table& imgui)
 {
+    imgui.new_usertype<ColumnSortSpecs>("ColumnSortSpecs",
+        "ColumnUserID", sol::readonly(&ColumnSortSpecs::ColumnUserID),
+        "ColumnIndex", sol::readonly(&ColumnSortSpecs::ColumnIndex),
+        "SortOrder", sol::readonly(&ColumnSortSpecs::SortOrder),
+        "SortDirection", sol::readonly(&ColumnSortSpecs::SortDirection)
+    );
+
     imgui.new_enum<ImGuiTableFlags_>("TableFlags", {
         {"None",                       ImGuiTableFlags_None},
         {"Resizable",                  ImGuiTableFlags_Resizable},
@@ -79,6 +107,12 @@ void add_imgui_tables(sol::table& imgui)
         {"CellBg", ImGuiTableBgTarget_CellBg},
     });
 
+    imgui.new_enum<ImGuiSortDirection>("SortDirection", {
+        {"None", ImGuiSortDirection_None},
+        {"Ascending", ImGuiSortDirection_Ascending},
+        {"Descending", ImGuiSortDirection_Descending},
+    });
+
     imgui.set_function("BeginTable",
         sol::overload(
             [](const char* str_id, int column) -> bool { return ImGui::BeginTable(str_id, column); },
@@ -102,7 +136,6 @@ void add_imgui_tables(sol::table& imgui)
     imgui.set_function("TableSetupScrollFreeze", sol::resolve<void(int, int)>(ImGui::TableSetupScrollFreeze));
     imgui.set_function("TableHeadersRow", sol::resolve<void()>(ImGui::TableHeadersRow));
     imgui.set_function("TableHeader", sol::resolve<void(const char* label)>(ImGui::TableHeader));
-    // IMGUI_API ImGuiTableSortSpecs*  TableGetSortSpecs();
     imgui.set_function("TableGetColumnCount", sol::resolve<int()>(ImGui::TableGetColumnCount));
     imgui.set_function("TableGetColumnIndex", sol::resolve<int()>(ImGui::TableGetColumnIndex));
     imgui.set_function("TableGetRowIndex", sol::resolve<int()>(ImGui::TableGetRowIndex));
@@ -119,4 +152,38 @@ void add_imgui_tables(sol::table& imgui)
         sol::overload(
             [](ImGuiTableBgTarget target, float r, float g, float b, float a) -> void { return ImGui::TableSetBgColor(target, ImGui::GetColorU32(ImVec4{r, g, b, a})); },
             [](ImGuiTableBgTarget target, float r, float g, float b, float a, int column_n) { return ImGui::TableSetBgColor(target, ImGui::GetColorU32(ImVec4{r, g, b, a}), column_n); }));
+
+
+    imgui.set_function("TableGetSortSpecs", []() -> std::optional<std::tuple<bool, TableSortSpecs>>
+        {
+            auto source_specs = ImGui::TableGetSortSpecs();
+            if (!source_specs)
+                return std::nullopt;
+
+            auto result_specs = TableSortSpecs{};
+
+            auto spec_count = source_specs->SpecsCount;
+            auto column_specs = source_specs->Specs;
+            for (int i = 0; i != spec_count; ++i) {
+                result_specs.Specs.push_back(ColumnSortSpecs{
+                    .ColumnUserID = column_specs[i].ColumnUserID,
+                    .ColumnIndex = column_specs[i].ColumnIndex,
+                    .SortOrder = column_specs[i].SortOrder,
+                    .SortDirection = column_specs[i].SortDirection,
+                });
+            }
+
+            return std::pair{
+                source_specs->SpecsDirty,
+                result_specs,
+            };
+        });
+
+    imgui.set_function("TableSortSpecsMarkClean", []() {
+        auto source_specs = ImGui::TableGetSortSpecs();
+        if (!source_specs)
+            return;
+
+        source_specs->SpecsDirty = false;
+    });
 }

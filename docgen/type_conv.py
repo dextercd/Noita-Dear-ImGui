@@ -74,7 +74,10 @@ def clang_to_lua(typ: Type):
 
             if spelling.startswith("std::optional<"):
                 vt = typ.get_template_argument_type(0)
-                return f"{clang_to_lua(vt)}?"
+                ct = clang_to_lua(vt)
+                if isinstance(ct, list):
+                    return [f"{c}?" for c in ct]
+                return f"{ct}?"
 
             if spelling.startswith("std::tuple<"):
                 types = [
@@ -115,6 +118,12 @@ def clang_to_lua(typ: Type):
 
             if spelling == "ImGuiStyle":
                 return "ImGui.Style"
+
+            if spelling == "ColumnSortSpecs":
+                return "ImGui.ColumnSortSpecs"
+
+            if spelling == "TableSortSpecs":
+                return "ImGui.TableSortSpecs"
 
     canonical = typ.get_canonical()
     if canonical != typ:
