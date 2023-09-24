@@ -115,7 +115,7 @@ target_link_libraries(noita_dear_imgui
 if (MINGW)
     # sol2 include some headers that transitively includes pthread stuff
     find_package(Threads REQUIRED)
-    target_link_libraries(noita_dear_imgui PUBLIC Threads::Threads)
+    target_link_libraries(noita_dear_imgui PRIVATE Threads::Threads)
 endif()
 
 
