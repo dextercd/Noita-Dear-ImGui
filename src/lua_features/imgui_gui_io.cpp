@@ -62,7 +62,10 @@ void add_imgui_gui_io(sol::table& imgui)
         "MetricsRenderWindows", sol::readonly(&ImGuiIO::MetricsRenderWindows),
         "MetricsActiveWindows", sol::readonly(&ImGuiIO::MetricsActiveWindows),
         "MetricsActiveAllocations", sol::readonly(&ImGuiIO::MetricsActiveAllocations),
-        "MouseDelta", sol::readonly(&ImGuiIO::MouseDelta)
+        "MouseDelta_x", sol::property([](ImGuiIO& io) { return io.MouseDelta.x; }),
+        "MouseDelta_y", sol::property([](ImGuiIO& io) { return io.MouseDelta.y; }),
+        "MouseWheel", sol::readonly(&ImGuiIO::MouseWheel),
+        "MouseWheelH", sol::readonly(&ImGuiIO::MouseWheelH)
     );
 
     imgui.set_function("GetIO", sol::resolve<ImGuiIO&()>(ImGui::GetIO));
