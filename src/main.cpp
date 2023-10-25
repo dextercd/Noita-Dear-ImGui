@@ -32,10 +32,12 @@ std::vector<std::string> load_names;
 std::string mod_path;
 
 // GLSL version used in Noita's shaders
-char glsl_version[] = "#version 110";
+const char glsl_version[] = "#version 110";
 
 bool imgui_context_initialised = false;
 bool imgui_backend_initialised = false;
+
+bool quit = false;
 
 // Context is initialised as soon as the Noita mod is started
 void init_imgui_context()
@@ -73,6 +75,8 @@ void init_imgui_context()
     imgui_context_initialised = true;
 }
 
+SDL_Window* main_window;
+
 // Backend is initialised at the first swapwindow call after the context is
 // initialised.
 void setup_imgui_backend(SDL_Window* window, SDL_GLContext gl_context)
@@ -91,6 +95,7 @@ void setup_imgui_backend(SDL_Window* window, SDL_GLContext gl_context)
 
     io.ConfigFlags = restore_flags;
 
+    main_window = window;
     imgui_backend_initialised = true;
 }
 
@@ -139,7 +144,7 @@ void SDL_GL_SwapWindow_hook(SDL_Window* ctx)
     if (running_for_main_window)
         return original_SDL_GL_SwapWindow(ctx);
 
-    if (!imgui_context_initialised)
+    if (!imgui_context_initialised || quit)
         return original_SDL_GL_SwapWindow(ctx);
 
     if (imgui_context_initialised && !imgui_backend_initialised) {
@@ -189,7 +194,7 @@ int SDL_PollEvent_hook(SDL_Event* event)
 {
     auto ret = original_SDL_PollEvent(event);
 
-    if (imgui_backend_initialised && event && ret) {
+    if (!quit && imgui_backend_initialised && event && ret) {
         ImGui_ImplSDL2_ProcessEvent(event);
 
         auto& io = ImGui::GetIO();
@@ -207,6 +212,18 @@ int SDL_PollEvent_hook(SDL_Event* event)
 
         if (io.WantCaptureKeyboard && is_keyboard_event(event))
             return SDL_PollEvent_hook(event);
+
+        if (event->type == SDL_QUIT)
+            quit = true;
+
+        if (event->type == SDL_WINDOWEVENT && event->window.event == SDL_WINDOWEVENT_CLOSE && event->window.windowID == SDL_GetWindowID(main_window))
+            quit = true;
+
+        if (quit) {
+            ImGui_ImplOpenGL3_Shutdown();
+            ImGui_ImplSDL2_Shutdown();
+            ImGui::DestroyContext();
+        }
     }
 
     return ret;
