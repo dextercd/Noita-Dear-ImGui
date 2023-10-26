@@ -37,8 +37,6 @@ const char glsl_version[] = "#version 110";
 bool imgui_context_initialised = false;
 bool imgui_backend_initialised = false;
 
-bool quit = false;
-
 // Context is initialised as soon as the Noita mod is started
 void init_imgui_context()
 {
@@ -144,7 +142,7 @@ void SDL_GL_SwapWindow_hook(SDL_Window* ctx)
     if (running_for_main_window)
         return original_SDL_GL_SwapWindow(ctx);
 
-    if (!imgui_context_initialised || quit)
+    if (!imgui_context_initialised)
         return original_SDL_GL_SwapWindow(ctx);
 
     if (imgui_context_initialised && !imgui_backend_initialised) {
@@ -194,7 +192,7 @@ int SDL_PollEvent_hook(SDL_Event* event)
 {
     auto ret = original_SDL_PollEvent(event);
 
-    if (!quit && imgui_backend_initialised && event && ret) {
+    if (imgui_backend_initialised && event && ret) {
         ImGui_ImplSDL2_ProcessEvent(event);
 
         auto& io = ImGui::GetIO();
@@ -213,16 +211,15 @@ int SDL_PollEvent_hook(SDL_Event* event)
         if (io.WantCaptureKeyboard && is_keyboard_event(event))
             return SDL_PollEvent_hook(event);
 
-        if (event->type == SDL_QUIT)
-            quit = true;
-
-        if (event->type == SDL_WINDOWEVENT && event->window.event == SDL_WINDOWEVENT_CLOSE && event->window.windowID == SDL_GetWindowID(main_window))
-            quit = true;
-
-        if (quit) {
-            ImGui_ImplOpenGL3_Shutdown();
-            ImGui_ImplSDL2_Shutdown();
-            ImGui::DestroyContext();
+        if (event->type == SDL_WINDOWEVENT &&
+            event->window.event == SDL_WINDOWEVENT_CLOSE &&
+            event->window.windowID == SDL_GetWindowID(main_window))
+        {
+            // Noita only has one window normally so it doesn't listen to close
+            // events for its main window, it only listens for SDL_QUIT.
+            // Translate the event here so closing the game window actually
+            // works.
+            event->type = SDL_QUIT;
         }
     }
 
