@@ -12,7 +12,7 @@ add_test(NAME noita_imgui_test COMMAND noita_imgui_test)
 
 set(noita_imgui_lib_dir "$<SHELL_PATH:$<TARGET_FILE_DIR:noita_dear_imgui>>")
 set(noita_imgui_sdl_lib_dir "$<SHELL_PATH:$<TARGET_FILE_DIR:SDL2>>")
-set(noita_imgui_lua_lib_dir "$<SHELL_PATH:$<TARGET_FILE_DIR:LuaJIT_library>>")
+set(noita_imgui_lua_lib_dir "$<SHELL_PATH:${LUA_LIBRARIES}>")
 
 if (CMAKE_HOST_WIN32)
     set_property(TEST noita_imgui_test APPEND PROPERTY

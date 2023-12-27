@@ -102,11 +102,13 @@ target_include_directories(noita_dear_imgui
         $<BUILD_INTERFACE:${dearimgui_SOURCE_DIR}>
         $<BUILD_INTERFACE:${implot_SOURCE_DIR}>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+    PRIVATE
+        ${LUA_INCLUDE_DIR}
 )
 
 target_link_libraries(noita_dear_imgui
     PRIVATE
-        LuaJIT_library
+        ${LUA_LIBRARIES}
         sol2::sol2
         SDL2
         minhook
