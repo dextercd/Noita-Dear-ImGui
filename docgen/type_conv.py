@@ -125,6 +125,9 @@ def clang_to_lua(typ: Type):
             if spelling == "TableSortSpecs":
                 return "ImGui.TableSortSpecs"
 
+            if spelling == "lua_image":
+                return "ImGui.LuaImage"
+
     canonical = typ.get_canonical()
     if canonical != typ:
         return clang_to_lua(canonical)

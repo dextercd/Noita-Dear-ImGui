@@ -186,7 +186,7 @@ def get_unit(filepath):
         pass
 
     # Not sure why this is needed
-    args += ["-isystem", "/usr/lib/gcc/i686-w64-mingw32/12.2.0/include/"]
+    args += ["-isystem", "/usr/lib/gcc/i686-w64-mingw32/13.1.0/include/"]
 
     unit = index.parse(filepath, args=args)
 
@@ -404,6 +404,10 @@ function ImGui.ListClipper.ForceDisplayRangeByIndices(item_min, item_max) end
 ---@class ImGui.TableSortSpecs
 ---@field Specs ImGui.ColumnSortSpecs[]
 
+---@class ImGui.LuaImage
+---@field path string
+---@field width integer Readonly width of image
+---@field height integer Readonly height of image
 
 ---@class ModSpec
 ---@field mod string Name of the mod that wants to use imgui.

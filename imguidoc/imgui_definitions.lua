@@ -135,6 +135,10 @@ function ImGui.ListClipper.ForceDisplayRangeByIndices(item_min, item_max) end
 ---@class ImGui.TableSortSpecs
 ---@field Specs ImGui.ColumnSortSpecs[]
 
+---@class ImGui.LuaImage
+---@field path string
+---@field width integer Readonly width of image
+---@field height integer Readonly height of image
 
 ---@class ModSpec
 ---@field mod string Name of the mod that wants to use imgui.
@@ -5051,3 +5055,122 @@ function ImGui.SetKeyboardFocusHere() end
 
 ---@param offset integer
 function ImGui.SetKeyboardFocusHere(offset) end
+
+
+---@param image_path string
+---@return ImGui.LuaImage?
+function ImGui.LoadImage(image_path) end
+
+
+---@param img ImGui.LuaImage
+---@param size_w number
+---@param size_h number
+function ImGui.Image(img, size_w, size_h) end
+
+---@param img ImGui.LuaImage
+---@param size_w number
+---@param size_h number
+---@param uv0_x number
+---@param uv0_y number
+function ImGui.Image(img, size_w, size_h, uv0_x, uv0_y) end
+
+---@param img ImGui.LuaImage
+---@param size_w number
+---@param size_h number
+---@param uv0_x number
+---@param uv0_y number
+---@param uv1_x number
+---@param uv1_y number
+function ImGui.Image(img, size_w, size_h, uv0_x, uv0_y, uv1_x, uv1_y) end
+
+---@param img ImGui.LuaImage
+---@param size_w number
+---@param size_h number
+---@param uv0_x number
+---@param uv0_y number
+---@param uv1_x number
+---@param uv1_y number
+---@param tint_col_r number
+---@param tint_col_g number
+---@param tint_col_b number
+---@param tint_col_a number
+function ImGui.Image(img, size_w, size_h, uv0_x, uv0_y, uv1_x, uv1_y, tint_col_r, tint_col_g, tint_col_b, tint_col_a) end
+
+---@param img ImGui.LuaImage
+---@param size_w number
+---@param size_h number
+---@param uv0_x number
+---@param uv0_y number
+---@param uv1_x number
+---@param uv1_y number
+---@param tint_col_r number
+---@param tint_col_g number
+---@param tint_col_b number
+---@param tint_col_a number
+---@param border_col_r number
+---@param border_col_g number
+---@param border_col_b number
+---@param border_col_a number
+function ImGui.Image(img, size_w, size_h, uv0_x, uv0_y, uv1_x, uv1_y, tint_col_r, tint_col_g, tint_col_b, tint_col_a, border_col_r, border_col_g, border_col_b, border_col_a) end
+
+
+---@param str_id string
+---@param img ImGui.LuaImage
+---@param size_w number
+---@param size_h number
+---@return boolean?
+function ImGui.ImageButton(str_id, img, size_w, size_h) end
+
+---@param str_id string
+---@param img ImGui.LuaImage
+---@param size_w number
+---@param size_h number
+---@param uv0_x number
+---@param uv0_y number
+---@return boolean?
+function ImGui.ImageButton(str_id, img, size_w, size_h, uv0_x, uv0_y) end
+
+---@param str_id string
+---@param img ImGui.LuaImage
+---@param size_w number
+---@param size_h number
+---@param uv0_x number
+---@param uv0_y number
+---@param uv1_x number
+---@param uv1_y number
+---@return boolean?
+function ImGui.ImageButton(str_id, img, size_w, size_h, uv0_x, uv0_y, uv1_x, uv1_y) end
+
+---@param str_id string
+---@param img ImGui.LuaImage
+---@param size_w number
+---@param size_h number
+---@param uv0_x number
+---@param uv0_y number
+---@param uv1_x number
+---@param uv1_y number
+---@param bg_col_r number
+---@param bg_col_g number
+---@param bg_col_b number
+---@param bg_col_a number
+---@return boolean?
+function ImGui.ImageButton(str_id, img, size_w, size_h, uv0_x, uv0_y, uv1_x, uv1_y, bg_col_r, bg_col_g, bg_col_b, bg_col_a) end
+
+---@param str_id string
+---@param img ImGui.LuaImage
+---@param size_w number
+---@param size_h number
+---@param uv0_x number
+---@param uv0_y number
+---@param uv1_x number
+---@param uv1_y number
+---@param bg_col_r number
+---@param bg_col_g number
+---@param bg_col_b number
+---@param bg_col_a number
+---@param tint_col_r number
+---@param tint_col_g number
+---@param tint_col_b number
+---@param tint_col_a number
+---@return boolean?
+function ImGui.ImageButton(str_id, img, size_w, size_h, uv0_x, uv0_y, uv1_x, uv1_y, bg_col_r, bg_col_g, bg_col_b, bg_col_a, tint_col_r, tint_col_g, tint_col_b, tint_col_a) end
