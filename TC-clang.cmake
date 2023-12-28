@@ -41,7 +41,7 @@ string(APPEND TC_COMPILE_FLAGS " -DCOMPAT53_HAVE_STRERROR_R=0")
 # duplicate symbol by defining it again.
 string(APPEND TC_COMPILE_FLAGS " -D__GXX_TYPEINFO_EQUALITY_INLINE=0")
 # MinGW include paths
-string(APPEND TC_COMPILE_FLAGS " -I /usr/i686-w64-mingw32/include/c++/12.2.0/ -I /usr/i686-w64-mingw32/include/c++/12.2.0/i686-w64-mingw32")
+string(APPEND TC_COMPILE_FLAGS " -I /usr/i686-w64-mingw32/include/c++/13.1.0/ -I /usr/i686-w64-mingw32/include/c++/13.1.0/i686-w64-mingw32")
 
 set(CMAKE_C_FLAGS_INIT "${TC_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS_INIT "${TC_COMPILE_FLAGS}")
@@ -51,7 +51,7 @@ string(APPEND TC_LINK_FLAGS "${TC_COMMON_FLAGS}")
 # Use ldd linker
 string(APPEND TC_LINK_FLAGS " -fuse-ld=lld")
 # MinGW library path
-string(APPEND TC_LINK_FLAGS " -L /usr/lib/gcc/i686-w64-mingw32/12.2.0")
+string(APPEND TC_LINK_FLAGS " -L /usr/lib/gcc/i686-w64-mingw32/13.1.0")
 
 set(CMAKE_EXE_LINKER_FLAGS_INIT "${TC_LINK_FLAGS}")
 set(CMAKE_MODULE_LINKER_FLAGS_INIT "${TC_LINK_FLAGS}")

@@ -11,7 +11,9 @@ if [ ! -d clang-build ]; then
         -DCMAKE_INSTALL_PREFIX="$HOME/.local/share/Steam/steamapps/common/Noita/mods" \
         -DCMAKE_TOOLCHAIN_FILE="$project_path/TC-clang.cmake" \
         -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-        -DCMAKE_DISABLE_PRECOMPILE_HEADERS=ON
+        -DCMAKE_DISABLE_PRECOMPILE_HEADERS=ON \
+        -DLUA_INCLUDE_DIR="/home/dexter/NoitaMods/NoitaPatcher/luajit/src" \
+        -DLUA_LIBRARIES="/home/dexter/NoitaMods/NoitaPatcher/luajit/src/lua51.dll"
 
     popd
 fi
