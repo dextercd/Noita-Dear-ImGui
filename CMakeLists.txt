@@ -96,6 +96,15 @@ FetchContent_Declare(sol
 
 FetchContent_MakeAvailable(sol)
 
+
+FetchContent_Declare(tinyxml2
+    GIT_REPOSITORY https://github.com/leethomason/tinyxml2.git
+    GIT_TAG e05956094c27117f989d22f25b75633123d72a83
+)
+
+FetchContent_MakeAvailable(tinyxml2)
+
+
 set(VERSION_INFO_TXT "${CMAKE_CURRENT_BINARY_DIR}/version_info.txt")
 set(VERSION_INFO_CPP "${CMAKE_CURRENT_BINARY_DIR}/version_info.cpp")
 

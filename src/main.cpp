@@ -24,8 +24,11 @@ extern "C" {
 #include <noita_imgui/add_lua_features.hpp>
 #include <noita_imgui/pause.hpp>
 #include <noita_dear_imgui_export.h>
+
 #include "style.hpp"
 #include "version_compat_window.hpp"
+#include "filesystem.hpp"
+#include "image_loader.hpp"
 
 bool is_embedded;
 std::vector<std::string> load_names;
@@ -157,6 +160,7 @@ void SDL_GL_SwapWindow_hook(SDL_Window* ctx)
     render();
     original_SDL_GL_SwapWindow(ctx);
     start_frame();
+    unload_unused_images();
 
     running_for_main_window = false;
 }
@@ -304,6 +308,9 @@ NOITA_DEAR_IMGUI_EXPORT void init_imgui(
 
     if (is_loaded())
         return;
+
+    // Make sure filesystem is initialised early
+    auto& fs = get_fs();
 
     is_embedded = std::string_view{name} != "imgui";
     if (is_embedded) {

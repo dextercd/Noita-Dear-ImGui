@@ -27,6 +27,10 @@ add_library(noita_dear_imgui SHARED
     wine_compat.cpp
     version_compat_window.cpp
     pause.cpp
+    stb_image.cpp
+    filesystem.cpp
+    data_wak_reader.cpp
+    image_loader.cpp
 
     # Dear ImGui sources
     ${dearimgui_SOURCE_DIR}/imgui.cpp
@@ -53,6 +57,7 @@ add_library(noita_dear_imgui SHARED
     lua_features/imgui_drag_sliders.cpp
     lua_features/imgui_font.cpp
     lua_features/imgui_gui_io.cpp
+    lua_features/imgui_images.cpp
     lua_features/imgui_keyboard_input.cpp
     lua_features/imgui_layout.cpp
     lua_features/imgui_list_clipper.cpp
@@ -112,6 +117,7 @@ target_link_libraries(noita_dear_imgui
         sol2::sol2
         SDL2
         minhook
+        tinyxml2
 )
 
 if (MINGW)
