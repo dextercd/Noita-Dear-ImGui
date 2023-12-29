@@ -1849,10 +1849,9 @@ ImPlot.PlotFlags = {
     NoInputs = 8,
     NoMenus = 16,
     NoBoxSelect = 32,
-    NoChild = 64,
-    NoFrame = 128,
-    Equal = 256,
-    Crosshairs = 512,
+    NoFrame = 64,
+    Equal = 128,
+    Crosshairs = 256,
     CanvasOnly = 55,
 }
 
@@ -2020,6 +2019,7 @@ ImPlot.PlotInfLinesFlags = {
 ImPlot.PlotPieChartFlags = {
     None = 0,
     Normalize = 1024,
+    IgnoreHidden = 2048,
 }
 
 
@@ -2666,36 +2666,14 @@ function ImPlot.PlotDummy(label_id, flags) end
 ---@param g number
 ---@param b number
 ---@param a number
+---@param size number?
+---@param flags PlotDragToolFlags?
 ---@return boolean
 ---@return number
 ---@return number
-function ImPlot.DragPoint(id, x, y, r, g, b, a) end
-
----@param id integer
----@param x number
----@param y number
----@param r number
----@param g number
----@param b number
----@param a number
----@param size number
 ---@return boolean
----@return number
----@return number
-function ImPlot.DragPoint(id, x, y, r, g, b, a, size) end
-
----@param id integer
----@param x number
----@param y number
----@param r number
----@param g number
----@param b number
----@param a number
----@param size number
----@param flags PlotDragToolFlags
 ---@return boolean
----@return number
----@return number
+---@return boolean
 function ImPlot.DragPoint(id, x, y, r, g, b, a, size, flags) end
 
 
@@ -2705,31 +2683,13 @@ function ImPlot.DragPoint(id, x, y, r, g, b, a, size, flags) end
 ---@param g number
 ---@param b number
 ---@param a number
+---@param thickness number?
+---@param flags PlotDragToolFlags?
 ---@return boolean
 ---@return number
-function ImPlot.DragLineX(id, x, r, g, b, a) end
-
----@param id integer
----@param x number
----@param r number
----@param g number
----@param b number
----@param a number
----@param thickness number
 ---@return boolean
----@return number
-function ImPlot.DragLineX(id, x, r, g, b, a, thickness) end
-
----@param id integer
----@param x number
----@param r number
----@param g number
----@param b number
----@param a number
----@param thickness number
----@param flags PlotDragToolFlags
 ---@return boolean
----@return number
+---@return boolean
 function ImPlot.DragLineX(id, x, r, g, b, a, thickness, flags) end
 
 
@@ -2739,31 +2699,13 @@ function ImPlot.DragLineX(id, x, r, g, b, a, thickness, flags) end
 ---@param g number
 ---@param b number
 ---@param a number
+---@param thickness number?
+---@param flags PlotDragToolFlags?
 ---@return boolean
 ---@return number
-function ImPlot.DragLineY(id, y, r, g, b, a) end
-
----@param id integer
----@param y number
----@param r number
----@param g number
----@param b number
----@param a number
----@param thickness number
 ---@return boolean
----@return number
-function ImPlot.DragLineY(id, y, r, g, b, a, thickness) end
-
----@param id integer
----@param y number
----@param r number
----@param g number
----@param b number
----@param a number
----@param thickness number
----@param flags PlotDragToolFlags
 ---@return boolean
----@return number
+---@return boolean
 function ImPlot.DragLineY(id, y, r, g, b, a, thickness, flags) end
 
 
@@ -2776,28 +2718,15 @@ function ImPlot.DragLineY(id, y, r, g, b, a, thickness, flags) end
 ---@param g number
 ---@param b number
 ---@param a number
+---@param flags PlotDragToolFlags?
 ---@return boolean
 ---@return number
 ---@return number
 ---@return number
 ---@return number
-function ImPlot.DragRect(id, x1, y1, x2, y2, r, g, b, a) end
-
----@param id integer
----@param x1 number
----@param y1 number
----@param x2 number
----@param y2 number
----@param r number
----@param g number
----@param b number
----@param a number
----@param flags PlotDragToolFlags
 ---@return boolean
----@return number
----@return number
----@return number
----@return number
+---@return boolean
+---@return boolean
 function ImPlot.DragRect(id, x1, y1, x2, y2, r, g, b, a, flags) end
 
 

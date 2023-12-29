@@ -73,7 +73,7 @@ endif()
 
 FetchContent_Declare(ImPlot
     GIT_REPOSITORY https://github.com/epezent/implot.git
-    GIT_TAG cc5e1daa5c7f2335a9460ae79c829011dc5cef2d
+    GIT_TAG 1f7a8c0314d838a76695bccebe0f66864f507bc0
 )
 FetchContent_GetProperties(ImPlot)
 if (NOT implot_POPULATED)

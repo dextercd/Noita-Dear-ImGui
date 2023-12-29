@@ -41,7 +41,6 @@ void add_implot(sol::state_view lua, sol::table& imgui)
         "NoInputs", ImPlotFlags_NoInputs,
         "NoMenus", ImPlotFlags_NoMenus,
         "NoBoxSelect", ImPlotFlags_NoBoxSelect,
-        "NoChild", ImPlotFlags_NoChild,
         "NoFrame", ImPlotFlags_NoFrame,
         "Equal", ImPlotFlags_Equal,
         "Crosshairs", ImPlotFlags_Crosshairs,
@@ -177,7 +176,8 @@ void add_implot(sol::state_view lua, sol::table& imgui)
 
     implot.new_enum("PlotPieChartFlags",
         "None", ImPlotPieChartFlags_None,
-        "Normalize", ImPlotPieChartFlags_Normalize
+        "Normalize", ImPlotPieChartFlags_Normalize,
+        "IgnoreHidden", ImPlotPieChartFlags_IgnoreHidden
     );
 
     implot.new_enum("PlotHeatmapFlags",
@@ -609,27 +609,32 @@ void add_implot(sol::state_view lua, sol::table& imgui)
 
 
     implot.set_function("DragPoint",
-        sol::overload(
-            [](int id, double x, double y, float r, float g, float b, float a) -> std::tuple<bool, double, double> { auto ret = ImPlot::DragPoint(id, &x, &y, {r, g, b, a}); return std::tuple{ret, x, y}; },
-            [](int id, double x, double y, float r, float g, float b, float a, float size) { auto ret = ImPlot::DragPoint(id, &x, &y, {r, g, b, a}, size); return std::tuple{ret, x, y}; },
-            [](int id, double x, double y, float r, float g, float b, float a, float size, ImPlotDragToolFlags flags) { auto ret = ImPlot::DragPoint(id, &x, &y, {r, g, b, a}, size, flags); return std::tuple{ret, x, y}; }));
+        [](int id, double x, double y, float r, float g, float b, float a, std::optional<float> size, std::optional<ImPlotDragToolFlags> flags) {
+            bool out_clicked{}, out_hovered{}, held{};
+            auto ret = ImPlot::DragPoint(id, &x, &y, {r, g, b, a}, size.value_or(1.f), flags.value_or(0), &out_clicked, &out_hovered, &held);
+            return std::tuple{ret, x, y, out_clicked, out_hovered, held};
+        });
 
     implot.set_function("DragLineX",
-        sol::overload(
-            [](int id, double x, float r, float g, float b, float a) -> std::tuple<bool, double> { auto ret = ImPlot::DragLineX(id, &x, {r, g, b, a}); return std::tuple{ret, x}; },
-            [](int id, double x, float r, float g, float b, float a, float thickness) { auto ret = ImPlot::DragLineX(id, &x, {r, g, b, a}, thickness); return std::tuple{ret, x}; },
-            [](int id, double x, float r, float g, float b, float a, float thickness, ImPlotDragToolFlags flags) { auto ret = ImPlot::DragLineX(id, &x, {r, g, b, a}, thickness, flags); return std::tuple{ret, x}; }));
+        [](int id, double x, float r, float g, float b, float a, std::optional<float> thickness, std::optional<ImPlotDragToolFlags> flags) {
+            bool out_clicked{}, out_hovered{}, held{};
+            auto ret = ImPlot::DragLineX(id, &x, {r, g, b, a}, thickness.value_or(1), flags.value_or(0), &out_clicked, &out_hovered, &held);
+            return std::tuple{ret, x, out_clicked, out_hovered, &held};
+        });
 
     implot.set_function("DragLineY",
-        sol::overload(
-            [](int id, double y, float r, float g, float b, float a) -> std::tuple<bool, double> { auto ret = ImPlot::DragLineY(id, &y, {r, g, b, a}); return std::tuple{ret, y}; },
-            [](int id, double y, float r, float g, float b, float a, float thickness) { auto ret = ImPlot::DragLineY(id, &y, {r, g, b, a}, thickness); return std::tuple{ret, y}; },
-            [](int id, double y, float r, float g, float b, float a, float thickness, ImPlotDragToolFlags flags) { auto ret = ImPlot::DragLineY(id, &y, {r, g, b, a}, thickness, flags); return std::tuple{ret, y}; }));
+        [](int id, double y, float r, float g, float b, float a, std::optional<float> thickness, std::optional<ImPlotDragToolFlags> flags) {
+            bool out_clicked{}, out_hovered{}, held{};
+            auto ret = ImPlot::DragLineY(id, &y, {r, g, b, a}, thickness.value_or(1), flags.value_or(0), &out_clicked, &out_hovered, &held);
+            return std::tuple{ret, y, out_clicked, out_hovered, &held};
+        });
 
     implot.set_function("DragRect",
-        sol::overload(
-            [](int id, double x1, double y1, double x2, double y2, float r, float g, float b, float a) -> std::tuple<bool, double, double, double, double> { auto ret = ImPlot::DragRect(id, &x1, &y1, &x2, &y2, {r, g, b, a}); return std::tuple{ret, x1, y1, x2, y2}; },
-            [](int id, double x1, double y1, double x2, double y2, float r, float g, float b, float a, ImPlotDragToolFlags flags) { auto ret = ImPlot::DragRect(id, &x1, &y1, &x2, &y2, {r, g, b, a}, flags); return std::tuple{ret, x1, y1, x2, y2}; }));
+        [](int id, double x1, double y1, double x2, double y2, float r, float g, float b, float a, std::optional<ImPlotDragToolFlags> flags) {
+            bool out_clicked{}, out_hovered{}, held{};
+            auto ret = ImPlot::DragRect(id, &x1, &y1, &x2, &y2, {r, g, b, a}, flags.value_or(0), &out_clicked, &out_hovered, &held);
+            return std::tuple{ret, x1, y1, x2, y2, out_clicked, out_hovered, held};
+        });
 
 
     implot.set_function("Annotation",
