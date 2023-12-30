@@ -171,7 +171,7 @@ SDL_PollEvent_f original_SDL_PollEvent = nullptr;
 bool is_mouse_event(SDL_Event* event)
 {
     switch (event->type) {
-        case SDL_MOUSEMOTION:
+        // case SDL_MOUSEMOTION: Let through mouse motion events
         case SDL_MOUSEBUTTONDOWN:
         case SDL_MOUSEBUTTONUP:
         case SDL_MOUSEWHEEL:
@@ -192,6 +192,10 @@ bool is_keyboard_event(SDL_Event* event)
     return false;
 }
 
+// Bitmap tracking mouse button the game considers held. Used to prevent buttons
+// from getting stuck.
+std::uint32_t game_mouse_buttons_held = 0;
+
 int SDL_PollEvent_hook(SDL_Event* event)
 {
     auto ret = original_SDL_PollEvent(event);
@@ -201,6 +205,13 @@ int SDL_PollEvent_hook(SDL_Event* event)
 
         auto& io = ImGui::GetIO();
         if (is_mouse_event(event)) {
+            if (event->type == SDL_MOUSEBUTTONUP && game_mouse_buttons_held & (1 << event->button.button)) {
+                // Game thinks the button is down so we always return the button
+                // release event to the game, even when io.WantCaptureMouse is
+                // set so the button doesn't get stuck.
+                goto return_event_to_game;
+            }
+
             if (io.WantCaptureMouse)
                 return SDL_PollEvent_hook(event);
 
@@ -224,6 +235,18 @@ int SDL_PollEvent_hook(SDL_Event* event)
             // Translate the event here so closing the game window actually
             // works.
             event->type = SDL_QUIT;
+        }
+    }
+
+return_event_to_game:
+    if (event && ret) {
+        if (event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP) {
+            auto button_bit = std::uint32_t{1} << event->button.button;
+
+            if (event->type == SDL_MOUSEBUTTONDOWN)
+                game_mouse_buttons_held |= button_bit;
+            else
+                game_mouse_buttons_held &= ~button_bit;
         }
     }
 
