@@ -17,41 +17,40 @@ DataWakReader::DataWakReader(const char* path)
 {
     wakfile.exceptions(std::ifstream::failbit);
 
-    file_count = read_le_u32(header_file_count);
+    auto file_count = read_le_u32(header_file_count);
     file_table_end = read_le_u32(header_header_and_table_size);
-}
 
-std::optional<std::string> DataWakReader::get_file(const fs::path& target)
-{
+    file_entries.reserve(file_count);
+
     wakfile.seekg(file_table_start, std::ios_base::beg);
-
-    auto target_size = target.string().size();
-
-    std::string curr_filename;
-    curr_filename.resize(target_size);
-
     while (wakfile.tellg() < file_table_end) {
         auto file_offset = read_le_u32_here();
         auto file_size = read_le_u32_here();
         auto name_size = read_le_u32_here();
-        if (name_size != target_size) {
-            wakfile.seekg(name_size, std::ios_base::cur);
-            continue;
-        }
 
-        wakfile.read(curr_filename.data(), curr_filename.size());
-        if (curr_filename != target)
-            continue;
+        std::string file_name;
+        file_name.resize(name_size);
+        wakfile.read(file_name.data(), file_name.size());
 
-        wakfile.seekg(file_offset, std::ios_base::beg);
-        std::string file_content;
-        file_content.resize(file_size);
-        wakfile.read(file_content.data(), file_content.size());
-
-        return file_content;
+        file_entries.insert({
+            std::move(file_name),
+            DataWakEntry{.offset=file_offset, .size=file_size}
+        });
     }
+}
 
-    return std::nullopt;
+std::optional<std::string> DataWakReader::get_file(const fs::path& target)
+{
+    auto f = file_entries.find(target);
+    if (f == std::end(file_entries))
+        return std::nullopt;
+
+    wakfile.seekg(f->second.offset, std::ios_base::beg);
+    std::string file_content;
+    file_content.resize(f->second.size);
+    wakfile.read(file_content.data(), file_content.size());
+
+    return file_content;
 }
 
 std::uint32_t DataWakReader::read_le_u32(std::uint32_t offset)
@@ -69,13 +68,4 @@ std::uint32_t DataWakReader::read_le_u32_here()
         (std::uint32_t)(unsigned char)data[1] << 8 |
         (std::uint32_t)(unsigned char)data[2] << 16 |
         (std::uint32_t)(unsigned char)data[3] << 24;
-}
-
-std::string DataWakReader::read_string(std::uint32_t offset)
-{
-    auto size = read_le_u32(offset);
-    std::string str;
-    str.resize(size);
-    wakfile.read(str.data(), str.size());
-    return str;
 }
