@@ -86,7 +86,7 @@ struct FileSystem : IFileSystem {
     std::optional<std::string> get_file(const fs::path& path_) override
     {
         auto path = path_.lexically_normal();
-        if (path.is_absolute())
+        if (path.is_absolute() || path.root_name() != fs::path{})
             return std::nullopt;
 
         static const fs::path dotdot = "..";
