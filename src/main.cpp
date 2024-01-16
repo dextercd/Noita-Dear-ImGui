@@ -347,7 +347,7 @@ NOITA_DEAR_IMGUI_EXPORT void init_imgui(
 }
 
 extern "C"
-NOITA_DEAR_IMGUI_EXPORT void settings_imgui(bool viewports, bool navigation)
+NOITA_DEAR_IMGUI_EXPORT void settings_imgui(bool viewports, bool navigation, int font_num)
 {
     if (!imgui_context_initialised)
         return;
@@ -364,4 +364,9 @@ NOITA_DEAR_IMGUI_EXPORT void settings_imgui(bool viewports, bool navigation)
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= turn_on;
     io.ConfigFlags &= ~turn_off;
+
+    if (font_num < 0 || font_num >= (int)embedded_fonts::end_)
+        font_num = 0;
+
+    io.FontDefault = io.Fonts->Fonts[font_num];
 }

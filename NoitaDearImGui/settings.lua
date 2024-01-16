@@ -41,6 +41,18 @@ mod_settings =
                 value_default = false,
                 scope = MOD_SETTING_SCOPE_RUNTIME,
             },
+            {
+                id = "font",
+                ui_name = "Default font",
+                ui_description = "Font used when not changed by UI code",
+                value_default = "0",
+                values = {
+                    {"0", "Noita Pixel"},
+                    {"3", "ImGui"},
+                    {"4", "Monospace (Source Code Pro)"},
+                },
+                scope = MOD_SETTING_SCOPE_RUNTIME,
+            },
         },
     },
 
