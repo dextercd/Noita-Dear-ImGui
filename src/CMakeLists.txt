@@ -24,6 +24,7 @@ add_library(noita_dear_imgui SHARED
     version_number.cpp
     ${VERSION_INFO_CPP}
     style.cpp
+    fonts.cpp
     wine_compat.cpp
     version_compat_window.cpp
     pause.cpp

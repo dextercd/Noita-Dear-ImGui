@@ -3,6 +3,8 @@
 #include <sol/sol.hpp>
 #include <imgui.h>
 
+#include "../fonts.hpp"
+
 void add_imgui_font(sol::table& imgui)
 {
     imgui.set_function("GetFontIndex",
@@ -17,25 +19,31 @@ void add_imgui_font(sol::table& imgui)
     imgui.set_function("GetNoitaFont",
         []() -> ImFont* {
             auto& io = ImGui::GetIO();
-            return io.Fonts->Fonts[0];
+            return io.Fonts->Fonts[(int)embedded_fonts::noita_pixel];
         });
 
     imgui.set_function("GetNoitaFont1_4x",
         []() -> ImFont* {
             auto& io = ImGui::GetIO();
-            return io.Fonts->Fonts[1];
+            return io.Fonts->Fonts[(int)embedded_fonts::noita_pixel_1_4];
         });
 
     imgui.set_function("GetNoitaFont1_8x",
         []() -> ImFont* {
             auto& io = ImGui::GetIO();
-            return io.Fonts->Fonts[2];
+            return io.Fonts->Fonts[(int)embedded_fonts::noita_pixel_1_8];
         });
 
     imgui.set_function("GetImGuiFont",
         []() -> ImFont* {
             auto& io = ImGui::GetIO();
-            return io.Fonts->Fonts[3];
+            return io.Fonts->Fonts[(int)embedded_fonts::imgui];
+        });
+
+    imgui.set_function("GetMonospaceFont",
+        []() -> ImFont* {
+            auto& io = ImGui::GetIO();
+            return io.Fonts->Fonts[(int)embedded_fonts::monospace];
         });
 
     imgui.set_function("PushFont", sol::resolve<void(ImFont*)>(ImGui::PushFont));
