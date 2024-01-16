@@ -4,11 +4,12 @@
 #include <string>
 
 enum class embedded_fonts {
-    noita_pixel,
-    noita_pixel_1_4,
-    noita_pixel_1_8,
-    imgui,
-    monospace,
+    noita_pixel = 0,
+    noita_pixel_1_4 = 1,
+    noita_pixel_1_8 = 2,
+    imgui = 3,
+    monospace = 4,
+    glyph = 5,
     end_,
 };
 

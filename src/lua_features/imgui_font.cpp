@@ -46,6 +46,12 @@ void add_imgui_font(sol::table& imgui)
             return io.Fonts->Fonts[(int)embedded_fonts::monospace];
         });
 
+    imgui.set_function("GetGlyphFont",
+        []() -> ImFont* {
+            auto& io = ImGui::GetIO();
+            return io.Fonts->Fonts[(int)embedded_fonts::glyph];
+        });
+
     imgui.set_function("PushFont", sol::resolve<void(ImFont*)>(ImGui::PushFont));
     imgui.set_function("PopFont", sol::resolve<void()>(ImGui::PopFont));
 

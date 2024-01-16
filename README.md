@@ -68,7 +68,7 @@ There's an example mod that shows the basics: https://github.com/dextercd/Noita-
 
 ## Credit
 
-Many thanks to 🌸Rain🌸 (vexx32) on the Noita Discord for the Noita font ttf that she created:
+Many thanks to 🌸Rain🌸 (vexx32) on the Noita Discord for the Noita pixel and glyph ttf files she created:
     [Discord message](https://discord.com/channels/453998283174576133/626791912443084801/794756926722277377)
     ([Download](https://cdn.discordapp.com/attachments/626791912443084801/794756926973411338/NoitaPixel.ttf)).
 

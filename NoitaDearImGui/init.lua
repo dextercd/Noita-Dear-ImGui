@@ -1,14 +1,20 @@
 local imgui_ctx = dofile_once("mods/NoitaDearImGui/load.lua")("mods/NoitaDearImGui", "imgui")
 
+local has_salakieli = ModIsEnabled("salakieli")
+
 function setting_get(key)
     return ModSettingGet(imgui_ctx.settings_prefix .. key) or false
 end
 
 function configure_settings()
+    local font_num = tonumber(setting_get("font")) or 0
+    if font_num == 0 and has_salakieli then
+        font_num = 5
+    end
     imgui_ctx.imgui_dll.settings_imgui(
         setting_get("multi_viewports"),
         setting_get("navigation"),
-        tonumber(setting_get("font"))
+        font_num
     )
 end
 

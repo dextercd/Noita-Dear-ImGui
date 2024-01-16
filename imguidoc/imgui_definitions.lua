@@ -3504,6 +3504,10 @@ function ImGui.GetImGuiFont() end
 function ImGui.GetMonospaceFont() end
 
 
+---@return ImGui.Font
+function ImGui.GetGlyphFont() end
+
+
 ---@param font ImGui.Font
 function ImGui.PushFont(font) end
 

@@ -10,6 +10,7 @@ void add_fonts(const std::string& mod_path)
 
     auto noita_font_path = mod_path + "/NoitaPixel.ttf";
     auto mono_font_path = mod_path + "/SourceCodePro-Regular.ttf";
+    auto glyph_font_path = mod_path + "/NoitaGlyph.ttf";
 
     // NoitaPixel font glyph ranges
     ImVector<ImWchar> ranges;
@@ -34,6 +35,8 @@ void add_fonts(const std::string& mod_path)
     io.Fonts->AddFontDefault();
 
     io.Fonts->AddFontFromFileTTF(mono_font_path.c_str(), 20, nullptr, io.Fonts->GetGlyphRangesCyrillic());
+
+    io.Fonts->AddFontFromFileTTF(glyph_font_path.c_str(), 14, nullptr, ranges.Data);
 
     io.Fonts->Build();  // Build with ranges in scope
 }
