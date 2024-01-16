@@ -43,6 +43,8 @@ local miner_history = {}
 local shotgunner_count = 0
 local shotgunner_history = {}
 
+local font_text = "The quick brown fox jumps over the lazy dog"
+
 
 -- You must call the Widgets functions on every frame that you want your UI to
 -- be shown. Here we use OnWorldPostUpdate.
@@ -123,6 +125,30 @@ function OnWorldPostUpdate()
             implot.PlotLine("Shotgunner", shotgunner_history, 1, discarded)
             implot.EndPlot()
         end
+        imgui.End()
+    end
+
+    if imgui.Begin("Fonts") then
+        fonts = {
+            {"Noita Pixel", imgui.GetNoitaFont()},
+            {"Noita Pixel x1.4", imgui.GetNoitaFont1_4x()},
+            {"Noita Pixel x1.8", imgui.GetNoitaFont1_8x()},
+            {"ImGui", imgui.GetImGuiFont()},
+            {"Monospace", imgui.GetMonospaceFont()},
+        }
+
+        local _
+        _, font_text = imgui.InputText("Text", font_text)
+
+        for _, f in ipairs(fonts) do
+            imgui.Separator()
+            imgui.Text(f[1] .. ":")
+
+            imgui.PushFont(f[2])
+            imgui.Text(font_text)
+            imgui.PopFont()
+        end
+
         imgui.End()
     end
 end
