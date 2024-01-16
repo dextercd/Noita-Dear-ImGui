@@ -3500,6 +3500,10 @@ function ImGui.GetNoitaFont1_8x() end
 function ImGui.GetImGuiFont() end
 
 
+---@return ImGui.Font
+function ImGui.GetMonospaceFont() end
+
+
 ---@param font ImGui.Font
 function ImGui.PushFont(font) end
 
