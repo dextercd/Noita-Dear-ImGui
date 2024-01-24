@@ -13,7 +13,8 @@ if [ ! -d clang-build ]; then
         -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
         -DCMAKE_DISABLE_PRECOMPILE_HEADERS=ON \
         -DLUA_INCLUDE_DIR="/home/dexter/NoitaMods/NoitaPatcher/luajit/src" \
-        -DLUA_LIBRARIES="/home/dexter/NoitaMods/NoitaPatcher/luajit/src/lua51.dll"
+        -DLUA_LIBRARIES="/home/dexter/NoitaMods/NoitaPatcher/luajit/src/lua51.dll" \
+        -DCMAKE_CXX_FLAGS="-DIMGUI_DISABLE_SSE"
 
     popd
 fi
