@@ -33,15 +33,16 @@ std::tuple<bool, int> ImGui_Combo(
 void add_imgui_combo_box(sol::table& imgui)
 {
     imgui.new_enum("ComboFlags",
-        "None",           ImGuiComboFlags_None,
-        "PopupAlignLeft", ImGuiComboFlags_PopupAlignLeft,
-        "HeightSmall",    ImGuiComboFlags_HeightSmall,
-        "HeightRegular",  ImGuiComboFlags_HeightRegular,
-        "HeightLarge",    ImGuiComboFlags_HeightLarge,
-        "HeightLargest",  ImGuiComboFlags_HeightLargest,
-        "NoArrowButton",  ImGuiComboFlags_NoArrowButton,
-        "NoPreview",      ImGuiComboFlags_NoPreview,
-        "HeightMask_",    ImGuiComboFlags_HeightMask_
+        "None",            ImGuiComboFlags_None,
+        "PopupAlignLeft",  ImGuiComboFlags_PopupAlignLeft,
+        "HeightSmall",     ImGuiComboFlags_HeightSmall,
+        "HeightRegular",   ImGuiComboFlags_HeightRegular,
+        "HeightLarge",     ImGuiComboFlags_HeightLarge,
+        "HeightLargest",   ImGuiComboFlags_HeightLargest,
+        "NoArrowButton",   ImGuiComboFlags_NoArrowButton,
+        "NoPreview",       ImGuiComboFlags_NoPreview,
+        "WidthFitPreview", ImGuiComboFlags_WidthFitPreview,
+        "HeightMask_",     ImGuiComboFlags_HeightMask_
     );
 
     imgui.set_function("BeginCombo",
@@ -62,7 +63,7 @@ void add_imgui_combo_box(sol::table& imgui)
         "SpanAllColumns",   ImGuiSelectableFlags_SpanAllColumns,
         "AllowDoubleClick", ImGuiSelectableFlags_AllowDoubleClick,
         "Disabled",         ImGuiSelectableFlags_Disabled,
-        "AllowItemOverlap", ImGuiSelectableFlags_AllowItemOverlap
+        "AllowOverlap",     ImGuiSelectableFlags_AllowOverlap
     );
 
     imgui.set_function("Selectable",

@@ -13,4 +13,5 @@ void add_imgui_text(sol::table& imgui)
     imgui.set_function("TextWrapped", [](std::string_view text) -> void { ImGui::TextWrapped("%s", text.data()); });
     imgui.set_function("LabelText", [](std::string_view label, std::string_view text) -> void { ImGui::LabelText(label.data(), "%s", text.data()); });
     imgui.set_function("BulletText", [](std::string_view text) -> void { ImGui::BulletText("%s", text.data()); });
+    imgui.set_function("SeparatorText", [](const char* text) -> void { ImGui::SeparatorText(text); });
 }

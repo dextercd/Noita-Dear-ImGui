@@ -11,14 +11,23 @@ void add_imgui_widget_utils(sol::table& imgui)
         "RootWindow",                   ImGuiHoveredFlags_RootWindow,
         "AnyWindow",                    ImGuiHoveredFlags_AnyWindow,
         "NoPopupHierarchy",             ImGuiHoveredFlags_NoPopupHierarchy,
-        //"DockHierarchy",                ImGuiHoveredFlags_DockHierarchy,
+        "DockHierarchy",                ImGuiHoveredFlags_DockHierarchy,
         "AllowWhenBlockedByPopup",      ImGuiHoveredFlags_AllowWhenBlockedByPopup,
-        //"AllowWhenBlockedByModal",      ImGuiHoveredFlags_AllowWhenBlockedByModal,
+        // "AllowWhenBlockedByModal",   ImGuiHoveredFlags_AllowWhenBlockedByModal,
         "AllowWhenBlockedByActiveItem", ImGuiHoveredFlags_AllowWhenBlockedByActiveItem,
-        "AllowWhenOverlapped",          ImGuiHoveredFlags_AllowWhenOverlapped,
+        "AllowWhenOverlappedByItem",    ImGuiHoveredFlags_AllowWhenOverlappedByItem,
+        "AllowWhenOverlappedByWindow",  ImGuiHoveredFlags_AllowWhenOverlappedByWindow,
         "AllowWhenDisabled",            ImGuiHoveredFlags_AllowWhenDisabled,
         "NoNavOverride",                ImGuiHoveredFlags_NoNavOverride,
-        "RectOnly",                     ImGuiHoveredFlags_RectOnly
+        "AllowWhenOverlapped",          ImGuiHoveredFlags_AllowWhenOverlapped,
+        "RectOnly",                     ImGuiHoveredFlags_RectOnly,
+        "RootAndChildWindows",          ImGuiHoveredFlags_RootAndChildWindows,
+        "ForTooltip",                   ImGuiHoveredFlags_ForTooltip,
+        "Stationary",                   ImGuiHoveredFlags_Stationary,
+        "DelayNone",                    ImGuiHoveredFlags_DelayNone,
+        "DelayShort",                   ImGuiHoveredFlags_DelayShort,
+        "DelayNormal",                  ImGuiHoveredFlags_DelayNormal,
+        "NoSharedDelay",                ImGuiHoveredFlags_NoSharedDelay
     );
 
     imgui.set_function("IsItemHovered",
@@ -44,5 +53,5 @@ void add_imgui_widget_utils(sol::table& imgui)
     imgui.set_function("GetItemRectMin", []() -> std::tuple<float, float> { auto ret = ImGui::GetItemRectMin(); return std::tuple{ret.x, ret.y}; });
     imgui.set_function("GetItemRectMax", []() -> std::tuple<float, float> { auto ret = ImGui::GetItemRectMax(); return std::tuple{ret.x, ret.y}; });
     imgui.set_function("GetItemRectSize", []() -> std::tuple<float, float> { auto ret = ImGui::GetItemRectSize(); return std::tuple{ret.x, ret.y}; });
-    imgui.set_function("SetItemAllowOverlap", sol::resolve<void()>(ImGui::SetItemAllowOverlap));
+    imgui.set_function("SetNextItemAllowOverlap", sol::resolve<void()>(ImGui::SetNextItemAllowOverlap));
 }

@@ -6,6 +6,7 @@
 #include <imgui.h>
 
 #include <noita_imgui/pause.hpp>
+#include <noita_imgui/version_number.hpp>
 
 namespace {
 
@@ -29,12 +30,16 @@ bool ConsistentBegin(const char* name, bool* p_open = nullptr, ImGuiWindowFlags 
     return visible;
 }
 
-bool ConsistentBeginChild(const char* str_id, const ImVec2& size = ImVec2(0, 0), bool border = false, ImGuiWindowFlags flags = 0)
+bool ConsistentBeginChild(
+        const char* str_id,
+        const ImVec2& size = ImVec2(0, 0),
+        ImGuiChildFlags child_flags = 0,
+        ImGuiWindowFlags flags = 0)
 {
     if (just_unpaused)
         flags |= ImGuiWindowFlags_NoFocusOnAppearing;
 
-    auto visible = ImGui::BeginChild(str_id, size, border, flags);
+    auto visible = ImGui::BeginChild(str_id, size, child_flags, flags);
     if (!visible)
         ImGui::EndChild();
 
@@ -43,7 +48,7 @@ bool ConsistentBeginChild(const char* str_id, const ImVec2& size = ImVec2(0, 0),
 
 }
 
-void add_imgui_windows(sol::table& imgui)
+void add_imgui_windows(sol::table& imgui, version_number version)
 {
     imgui.new_enum("WindowFlags",
         "None",                      ImGuiWindowFlags_None,
@@ -63,7 +68,6 @@ void add_imgui_windows(sol::table& imgui)
         "NoBringToFrontOnFocus",     ImGuiWindowFlags_NoBringToFrontOnFocus,
         "AlwaysVerticalScrollbar",   ImGuiWindowFlags_AlwaysVerticalScrollbar,
         "AlwaysHorizontalScrollbar", ImGuiWindowFlags_AlwaysHorizontalScrollbar,
-        "AlwaysUseWindowPadding",    ImGuiWindowFlags_AlwaysUseWindowPadding,
         "NoNavInputs",               ImGuiWindowFlags_NoNavInputs,
         "NoNavFocus",                ImGuiWindowFlags_NoNavFocus,
         "UnsavedDocument",           ImGuiWindowFlags_UnsavedDocument,
@@ -83,6 +87,18 @@ void add_imgui_windows(sol::table& imgui)
         "RootAndChildWindows", ImGuiFocusedFlags_RootAndChildWindows
     );
 
+    imgui.new_enum("ChildFlags",
+        "None",                   ImGuiChildFlags_None,
+        "Border",                 ImGuiChildFlags_Border,
+        "AlwaysUseWindowPadding", ImGuiChildFlags_AlwaysUseWindowPadding,
+        "ResizeX",                ImGuiChildFlags_ResizeX,
+        "ResizeY",                ImGuiChildFlags_ResizeY,
+        "AutoResizeX",            ImGuiChildFlags_AutoResizeX,
+        "AutoResizeY",            ImGuiChildFlags_AutoResizeY,
+        "AlwaysAutoResize",       ImGuiChildFlags_AlwaysAutoResize,
+        "FrameStyle",             ImGuiChildFlags_FrameStyle
+    );
+
     // Windows
     imgui.set_function("Begin",
         [](const char* name, std::optional<bool> open, std::optional<ImGuiWindowFlags> flags) -> std::tuple<bool, std::optional<bool>> {
@@ -92,13 +108,33 @@ void add_imgui_windows(sol::table& imgui)
         });
     imgui.set_function("End", sol::resolve<void()>(ImGui::End));
 
-    // Child Windows
-    imgui.set_function("BeginChild",
-        sol::overload(
-            [](const char* str_id) -> bool { return ConsistentBeginChild(str_id); },
-            [](const char* str_id, float size_x, float size_y) { return ConsistentBeginChild(str_id, {size_x, size_y}); },
+    auto begin_child = std::tuple{
+        [](const char* str_id) -> bool { return ConsistentBeginChild(str_id); },
+        [](const char* str_id, float size_x, float size_y) { return ConsistentBeginChild(str_id, {size_x, size_y}); },
+        [](const char* str_id, float size_x, float size_y, ImGuiChildFlags child_flags) { return ConsistentBeginChild(str_id, {size_x, size_y}, child_flags); },
+        [](const char* str_id, float size_x, float size_y, ImGuiChildFlags child_flags, ImGuiWindowFlags flags) { return ConsistentBeginChild(str_id, {size_x, size_y}, child_flags, flags); }
+    };
+
+    if (version < version_number{1, 17, 0, 0}) {
+        // Add version that takes a bool as the 4th argument. (Changed in ImGui 1.90.0)
+        auto old_begin_child = std::tuple{
             [](const char* str_id, float size_x, float size_y, bool border) { return ConsistentBeginChild(str_id, {size_x, size_y}, border); },
-            [](const char* str_id, float size_x, float size_y, bool border, ImGuiWindowFlags flags) { return ConsistentBeginChild(str_id, {size_x, size_y}, border, flags); }));
+            [](const char* str_id, float size_x, float size_y, bool border, ImGuiWindowFlags flags) { return ConsistentBeginChild(str_id, {size_x, size_y}, border, flags); }
+        };
+        auto with_old = std::tuple_cat(begin_child, old_begin_child);
+        auto overload = std::apply(
+            [](auto&&... args) { return sol::overload(std::forward<decltype(args)>(args)...); },
+            with_old
+        );
+        imgui.set_function("BeginChild", overload);
+    } else {
+        auto overload = std::apply(
+            [](auto&&... args) { return sol::overload(std::forward<decltype(args)>(args)...); },
+            begin_child
+        );
+        imgui.set_function("BeginChild", overload);
+    }
+
     imgui.set_function("EndChild", sol::resolve<void()>(ImGui::EndChild));
 
     // Windows Utilities

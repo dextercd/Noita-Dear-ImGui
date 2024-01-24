@@ -9,7 +9,7 @@ void add_imgui_trees(sol::table& imgui)
         "None",                 ImGuiTreeNodeFlags_None,
         "Selected",             ImGuiTreeNodeFlags_Selected,
         "Framed",               ImGuiTreeNodeFlags_Framed,
-        "AllowItemOverlap",     ImGuiTreeNodeFlags_AllowItemOverlap,
+        "AllowOverlap",         ImGuiTreeNodeFlags_AllowOverlap,
         "NoTreePushOnOpen",     ImGuiTreeNodeFlags_NoTreePushOnOpen,
         "NoAutoOpenOnLog",      ImGuiTreeNodeFlags_NoAutoOpenOnLog,
         "DefaultOpen",          ImGuiTreeNodeFlags_DefaultOpen,
@@ -20,8 +20,9 @@ void add_imgui_trees(sol::table& imgui)
         "FramePadding",         ImGuiTreeNodeFlags_FramePadding,
         "SpanAvailWidth",       ImGuiTreeNodeFlags_SpanAvailWidth,
         "SpanFullWidth",        ImGuiTreeNodeFlags_SpanFullWidth,
+        "SpanAllColumns",       ImGuiTreeNodeFlags_SpanAllColumns,
         "NavLeftJumpsBackHere", ImGuiTreeNodeFlags_NavLeftJumpsBackHere,
-        //"NoScrollOnOpen",       ImGuiTreeNodeFlags_NoScrollOnOpen,
+        //"NoScrollOnOpen",     ImGuiTreeNodeFlags_NoScrollOnOpen,
         "CollapsingHeader",     ImGuiTreeNodeFlags_CollapsingHeader
     );
 

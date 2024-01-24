@@ -67,6 +67,7 @@ void add_imgui_tables(sol::table& imgui)
         {"ScrollY",                    ImGuiTableFlags_ScrollY},
         {"SortMulti",                  ImGuiTableFlags_SortMulti},
         {"SortTristate",               ImGuiTableFlags_SortTristate},
+        {"HighlightHoveredColumn",     ImGuiTableFlags_HighlightHoveredColumn},
     });
 
     imgui.new_enum<ImGuiTableRowFlags_>("TableRowFlags", {
@@ -94,6 +95,7 @@ void add_imgui_tables(sol::table& imgui)
         {"PreferSortDescending", ImGuiTableColumnFlags_PreferSortDescending},
         {"IndentEnable",         ImGuiTableColumnFlags_IndentEnable},
         {"IndentDisable",        ImGuiTableColumnFlags_IndentDisable},
+        {"AngledHeader",         ImGuiTableColumnFlags_AngledHeader},
         {"IsEnabled",            ImGuiTableColumnFlags_IsEnabled},
         {"IsVisible",            ImGuiTableColumnFlags_IsVisible},
         {"IsSorted",             ImGuiTableColumnFlags_IsSorted},
@@ -135,6 +137,7 @@ void add_imgui_tables(sol::table& imgui)
             sol::resolve<void(const char*, ImGuiTableColumnFlags, float, ImGuiID)>(ImGui::TableSetupColumn)));
     imgui.set_function("TableSetupScrollFreeze", sol::resolve<void(int, int)>(ImGui::TableSetupScrollFreeze));
     imgui.set_function("TableHeadersRow", sol::resolve<void()>(ImGui::TableHeadersRow));
+    imgui.set_function("TableAngledHeadersRow", sol::resolve<void()>(ImGui::TableAngledHeadersRow));
     imgui.set_function("TableHeader", sol::resolve<void(const char* label)>(ImGui::TableHeader));
     imgui.set_function("TableGetColumnCount", sol::resolve<int()>(ImGui::TableGetColumnCount));
     imgui.set_function("TableGetColumnIndex", sol::resolve<int()>(ImGui::TableGetColumnIndex));

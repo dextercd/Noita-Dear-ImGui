@@ -39,20 +39,24 @@ void add_imgui_version_info(sol::state_view, sol::table&);
 void add_imgui_viewports(sol::table&);
 void add_imgui_widget_utils(sol::table&);
 void add_imgui_widgets_main(sol::table&);
-void add_imgui_windows(sol::table&);
+void add_imgui_windows(sol::table&, version_number version);
 void add_implot(sol::state_view, sol::table&);
 
 sol::table load_imgui(sol::this_state s, sol::table load_params)
 {
-    std::string version = load_params["version"];
+    std::string version_str = load_params["version"];
     std::string mod_name = load_params["mod"];
 
-    auto parsed_version = version_number::from_string(version);
+    auto parsed_version = version_number::from_string(version_str);
     if (!parsed_version) {
-        report_incompatibility(mod_name, version, incompatibility_reason::cant_parse_version);
+        report_incompatibility(mod_name, version_str, incompatibility_reason::cant_parse_version);
     } else if (!version_compatible(ndi::version, parsed_version.value())) {
-        report_incompatibility(mod_name, version, incompatibility_reason::version_mismatch);
+        report_incompatibility(mod_name, version_str, incompatibility_reason::version_mismatch);
     }
+
+    auto version = parsed_version.value_or(ndi::version).zero_fill();
+
+    std::cout << "load_imgui: '" << mod_name << "' requested noita imgui version " << version << '\n';
 
     sol::state_view lua{s};
     sol::table imgui = lua.create_table();
@@ -87,7 +91,7 @@ sol::table load_imgui(sol::this_state s, sol::table load_params)
     add_imgui_viewports(imgui);
     add_imgui_widget_utils(imgui);
     add_imgui_widgets_main(imgui);
-    add_imgui_windows(imgui);
+    add_imgui_windows(imgui, version);
     add_implot(lua, imgui);
 
     return imgui;

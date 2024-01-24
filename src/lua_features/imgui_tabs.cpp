@@ -36,7 +36,8 @@ void add_imgui_tabs(sol::table& imgui)
         "NoTooltip",                    ImGuiTabItemFlags_NoTooltip,
         "NoReorder",                    ImGuiTabItemFlags_NoReorder,
         "Leading",                      ImGuiTabItemFlags_Leading,
-        "Trailing",                     ImGuiTabItemFlags_Trailing
+        "Trailing",                     ImGuiTabItemFlags_Trailing,
+        "NoAssumedClosure",             ImGuiTabItemFlags_NoAssumedClosure
     );
 
     imgui.set_function("BeginTabItem",

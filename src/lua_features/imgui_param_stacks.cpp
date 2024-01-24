@@ -61,32 +61,37 @@ void add_imgui_param_stacks(sol::table& imgui)
     });
 
     imgui.new_enum<ImGuiStyleVar_>("StyleVar", {
-        {"Alpha",               ImGuiStyleVar_Alpha},
-        {"DisabledAlpha",       ImGuiStyleVar_DisabledAlpha},
-        {"WindowPadding",       ImGuiStyleVar_WindowPadding},
-        {"WindowRounding",      ImGuiStyleVar_WindowRounding},
-        {"WindowBorderSize",    ImGuiStyleVar_WindowBorderSize},
-        {"WindowMinSize",       ImGuiStyleVar_WindowMinSize},
-        {"WindowTitleAlign",    ImGuiStyleVar_WindowTitleAlign},
-        {"ChildRounding",       ImGuiStyleVar_ChildRounding},
-        {"ChildBorderSize",     ImGuiStyleVar_ChildBorderSize},
-        {"PopupRounding",       ImGuiStyleVar_PopupRounding},
-        {"PopupBorderSize",     ImGuiStyleVar_PopupBorderSize},
-        {"FramePadding",        ImGuiStyleVar_FramePadding},
-        {"FrameRounding",       ImGuiStyleVar_FrameRounding},
-        {"FrameBorderSize",     ImGuiStyleVar_FrameBorderSize},
-        {"ItemSpacing",         ImGuiStyleVar_ItemSpacing},
-        {"ItemInnerSpacing",    ImGuiStyleVar_ItemInnerSpacing},
-        {"IndentSpacing",       ImGuiStyleVar_IndentSpacing},
-        {"CellPadding",         ImGuiStyleVar_CellPadding},
-        {"ScrollbarSize",       ImGuiStyleVar_ScrollbarSize},
-        {"ScrollbarRounding",   ImGuiStyleVar_ScrollbarRounding},
-        {"GrabMinSize",         ImGuiStyleVar_GrabMinSize},
-        {"GrabRounding",        ImGuiStyleVar_GrabRounding},
-        {"TabRounding",         ImGuiStyleVar_TabRounding},
-        {"ButtonTextAlign",     ImGuiStyleVar_ButtonTextAlign},
-        {"SelectableTextAlign", ImGuiStyleVar_SelectableTextAlign},
-        {"COUNT",               ImGuiStyleVar_COUNT},
+        {"Alpha",                   ImGuiStyleVar_Alpha},
+        {"DisabledAlpha",           ImGuiStyleVar_DisabledAlpha},
+        {"WindowPadding",           ImGuiStyleVar_WindowPadding},
+        {"WindowRounding",          ImGuiStyleVar_WindowRounding},
+        {"WindowBorderSize",        ImGuiStyleVar_WindowBorderSize},
+        {"WindowMinSize",           ImGuiStyleVar_WindowMinSize},
+        {"WindowTitleAlign",        ImGuiStyleVar_WindowTitleAlign},
+        {"ChildRounding",           ImGuiStyleVar_ChildRounding},
+        {"ChildBorderSize",         ImGuiStyleVar_ChildBorderSize},
+        {"PopupRounding",           ImGuiStyleVar_PopupRounding},
+        {"PopupBorderSize",         ImGuiStyleVar_PopupBorderSize},
+        {"FramePadding",            ImGuiStyleVar_FramePadding},
+        {"FrameRounding",           ImGuiStyleVar_FrameRounding},
+        {"FrameBorderSize",         ImGuiStyleVar_FrameBorderSize},
+        {"ItemSpacing",             ImGuiStyleVar_ItemSpacing},
+        {"ItemInnerSpacing",        ImGuiStyleVar_ItemInnerSpacing},
+        {"IndentSpacing",           ImGuiStyleVar_IndentSpacing},
+        {"CellPadding",             ImGuiStyleVar_CellPadding},
+        {"ScrollbarSize",           ImGuiStyleVar_ScrollbarSize},
+        {"ScrollbarRounding",       ImGuiStyleVar_ScrollbarRounding},
+        {"GrabMinSize",             ImGuiStyleVar_GrabMinSize},
+        {"GrabRounding",            ImGuiStyleVar_GrabRounding},
+        {"TabRounding",             ImGuiStyleVar_TabRounding},
+        {"TabBarBorderSize",        ImGuiStyleVar_TabBarBorderSize},
+        {"ButtonTextAlign",         ImGuiStyleVar_ButtonTextAlign},
+        {"SelectableTextAlign",     ImGuiStyleVar_SelectableTextAlign},
+        {"SeparatorTextBorderSize", ImGuiStyleVar_SeparatorTextBorderSize},
+        {"SeparatorTextAlign",      ImGuiStyleVar_SeparatorTextAlign},
+        {"SeparatorTextPadding",    ImGuiStyleVar_SeparatorTextPadding},
+        {"DockingSeparatorSize",    ImGuiStyleVar_DockingSeparatorSize},
+        {"COUNT",                   ImGuiStyleVar_COUNT},
     });
 
     imgui.set_function("PushStyleColor",
@@ -109,8 +114,6 @@ void add_imgui_param_stacks(sol::table& imgui)
             []() { return ImGui::PopStyleVar(); },
             sol::resolve<void(int)>(ImGui::PopStyleVar)));
 
-    imgui.set_function("PushAllowKeyboardFocus", sol::resolve<void(bool)>(ImGui::PushAllowKeyboardFocus));
-    imgui.set_function("PopAllowKeyboardFocus", sol::resolve<void()>(ImGui::PopAllowKeyboardFocus));
     imgui.set_function("PushButtonRepeat", sol::resolve<void(bool)>(ImGui::PushButtonRepeat));
     imgui.set_function("PopButtonRepeat", sol::resolve<void()>(ImGui::PopButtonRepeat));
     imgui.set_function("PushItemWidth", sol::resolve<void(float)>(ImGui::PushItemWidth));

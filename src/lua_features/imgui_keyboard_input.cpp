@@ -77,6 +77,18 @@ void add_imgui_keyboard_input(sol::table& imgui)
         {"F10", ImGuiKey_F10},
         {"F11", ImGuiKey_F11},
         {"F12", ImGuiKey_F12},
+        {"F13", ImGuiKey_F13},
+        {"F14", ImGuiKey_F14},
+        {"F15", ImGuiKey_F15},
+        {"F16", ImGuiKey_F16},
+        {"F17", ImGuiKey_F17},
+        {"F18", ImGuiKey_F18},
+        {"F19", ImGuiKey_F19},
+        {"F20", ImGuiKey_F20},
+        {"F21", ImGuiKey_F21},
+        {"F22", ImGuiKey_F22},
+        {"F23", ImGuiKey_F23},
+        {"F24", ImGuiKey_F24},
         {"Apostrophe", ImGuiKey_Apostrophe},
         {"Comma", ImGuiKey_Comma},
         {"Minus", ImGuiKey_Minus},
@@ -110,6 +122,8 @@ void add_imgui_keyboard_input(sol::table& imgui)
         {"KeypadAdd", ImGuiKey_KeypadAdd},
         {"KeypadEnter", ImGuiKey_KeypadEnter},
         {"KeypadEqual", ImGuiKey_KeypadEqual},
+        {"AppBack", ImGuiKey_AppBack},
+        {"AppForward", ImGuiKey_AppForward},
 
         {"GamepadStart", ImGuiKey_GamepadStart},
         {"GamepadBack", ImGuiKey_GamepadBack},
@@ -187,9 +201,9 @@ void add_imgui_keyboard_input(sol::table& imgui)
     imgui.set_function("GetKeyName", sol::resolve<const char*(ImGuiKey)>(ImGui::GetKeyName));
     imgui.set_function("SetNextFrameWantCaptureKeyboard", sol::resolve<void(bool)>(ImGui::SetNextFrameWantCaptureKeyboard));
 
+    imgui.set_function("PushTabStop", sol::resolve<void(bool)>(ImGui::PushTabStop));
+    imgui.set_function("PopTabStop", sol::resolve<void()>(ImGui::PopTabStop));
 
-    imgui.set_function("PushAllowKeyboardFocus", sol::resolve<void(bool)>(ImGui::PushAllowKeyboardFocus));
-    imgui.set_function("PopAllowKeyboardFocus", sol::resolve<void()>(ImGui::PopAllowKeyboardFocus));
     imgui.set_function("SetKeyboardFocusHere",
         sol::overload(
             []() { return ImGui::SetKeyboardFocusHere(); },

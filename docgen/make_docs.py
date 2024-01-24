@@ -142,11 +142,20 @@ def parse_overload(cursor) -> list[FunctionSignature]:
     return signatures
 
 
+dont_parse_funcs = {
+    "BeginChild"
+}
+
+
 def parse_add_function(cursor) -> FunctionDef:
     arguments = list(cursor.get_arguments())
     check(len(arguments) == 2)
 
-    func = FunctionDef(string_literal_value(arguments[0]), signatures=[])
+    func_name = string_literal_value(arguments[0])
+    if func_name in dont_parse_funcs:
+        return None
+
+    func = FunctionDef(func_name, signatures=[])
     bound = arguments[1]
     assert bound.kind == CursorKind.UNEXPOSED_EXPR
 
@@ -255,6 +264,7 @@ if False:
 
 all_definitions = []
 for p in glob.glob("src/lua_features/*.cpp"):
+    print("Processing", p)
     unit = get_unit(p)
     all_definitions.extend(get_definitions(unit, p))
 
@@ -335,7 +345,10 @@ function ImGui.ListClipper:Step() end
 
 ---@param item_min integer
 ---@param item_max integer
-function ImGui.ListClipper.ForceDisplayRangeByIndices(item_min, item_max) end
+function ImGui.ListClipper.IncludeItemsByIndex(item_min, item_max) end
+
+---@param item_index integer
+function ImGui.ListClipper.IncludeItemsByIndex(item_index) end
 
 
 ---@class ImGui.Style
@@ -376,15 +389,23 @@ function ImGui.ListClipper.ForceDisplayRangeByIndices(item_min, item_max) end
 ---@field TabRounding number
 ---@field TabBorderSize number
 ---@field TabMinWidthForCloseButton number
+---@field TabBarBorderSize number
+---@field TableAngledHeadersAngle number
 ---@field ColorButtonPosition Dir
 ---@field ButtonTextAlign_x number
 ---@field ButtonTextAlign_y number
 ---@field SelectableTextAlign_x number
 ---@field SelectableTextAlign_y number
+---@field SeparatorTextBorderSize number
+---@field SeparatorTextAlign_x number
+---@field SeparatorTextAlign_y number
+---@field SeparatorTextPadding_x number
+---@field SeparatorTextPadding_y number
 ---@field DisplayWindowPadding_x number
 ---@field DisplayWindowPadding_y number
 ---@field DisplaySafeAreaPadding_x number
 ---@field DisplaySafeAreaPadding_y number
+---@field DockingSeparatorSize number
 ---@field MouseCursorScale number
 ---@field AntiAliasedLines number
 ---@field AntiAliasedLinesUseTex number
@@ -418,6 +439,51 @@ function ImGui.ListClipper.ForceDisplayRangeByIndices(item_min, item_max) end
 ---@return ImGui
 ---@nodiscard
 function load_imgui(modspec) end
+
+
+---@param str_id string
+---@return boolean
+function ImGui.BeginChild(str_id) end
+
+---@param str_id string
+---@param size_x number
+---@param size_y number
+---@return boolean
+function ImGui.BeginChild(str_id, size_x, size_y) end
+
+---@param str_id string
+---@param size_x number
+---@param size_y number
+---@param child_flags ChildFlags
+---@return boolean
+function ImGui.BeginChild(str_id, size_x, size_y, child_flags) end
+
+---@param str_id string
+---@param size_x number
+---@param size_y number
+---@param child_flags ChildFlags
+---@param flags WindowFlags
+---@return boolean
+function ImGui.BeginChild(str_id, size_x, size_y, child_flags, flags) end
+
+---Only available when load_imgui is called with a version number below 1.17.0
+---@deprecated
+---@param str_id string
+---@param size_x number
+---@param size_y number
+---@param border boolean
+---@return boolean
+function ImGui.BeginChild(str_id, size_x, size_y, border) end
+
+---Only available when load_imgui is called with a version number below 1.17.0
+---@deprecated
+---@param str_id string
+---@param size_x number
+---@param size_y number
+---@param border boolean
+---@param flags WindowFlags
+---@return boolean
+function ImGui.BeginChild(str_id, size_x, size_y, border, flags) end
 """)
 
 object_to_class_mapping = {

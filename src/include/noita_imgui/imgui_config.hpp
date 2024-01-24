@@ -7,6 +7,9 @@
 #define IMGUI_API NOITA_DEAR_IMGUI_EXPORT
 #define IMPLOT_API NOITA_DEAR_IMGUI_EXPORT
 
+// Needed by ImPlot
+#define IMGUI_DEFINE_MATH_OPERATORS
+
 // https://github.com/epezent/implot#extremely-important-note
 #define ImDrawIdx unsigned int
 
