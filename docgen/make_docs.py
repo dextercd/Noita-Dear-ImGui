@@ -348,7 +348,7 @@ function ImGui.ListClipper:Step() end
 function ImGui.ListClipper.IncludeItemsByIndex(item_min, item_max) end
 
 ---@param item_index integer
-function ImGui.ListClipper.IncludeItemsByIndex(item_index) end
+function ImGui.ListClipper.IncludeItemByIndex(item_index) end
 
 
 ---@class ImGui.Style

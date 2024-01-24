@@ -66,7 +66,10 @@ function ImGui.ListClipper:Step() end
 
 ---@param item_min integer
 ---@param item_max integer
-function ImGui.ListClipper.ForceDisplayRangeByIndices(item_min, item_max) end
+function ImGui.ListClipper.IncludeItemsByIndex(item_min, item_max) end
+
+---@param item_index integer
+function ImGui.ListClipper.IncludeItemByIndex(item_index) end
 
 
 ---@class ImGui.Style
@@ -107,15 +110,23 @@ function ImGui.ListClipper.ForceDisplayRangeByIndices(item_min, item_max) end
 ---@field TabRounding number
 ---@field TabBorderSize number
 ---@field TabMinWidthForCloseButton number
+---@field TabBarBorderSize number
+---@field TableAngledHeadersAngle number
 ---@field ColorButtonPosition Dir
 ---@field ButtonTextAlign_x number
 ---@field ButtonTextAlign_y number
 ---@field SelectableTextAlign_x number
 ---@field SelectableTextAlign_y number
+---@field SeparatorTextBorderSize number
+---@field SeparatorTextAlign_x number
+---@field SeparatorTextAlign_y number
+---@field SeparatorTextPadding_x number
+---@field SeparatorTextPadding_y number
 ---@field DisplayWindowPadding_x number
 ---@field DisplayWindowPadding_y number
 ---@field DisplaySafeAreaPadding_x number
 ---@field DisplaySafeAreaPadding_y number
+---@field DockingSeparatorSize number
 ---@field MouseCursorScale number
 ---@field AntiAliasedLines number
 ---@field AntiAliasedLinesUseTex number
@@ -149,6 +160,51 @@ function ImGui.ListClipper.ForceDisplayRangeByIndices(item_min, item_max) end
 ---@return ImGui
 ---@nodiscard
 function load_imgui(modspec) end
+
+
+---@param str_id string
+---@return boolean
+function ImGui.BeginChild(str_id) end
+
+---@param str_id string
+---@param size_x number
+---@param size_y number
+---@return boolean
+function ImGui.BeginChild(str_id, size_x, size_y) end
+
+---@param str_id string
+---@param size_x number
+---@param size_y number
+---@param child_flags ChildFlags
+---@return boolean
+function ImGui.BeginChild(str_id, size_x, size_y, child_flags) end
+
+---@param str_id string
+---@param size_x number
+---@param size_y number
+---@param child_flags ChildFlags
+---@param flags WindowFlags
+---@return boolean
+function ImGui.BeginChild(str_id, size_x, size_y, child_flags, flags) end
+
+---Only available when load_imgui is called with a version number below 1.17.0
+---@deprecated
+---@param str_id string
+---@param size_x number
+---@param size_y number
+---@param border boolean
+---@return boolean
+function ImGui.BeginChild(str_id, size_x, size_y, border) end
+
+---Only available when load_imgui is called with a version number below 1.17.0
+---@deprecated
+---@param str_id string
+---@param size_x number
+---@param size_y number
+---@param border boolean
+---@param flags WindowFlags
+---@return boolean
+function ImGui.BeginChild(str_id, size_x, size_y, border, flags) end
 
 
 
@@ -236,9 +292,14 @@ ImGui.StyleVar = {
     GrabMinSize = 20,
     GrabRounding = 21,
     TabRounding = 22,
-    ButtonTextAlign = 23,
-    SelectableTextAlign = 24,
-    COUNT = 25,
+    TabBarBorderSize = 23,
+    ButtonTextAlign = 24,
+    SelectableTextAlign = 25,
+    SeparatorTextBorderSize = 26,
+    SeparatorTextAlign = 27,
+    SeparatorTextPadding = 28,
+    DockingSeparatorSize = 29,
+    COUNT = 30,
 }
 
 
@@ -276,13 +337,6 @@ function ImGui.PopStyleVar() end
 
 ---@param count integer
 function ImGui.PopStyleVar(count) end
-
-
----@param allow_keyboard_focus boolean
-function ImGui.PushAllowKeyboardFocus(allow_keyboard_focus) end
-
-
-function ImGui.PopAllowKeyboardFocus() end
 
 
 ---@param repeat_ boolean
@@ -326,6 +380,7 @@ ImGui.ComboFlags = {
     HeightLargest = 16,
     NoArrowButton = 32,
     NoPreview = 64,
+    WidthFitPreview = 128,
     HeightMask_ = 30,
 }
 
@@ -368,7 +423,7 @@ ImGui.SelectableFlags = {
     SpanAllColumns = 2,
     AllowDoubleClick = 4,
     Disabled = 8,
-    AllowItemOverlap = 16,
+    AllowOverlap = 16,
 }
 
 
@@ -409,7 +464,7 @@ ImGui.TreeNodeFlags = {
     None = 0,
     Selected = 1,
     Framed = 2,
-    AllowItemOverlap = 4,
+    AllowOverlap = 4,
     NoTreePushOnOpen = 8,
     NoAutoOpenOnLog = 16,
     DefaultOpen = 32,
@@ -420,7 +475,8 @@ ImGui.TreeNodeFlags = {
     FramePadding = 1024,
     SpanAvailWidth = 2048,
     SpanFullWidth = 4096,
-    NavLeftJumpsBackHere = 8192,
+    SpanAllColumns = 8192,
+    NavLeftJumpsBackHere = 16384,
     CollapsingHeader = 26,
 }
 
@@ -502,14 +558,13 @@ ImGui.WindowFlags = {
     NoBringToFrontOnFocus = 8192,
     AlwaysVerticalScrollbar = 16384,
     AlwaysHorizontalScrollbar = 32768,
-    AlwaysUseWindowPadding = 65536,
-    NoNavInputs = 262144,
-    NoNavFocus = 524288,
-    UnsavedDocument = 1048576,
-    NoDocking = 2097152,
-    NoNav = 786432,
+    NoNavInputs = 65536,
+    NoNavFocus = 131072,
+    UnsavedDocument = 262144,
+    NoDocking = 524288,
+    NoNav = 196608,
     NoDecoration = 43,
-    NoInputs = 786944,
+    NoInputs = 197120,
 }
 
 
@@ -525,6 +580,20 @@ ImGui.FocusedFlags = {
 }
 
 
+---@enum ChildFlags
+ImGui.ChildFlags = {
+    None = 0,
+    Border = 1,
+    AlwaysUseWindowPadding = 2,
+    ResizeX = 4,
+    ResizeY = 8,
+    AutoResizeX = 16,
+    AutoResizeY = 32,
+    AlwaysAutoResize = 64,
+    FrameStyle = 128,
+}
+
+
 ---@param name string
 ---@param open boolean?
 ---@param flags WindowFlags?
@@ -534,32 +603,6 @@ function ImGui.Begin(name, open, flags) end
 
 
 function ImGui.End() end
-
-
----@param str_id string
----@return boolean
-function ImGui.BeginChild(str_id) end
-
----@param str_id string
----@param size_x number
----@param size_y number
----@return boolean
-function ImGui.BeginChild(str_id, size_x, size_y) end
-
----@param str_id string
----@param size_x number
----@param size_y number
----@param border boolean
----@return boolean
-function ImGui.BeginChild(str_id, size_x, size_y, border) end
-
----@param str_id string
----@param size_x number
----@param size_y number
----@param border boolean
----@param flags WindowFlags
----@return boolean
-function ImGui.BeginChild(str_id, size_x, size_y, border, flags) end
 
 
 function ImGui.EndChild() end
@@ -1205,6 +1248,7 @@ ImGui.TabItemFlags = {
     NoReorder = 32,
     Leading = 64,
     Trailing = 128,
+    NoAssumedClosure = 256,
 }
 
 
@@ -1513,6 +1557,7 @@ ImGui.TableFlags = {
     ScrollY = 33554432,
     SortMulti = 67108864,
     SortTristate = 134217728,
+    HighlightHoveredColumn = 268435456,
 }
 
 
@@ -1544,6 +1589,7 @@ ImGui.TableColumnFlags = {
     PreferSortDescending = 32768,
     IndentEnable = 65536,
     IndentDisable = 131072,
+    AngledHeader = 262144,
     IsEnabled = 16777216,
     IsVisible = 33554432,
     IsSorted = 67108864,
@@ -1646,6 +1692,9 @@ function ImGui.TableSetupScrollFreeze(cols, rows) end
 function ImGui.TableHeadersRow() end
 
 
+function ImGui.TableAngledHeadersRow() end
+
+
 ---@param label string
 function ImGui.TableHeader(label) end
 
@@ -1714,12 +1763,22 @@ ImGui.HoveredFlags = {
     RootWindow = 2,
     AnyWindow = 4,
     NoPopupHierarchy = 8,
+    DockHierarchy = 16,
     AllowWhenBlockedByPopup = 32,
     AllowWhenBlockedByActiveItem = 128,
-    AllowWhenOverlapped = 256,
-    AllowWhenDisabled = 512,
-    NoNavOverride = 1024,
-    RectOnly = 416,
+    AllowWhenOverlappedByItem = 256,
+    AllowWhenOverlappedByWindow = 512,
+    AllowWhenDisabled = 1024,
+    NoNavOverride = 2048,
+    AllowWhenOverlapped = 768,
+    RectOnly = 928,
+    RootAndChildWindows = 3,
+    ForTooltip = 4096,
+    Stationary = 8192,
+    DelayNone = 16384,
+    DelayShort = 32768,
+    DelayNormal = 65536,
+    NoSharedDelay = 131072,
 }
 
 
@@ -1802,10 +1861,15 @@ function ImGui.GetItemRectMax() end
 function ImGui.GetItemRectSize() end
 
 
-function ImGui.SetItemAllowOverlap() end
+function ImGui.SetNextItemAllowOverlap() end
 
 
+---@return boolean
 function ImGui.BeginTooltip() end
+
+
+---@return boolean
+function ImGui.BeginItemTooltip() end
 
 
 function ImGui.EndTooltip() end
@@ -3479,6 +3543,81 @@ function ImGui.PopID() end
 function ImGui.GetID(str_id) end
 
 
+---@enum DockNodeFlags
+ImGui.DockNodeFlags = {
+    None = 0,
+    KeepAliveOnly = 1,
+    NoDockingOverCentralNode = 4,
+    PassthruCentralNode = 8,
+    NoDockingSplit = 16,
+    NoResize = 32,
+    AutoHideTabBar = 64,
+    NoUndocking = 128,
+}
+
+
+---@return integer
+function ImGui.GetWindowDockID() end
+
+
+---@param dock_id integer
+---@param cond Cond?
+function ImGui.SetNextWindowDockID(dock_id, cond) end
+
+
+---@param window_name string
+---@param node_id integer
+function ImGui.DockBuilderDockWindow(window_name, node_id) end
+
+
+---@param node_id integer?
+---@param flags DockNodeFlags?
+---@return integer
+function ImGui.DockBuilderAddNode(node_id, flags) end
+
+
+---@param node_id integer
+function ImGui.DockBuilderRemoveNode(node_id) end
+
+
+---@param node_id integer
+---@param clear_settings_ref boolean?
+function ImGui.DockBuilderRemoveNodeDockedWindows(node_id, clear_settings_ref) end
+
+
+---@param node_id integer
+function ImGui.DockBuilderRemoveNodeChildNodes(node_id) end
+
+
+---@param node_id integer
+---@param x number
+---@param y number
+function ImGui.DockBuilderSetNodePos(node_id, x, y) end
+
+
+---@param node_id integer
+---@param width number
+---@param height number
+function ImGui.DockBuilderSetNodeSize(node_id, width, height) end
+
+
+---@param node_id integer
+---@param split_dir Dir
+---@param size_ratio_for_node_at_dir number
+---@return integer
+---@return integer
+function ImGui.DockBuilderSplitNode(node_id, split_dir, size_ratio_for_node_at_dir) end
+
+
+---@param src_name string
+---@param dst_name string
+function ImGui.DockBuilderCopyWindowSettings(src_name, dst_name) end
+
+
+---@param node_id integer
+function ImGui.DockBuilderFinish(node_id) end
+
+
 ---@param font_index integer
 ---@return ImGui.Font
 function ImGui.GetFontIndex(font_index) end
@@ -4785,6 +4924,10 @@ function ImGui.LabelText(label, text) end
 function ImGui.BulletText(text) end
 
 
+---@param text string
+function ImGui.SeparatorText(text) end
+
+
 ---@enum Key
 ImGui.Key = {
     None = 0,
@@ -4860,76 +5003,90 @@ ImGui.Key = {
     F10 = 581,
     F11 = 582,
     F12 = 583,
-    Apostrophe = 584,
-    Comma = 585,
-    Minus = 586,
-    Period = 587,
-    Slash = 588,
-    Semicolon = 589,
-    Equal = 590,
-    LeftBracket = 591,
-    Backslash = 592,
-    RightBracket = 593,
-    GraveAccent = 594,
-    CapsLock = 595,
-    ScrollLock = 596,
-    NumLock = 597,
-    PrintScreen = 598,
-    Pause = 599,
-    Keypad0 = 600,
-    Keypad1 = 601,
-    Keypad2 = 602,
-    Keypad3 = 603,
-    Keypad4 = 604,
-    Keypad5 = 605,
-    Keypad6 = 606,
-    Keypad7 = 607,
-    Keypad8 = 608,
-    Keypad9 = 609,
-    KeypadDecimal = 610,
-    KeypadDivide = 611,
-    KeypadMultiply = 612,
-    KeypadSubtract = 613,
-    KeypadAdd = 614,
-    KeypadEnter = 615,
-    KeypadEqual = 616,
-    GamepadStart = 617,
-    GamepadBack = 618,
-    GamepadFaceLeft = 619,
-    GamepadFaceRight = 620,
-    GamepadFaceUp = 621,
-    GamepadFaceDown = 622,
-    GamepadDpadLeft = 623,
-    GamepadDpadRight = 624,
-    GamepadDpadUp = 625,
-    GamepadDpadDown = 626,
-    GamepadL1 = 627,
-    GamepadR1 = 628,
-    GamepadL2 = 629,
-    GamepadR2 = 630,
-    GamepadL3 = 631,
-    GamepadR3 = 632,
-    GamepadLStickLeft = 633,
-    GamepadLStickRight = 634,
-    GamepadLStickUp = 635,
-    GamepadLStickDown = 636,
-    GamepadRStickLeft = 637,
-    GamepadRStickRight = 638,
-    GamepadRStickUp = 639,
-    GamepadRStickDown = 640,
-    MouseLeft = 641,
-    MouseRight = 642,
-    MouseMiddle = 643,
-    MouseX1 = 644,
-    MouseX2 = 645,
-    MouseWheelX = 646,
-    MouseWheelY = 647,
-    COUNT = 652,
+    F13 = 584,
+    F14 = 585,
+    F15 = 586,
+    F16 = 587,
+    F17 = 588,
+    F18 = 589,
+    F19 = 590,
+    F20 = 591,
+    F21 = 592,
+    F22 = 593,
+    F23 = 594,
+    F24 = 595,
+    Apostrophe = 596,
+    Comma = 597,
+    Minus = 598,
+    Period = 599,
+    Slash = 600,
+    Semicolon = 601,
+    Equal = 602,
+    LeftBracket = 603,
+    Backslash = 604,
+    RightBracket = 605,
+    GraveAccent = 606,
+    CapsLock = 607,
+    ScrollLock = 608,
+    NumLock = 609,
+    PrintScreen = 610,
+    Pause = 611,
+    Keypad0 = 612,
+    Keypad1 = 613,
+    Keypad2 = 614,
+    Keypad3 = 615,
+    Keypad4 = 616,
+    Keypad5 = 617,
+    Keypad6 = 618,
+    Keypad7 = 619,
+    Keypad8 = 620,
+    Keypad9 = 621,
+    KeypadDecimal = 622,
+    KeypadDivide = 623,
+    KeypadMultiply = 624,
+    KeypadSubtract = 625,
+    KeypadAdd = 626,
+    KeypadEnter = 627,
+    KeypadEqual = 628,
+    AppBack = 629,
+    AppForward = 630,
+    GamepadStart = 631,
+    GamepadBack = 632,
+    GamepadFaceLeft = 633,
+    GamepadFaceRight = 634,
+    GamepadFaceUp = 635,
+    GamepadFaceDown = 636,
+    GamepadDpadLeft = 637,
+    GamepadDpadRight = 638,
+    GamepadDpadUp = 639,
+    GamepadDpadDown = 640,
+    GamepadL1 = 641,
+    GamepadR1 = 642,
+    GamepadL2 = 643,
+    GamepadR2 = 644,
+    GamepadL3 = 645,
+    GamepadR3 = 646,
+    GamepadLStickLeft = 647,
+    GamepadLStickRight = 648,
+    GamepadLStickUp = 649,
+    GamepadLStickDown = 650,
+    GamepadRStickLeft = 651,
+    GamepadRStickRight = 652,
+    GamepadRStickUp = 653,
+    GamepadRStickDown = 654,
+    MouseLeft = 655,
+    MouseRight = 656,
+    MouseMiddle = 657,
+    MouseX1 = 658,
+    MouseX2 = 659,
+    MouseWheelX = 660,
+    MouseWheelY = 661,
+    COUNT = 666,
     ModCtrl = 4096,
     ModShift = 8192,
     ModAlt = 16384,
     ModSuper = 32768,
-    KeyPadEnter = 615,
+    KeyPadEnter = 627,
 }
 
 
@@ -4981,11 +5138,11 @@ function ImGui.GetKeyName(key) end
 function ImGui.SetNextFrameWantCaptureKeyboard(want_capture_keyboard) end
 
 
----@param allow_keyboard_focus boolean
-function ImGui.PushAllowKeyboardFocus(allow_keyboard_focus) end
+---@param tab_stop boolean
+function ImGui.PushTabStop(tab_stop) end
 
 
-function ImGui.PopAllowKeyboardFocus() end
+function ImGui.PopTabStop() end
 
 
 function ImGui.SetKeyboardFocusHere() end
