@@ -864,9 +864,23 @@ struct ImGui_ImplSDL2_ViewportData
     bool            WindowOwned;
     SDL_GLContext   GLContext;
 
+#if defined(SDL_VIDEO_DRIVER_WINDOWS)
+    HWND HwndParent = nullptr;
+#endif
+
     ImGui_ImplSDL2_ViewportData() { Window = nullptr; WindowID = 0; WindowOwned = false; GLContext = nullptr; }
     ~ImGui_ImplSDL2_ViewportData() { IM_ASSERT(Window == nullptr && GLContext == nullptr); }
 };
+
+#if defined(SDL_VIDEO_DRIVER_WINDOWS)
+static HWND ImGui_ImplSDL2_GetHwndFromViewportID(ImGuiID viewport_id)
+{
+    if (viewport_id != 0)
+        if (ImGuiViewport* viewport = ImGui::FindViewportByID(viewport_id))
+            return (HWND)viewport->PlatformHandle;
+    return nullptr;
+}
+#endif
 
 static void ImGui_ImplSDL2_CreateWindow(ImGuiViewport* viewport)
 {
@@ -922,6 +936,15 @@ static void ImGui_ImplSDL2_CreateWindow(ImGuiViewport* viewport)
         viewport->PlatformHandleRaw = (void*)info.info.cocoa.window;
 #endif
     }
+
+#if defined(SDL_VIDEO_DRIVER_WINDOWS)
+    HWND hwnd = (HWND)viewport->PlatformHandleRaw;
+    HWND hwnd_parent = ImGui_ImplSDL2_GetHwndFromViewportID(viewport->ParentViewportId);
+    if (hwnd && hwnd_parent) {
+        vd->HwndParent = hwnd_parent;
+        ::SetWindowLongPtr(hwnd, GWLP_HWNDPARENT, (LONG_PTR)vd->HwndParent);
+    }
+#endif
 }
 
 static void ImGui_ImplSDL2_DestroyWindow(ImGuiViewport* viewport)
@@ -964,6 +987,20 @@ static void ImGui_ImplSDL2_ShowWindow(ImGuiViewport* viewport)
 #endif
 
     SDL_ShowWindow(vd->Window);
+}
+
+static void ImGui_ImplSDL2_UpdateWindow(ImGuiViewport* viewport)
+{
+#if defined(SDL_VIDEO_DRIVER_WINDOWS)
+    ImGui_ImplSDL2_ViewportData* vd = (ImGui_ImplSDL2_ViewportData*)viewport->PlatformUserData;
+    HWND hwnd = (HWND)viewport->PlatformHandleRaw;
+    HWND new_parent = ImGui_ImplSDL2_GetHwndFromViewportID(viewport->ParentViewportId);
+    if (new_parent != vd->HwndParent)
+    {
+        vd->HwndParent = new_parent;
+        ::SetWindowLongPtr(hwnd, GWLP_HWNDPARENT, (LONG_PTR)vd->HwndParent);
+    }
+#endif
 }
 
 static ImVec2 ImGui_ImplSDL2_GetWindowPos(ImGuiViewport* viewport)
@@ -1063,6 +1100,7 @@ static void ImGui_ImplSDL2_InitPlatformInterface(SDL_Window* window, void* sdl_g
     platform_io.Platform_CreateWindow = ImGui_ImplSDL2_CreateWindow;
     platform_io.Platform_DestroyWindow = ImGui_ImplSDL2_DestroyWindow;
     platform_io.Platform_ShowWindow = ImGui_ImplSDL2_ShowWindow;
+    platform_io.Platform_UpdateWindow = ImGui_ImplSDL2_UpdateWindow;
     platform_io.Platform_SetWindowPos = ImGui_ImplSDL2_SetWindowPos;
     platform_io.Platform_GetWindowPos = ImGui_ImplSDL2_GetWindowPos;
     platform_io.Platform_SetWindowSize = ImGui_ImplSDL2_SetWindowSize;
