@@ -877,7 +877,7 @@ static HWND ImGui_ImplSDL2_GetHwndFromViewportID(ImGuiID viewport_id)
 {
     if (viewport_id != 0)
         if (ImGuiViewport* viewport = ImGui::FindViewportByID(viewport_id))
-            return (HWND)viewport->PlatformHandle;
+            return (HWND)viewport->PlatformHandleRaw;
     return nullptr;
 }
 #endif
