@@ -14,7 +14,8 @@ function configure_settings()
     imgui_ctx.imgui_dll.settings_imgui(
         setting_get("multi_viewports"),
         setting_get("navigation"),
-        font_num
+        font_num,
+        not setting_get("child_window_on_top")
     )
 end
 

@@ -347,7 +347,11 @@ NOITA_DEAR_IMGUI_EXPORT void init_imgui(
 }
 
 extern "C"
-NOITA_DEAR_IMGUI_EXPORT void settings_imgui(bool viewports, bool navigation, int font_num)
+NOITA_DEAR_IMGUI_EXPORT void settings_imgui(
+        bool viewports,
+        bool navigation,
+        int font_num,
+        bool viewports_no_default_parent)
 {
     if (!imgui_context_initialised)
         return;
@@ -369,4 +373,6 @@ NOITA_DEAR_IMGUI_EXPORT void settings_imgui(bool viewports, bool navigation, int
         font_num = 0;
 
     io.FontDefault = io.Fonts->Fonts[font_num];
+
+    io.ConfigViewportsNoDefaultParent = viewports_no_default_parent;
 }

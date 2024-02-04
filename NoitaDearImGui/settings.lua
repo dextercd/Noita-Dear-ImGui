@@ -53,6 +53,13 @@ mod_settings =
                 },
                 scope = MOD_SETTING_SCOPE_RUNTIME,
             },
+            {
+                id = "child_window_on_top",
+                ui_name = "Keep child windows on top",
+                ui_description = "Keep child windows always above game window. (Requires restart)",
+                value_default = true,
+                scope = MOD_SETTING_SCOPE_RUNTIME_RESTART,
+            },
         },
     },
 
