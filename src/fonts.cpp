@@ -28,7 +28,7 @@ void add_fonts(const std::string& mod_path)
     builder.AddRanges(io.Fonts->GetGlyphRangesCyrillic());  // Includes default ranges
     builder.BuildRanges(&ranges);
 
-    io.Fonts->AddFontFromFileTTF(noita_font_path.c_str(), 20, nullptr, ranges.Data);
+    io.Fonts->AddFontFromFileTTF(noita_font_path.c_str(), 22, nullptr, ranges.Data);
     io.Fonts->AddFontFromFileTTF(noita_font_path.c_str(), 28, nullptr, ranges.Data);
     io.Fonts->AddFontFromFileTTF(noita_font_path.c_str(), 36, nullptr, ranges.Data);
 
