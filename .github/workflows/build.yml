@@ -20,12 +20,17 @@ jobs:
           cd LuaJIT-2.0.4\LuaJIT-2.0.4\src
           msvcbuild.bat
 
+      - name: Install Freetype
+        run: vcpkg install freetype --triplet=x86-windows-static
+
       - name: Create build
         shell: cmd
         run: |
           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x86 10.0.22000.0 -vcvars_ver=14
           mkdir build
           cmake -S . -B build -G "Ninja Multi-Config" ^
+            -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake ^
+            -DVCPKG_TARGET_TRIPLET=x86-windows-static ^
             -DCMAKE_CXX_FLAGS="/D_WIN32_WINNT=0x0601 /DWINVER=0x0601 /DWIN32 /D_WINDOWS /EHsc /MD" ^
             -DLua_ROOT=%CD%\LuaJIT-2.0.4\LuaJIT-2.0.4\src
 
