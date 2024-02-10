@@ -41,6 +41,8 @@ add_library(noita_dear_imgui SHARED
     ${dearimgui_SOURCE_DIR}/imgui_widgets.cpp
     imgui_impl_sdl2.cpp
     ${dearimgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
+    ${dearimgui_SOURCE_DIR}/misc/freetype/imgui_freetype.h
+    ${dearimgui_SOURCE_DIR}/misc/freetype/imgui_freetype.cpp
 
     # ImPlot
     ${implot_SOURCE_DIR}/implot.cpp
@@ -119,6 +121,7 @@ target_link_libraries(noita_dear_imgui
         SDL2
         minhook
         tinyxml2
+        Freetype::Freetype
 )
 
 if (MINGW)

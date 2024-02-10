@@ -7,6 +7,9 @@
 #define IMGUI_API NOITA_DEAR_IMGUI_EXPORT
 #define IMPLOT_API NOITA_DEAR_IMGUI_EXPORT
 
+// Better font rendering
+#define IMGUI_ENABLE_FREETYPE
+
 // Needed by ImPlot
 #define IMGUI_DEFINE_MATH_OPERATORS
 

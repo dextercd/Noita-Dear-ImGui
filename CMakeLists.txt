@@ -81,6 +81,9 @@ if (NOT implot_POPULATED)
 endif()
 
 
+find_package(Freetype REQUIRED)
+
+
 # Needed for MINGW to find the LuaJIT dll
 if (MINGW)
     set(CMAKE_FIND_LIBRARY_SUFFIXES .dll ${CMAKE_FIND_LIBRARY_SUFFIXES})
