@@ -1,6 +1,7 @@
 #include <string>
 
 #include <imgui.h>
+#include <misc/freetype/imgui_freetype.h>
 
 #include "fonts.hpp"
 
@@ -28,15 +29,22 @@ void add_fonts(const std::string& mod_path)
     builder.AddRanges(io.Fonts->GetGlyphRangesCyrillic());  // Includes default ranges
     builder.BuildRanges(&ranges);
 
-    io.Fonts->AddFontFromFileTTF(noita_font_path.c_str(), 22, nullptr, ranges.Data);
-    io.Fonts->AddFontFromFileTTF(noita_font_path.c_str(), 28, nullptr, ranges.Data);
-    io.Fonts->AddFontFromFileTTF(noita_font_path.c_str(), 36, nullptr, ranges.Data);
+    auto pixelcfg = ImFontConfig{};
+    pixelcfg.FontBuilderFlags = ImGuiFreeTypeBuilderFlags_MonoHinting | ImGuiFreeTypeBuilderFlags_Monochrome;
+
+    // Doesn't make much sense to me, but these size arguments cause the font to
+    // be scaled up pixel perfectly. If this breaks then I should look into
+    // generating my own .TTF files or load the fonts manually from the .PNG
+    // files.
+    io.Fonts->AddFontFromFileTTF(noita_font_path.c_str(), 15.5f, &pixelcfg, ranges.Data);
+    io.Fonts->AddFontFromFileTTF(noita_font_path.c_str(), 23.25f, &pixelcfg, ranges.Data);
+    io.Fonts->AddFontFromFileTTF(noita_font_path.c_str(), 30, &pixelcfg, ranges.Data);
 
     io.Fonts->AddFontDefault();
 
-    io.Fonts->AddFontFromFileTTF(mono_font_path.c_str(), 20, nullptr, io.Fonts->GetGlyphRangesCyrillic());
+    io.Fonts->AddFontFromFileTTF(mono_font_path.c_str(), 21, nullptr, io.Fonts->GetGlyphRangesCyrillic());
 
-    io.Fonts->AddFontFromFileTTF(glyph_font_path.c_str(), 14, nullptr, ranges.Data);
+    io.Fonts->AddFontFromFileTTF(glyph_font_path.c_str(), 14, &pixelcfg, ranges.Data);
 
     io.Fonts->Build();  // Build with ranges in scope
 }

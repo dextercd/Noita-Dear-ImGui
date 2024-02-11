@@ -135,6 +135,7 @@ function OnWorldPostUpdate()
             {"Noita Pixel x1.8", imgui.GetNoitaFont1_8x()},
             {"ImGui", imgui.GetImGuiFont()},
             {"Monospace", imgui.GetMonospaceFont()},
+            {"Glyph", imgui.GetGlyphFont()},
         }
 
         local _
