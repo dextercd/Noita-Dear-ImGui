@@ -3294,11 +3294,12 @@ ImGui.PopupFlags = {
     MouseButtonMiddle = 2,
     MouseButtonMask_ = 31,
     MouseButtonDefault_ = 1,
-    NoOpenOverExistingPopup = 32,
-    NoOpenOverItems = 64,
-    AnyPopupId = 128,
-    AnyPopupLevel = 256,
-    AnyPopup = 384,
+    NoReopen = 32,
+    NoOpenOverExistingPopup = 128,
+    NoOpenOverItems = 256,
+    AnyPopupId = 1024,
+    AnyPopupLevel = 2048,
+    AnyPopup = 3072,
 }
 
 

@@ -14,6 +14,7 @@ void add_imgui_popup(sol::table& imgui)
         {"MouseButtonMiddle",       ImGuiPopupFlags_MouseButtonMiddle},
         {"MouseButtonMask_",        ImGuiPopupFlags_MouseButtonMask_},
         {"MouseButtonDefault_",     ImGuiPopupFlags_MouseButtonDefault_},
+        {"NoReopen",                ImGuiPopupFlags_NoReopen},
         {"NoOpenOverExistingPopup", ImGuiPopupFlags_NoOpenOverExistingPopup},
         {"NoOpenOverItems",         ImGuiPopupFlags_NoOpenOverItems},
         {"AnyPopupId",              ImGuiPopupFlags_AnyPopupId},
