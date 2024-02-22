@@ -62,7 +62,7 @@ target_include_directories(SDL2
 
 FetchContent_Declare(DearImGui
     GIT_REPOSITORY https://github.com/ocornut/imgui.git
-    GIT_TAG 8048b52498a9bf2a9f87b080d43b0bfd7a5d51d8
+    GIT_TAG c6aa051629753f0ef0d26bf775a8b6a92aa213b2
 )
 
 FetchContent_GetProperties(DearImGui)
