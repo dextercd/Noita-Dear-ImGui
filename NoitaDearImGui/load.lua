@@ -41,6 +41,26 @@ return function(path, name)
 
     ]])
 
+    local function loadlib_with_vs(vc_path, dll_path)
+        local old_dll_dir_buf = ffi.new("char[256]")
+        local old_dll_dir_sz = C.GetDllDirectoryA(ffi.sizeof(old_dll_dir_buf), old_dll_dir_buf)
+        local old_dll_dir = nil
+        if old_dll_dir_sz ~= 0 then
+            old_dll_dir = ffi.string(old_dll_dir_buf, old_dll_dir_sz)
+        end
+
+        C.SetDllDirectoryA(vc_path)
+
+        local hmodule = C.LoadLibraryA(dll_path)
+
+        -- Restore to last dll directory. old_dll_dir may be nil, in that case
+        -- SetDllDirectory changes to the default search order, which should be
+        -- alright.
+        C.SetDllDirectoryA(old_dll_dir)
+
+        return hmodule
+    end
+
     local settings_prefix = name .. ".imgui_"
     if not embedded_version then
         settings_prefix = "NoitaDearImGui."
@@ -55,33 +75,25 @@ return function(path, name)
         imgui_dll_path = path .. "/Debug/noita_dear_imgui.dll"
     end
 
-    local old_dll_dir = nil
-    local old_dll_dir_buf = ffi.new("char[256]")
-    local old_dll_dir_sz = C.GetDllDirectoryA(ffi.sizeof(old_dll_dir_buf), old_dll_dir_buf)
-    if old_dll_dir_sz ~= 0 then
-        old_dll_dir = ffi.string(old_dll_dir_buf, old_dll_dir_sz)
-    end
-
-    -- We include the VC++ runtime libs in the mod directory so the user doesn't
-    -- have to install it themselves manually. This line makes the Windows
-    -- loader look inside this directory.
-    C.SetDllDirectoryA(imgui_dll_path:match(".*/"))
-
     -- LuaJIT frees the OS library handle when the `ffi.load` handle is garbage
     -- collected. We need to increase the library's reference count to prevent it
     -- from getting unloaded.
     --
     -- Without this, Noita crashes in JIT-ed Lua code when you use the "New Game"
     -- option, probably because some Lua states are preserved across new runs.
-    if C.LoadLibraryA(imgui_dll_path) == nil then
+    local hmodule = C.LoadLibraryA(imgui_dll_path)
+
+    if hmodule == nil then
+        -- Couldn't load the dll. This could be because they don't have the VC++
+        -- redistributables installed globally. Try again but with our copy
+        -- added to the search path.
+        hmodule = loadlib_with_vs(path, imgui_dll_path)
+    end
+
+    if hmodule == nil then
         local err = C.GetLastError()
         error("ImGui load error: " .. err)
     end
-
-    -- Restore to previous dll directory
-    -- old_dll_dir may be nil, in which case SetDllDirectoryA restores the
-    -- default search order, and that should be OK.
-    C.SetDllDirectoryA(old_dll_dir)
 
     local imgui_dll = ffi.load(imgui_dll_path)
     local sdl = ffi.load("SDL2.dll")
