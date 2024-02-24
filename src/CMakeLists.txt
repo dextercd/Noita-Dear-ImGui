@@ -165,6 +165,10 @@ install(TARGETS noita_dear_imgui
         DESTINATION "NoitaDearImGui"
 )
 
+set(CMAKE_INSTALL_SYSTEM_RUNTIME_COMPONENT NoitaImGui)
+set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION "NoitaDearImGui")
+include(InstallRequiredSystemLibraries)
+
 install(TARGETS noita_dear_imgui
     CONFIGURATIONS Debug
     RUNTIME
