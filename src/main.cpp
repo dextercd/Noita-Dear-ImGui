@@ -351,7 +351,8 @@ NOITA_DEAR_IMGUI_EXPORT void settings_imgui(
         bool viewports,
         bool navigation,
         int font_num,
-        bool viewports_no_default_parent)
+        bool viewports_no_default_parent,
+        int text_colour)
 {
     if (!imgui_context_initialised)
         return;
@@ -375,4 +376,15 @@ NOITA_DEAR_IMGUI_EXPORT void settings_imgui(
     io.FontDefault = io.Fonts->Fonts[font_num];
 
     io.ConfigViewportsNoDefaultParent = viewports_no_default_parent;
+
+    auto& style = ImGui::GetStyle();
+    ImVec4 text_colour_options[] = {
+        ImVec4(1.0f, 1.0f, 1.0f, 1.0f),
+        ImVec4(0.92f, 0.92f, 0.92f, 1.0f),
+        ImVec4(0.86f, 0.86f, 0.86f, 1.0f),
+    };
+
+    if (text_colour >= 0 && text_colour < std::size(text_colour_options)) {
+        style.Colors[ImGuiCol_Text] = text_colour_options[text_colour];
+    }
 }

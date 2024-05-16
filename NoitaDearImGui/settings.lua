@@ -54,6 +54,18 @@ mod_settings =
                 scope = MOD_SETTING_SCOPE_RUNTIME,
             },
             {
+                id = "text_colour",
+                ui_name = "Default text colour",
+                ui_description = "Text colour used when not overridden by UI code",
+                value_default = "0",
+                values = {
+                    {"0", "Pure white"},
+                    {"1", "Slightly grey"},
+                    {"2", "More grey"},
+                },
+                scope = MOD_SETTING_SCOPE_RUNTIME,
+            },
+            {
                 id = "child_window_on_top",
                 ui_name = "Keep child windows on top",
                 ui_description = "Keep child windows always above game window. (Requires restart)",

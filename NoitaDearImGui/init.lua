@@ -15,11 +15,21 @@ function configure_settings()
         setting_get("multi_viewports"),
         setting_get("navigation"),
         font_num,
-        not setting_get("child_window_on_top")
+        not setting_get("child_window_on_top"),
+        tonumber(setting_get("text_colour"))
     )
 end
 
 configure_settings() -- Initial configure
+
+-- Live preview
+local pause_frame = 0
+function OnPausePreUpdate()
+    pause_frame = pause_frame + 1
+    if pause_frame % 10 == 0 then
+        configure_settings()
+    end
+end
 
 function OnPausedChanged(is_paused, is_inventory_paused)
     -- Mod settings might've been changed
