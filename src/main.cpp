@@ -41,6 +41,47 @@ const char glsl_version[] = "#version 110";
 bool imgui_context_initialised = false;
 bool imgui_backend_initialised = false;
 
+bool style_initialised = false;
+
+struct style_settings_t {
+    float ui_scale = 1.0f;
+    embedded_fonts default_font = embedded_fonts::noita_pixel;
+    int text_colour = 0;
+    bool pixel_no_anti_aliasing = true;
+
+    friend bool operator==(const style_settings_t&, const style_settings_t&) = default;
+};
+
+style_settings_t style_settings;
+
+int i = 0;
+void load_style()
+{
+    auto new_style = ImGuiStyle{};
+    noita_imgui_style(&new_style);
+    new_style.ScaleAllSizes(style_settings.ui_scale);
+
+    ImVec4 text_colour_options[] = {
+        ImVec4(1.0f, 1.0f, 1.0f, 1.0f),
+        ImVec4(0.92f, 0.92f, 0.92f, 1.0f),
+        ImVec4(0.86f, 0.86f, 0.86f, 1.0f),
+    };
+
+    if (style_settings.text_colour >= 0 && style_settings.text_colour < std::size(text_colour_options)) {
+        new_style.Colors[ImGuiCol_Text] = text_colour_options[style_settings.text_colour];
+    }
+
+    ImGui::GetStyle() = new_style;
+
+    ImGui_ImplOpenGL3_DestroyFontsTexture();
+
+    add_fonts(mod_path, style_settings.ui_scale, style_settings.pixel_no_anti_aliasing);
+    ImGuiIO& io = ImGui::GetIO();
+    io.FontDefault = io.Fonts->Fonts[(int)style_settings.default_font];
+
+    ImGui_ImplOpenGL3_CreateFontsTexture();
+}
+
 // Context is initialised as soon as the Noita mod is started
 void init_imgui_context()
 {
@@ -49,9 +90,6 @@ void init_imgui_context()
     ImPlot::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-
-    noita_imgui_style();
-    add_fonts(mod_path);
 
     imgui_context_initialised = true;
 }
@@ -82,6 +120,11 @@ void setup_imgui_backend(SDL_Window* window, SDL_GLContext gl_context)
 
 void start_frame()
 {
+    if (!style_initialised) {
+        style_initialised = true;
+        load_style();
+    }
+
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
@@ -352,7 +395,9 @@ NOITA_DEAR_IMGUI_EXPORT void settings_imgui(
         bool navigation,
         int font_num,
         bool viewports_no_default_parent,
-        int text_colour)
+        int text_colour,
+        float scale,
+        bool pixel_no_anti_aliasing)
 {
     if (!imgui_context_initialised)
         return;
@@ -370,21 +415,19 @@ NOITA_DEAR_IMGUI_EXPORT void settings_imgui(
     io.ConfigFlags |= turn_on;
     io.ConfigFlags &= ~turn_off;
 
-    if (font_num < 0 || font_num >= (int)embedded_fonts::end_)
-        font_num = 0;
-
-    io.FontDefault = io.Fonts->Fonts[font_num];
+    style_settings_t new_settings;
 
     io.ConfigViewportsNoDefaultParent = viewports_no_default_parent;
 
-    auto& style = ImGui::GetStyle();
-    ImVec4 text_colour_options[] = {
-        ImVec4(1.0f, 1.0f, 1.0f, 1.0f),
-        ImVec4(0.92f, 0.92f, 0.92f, 1.0f),
-        ImVec4(0.86f, 0.86f, 0.86f, 1.0f),
-    };
+    if (font_num >= 0 && font_num < (int)embedded_fonts::end_)
+        new_settings.default_font = (embedded_fonts)font_num;
 
-    if (text_colour >= 0 && text_colour < std::size(text_colour_options)) {
-        style.Colors[ImGuiCol_Text] = text_colour_options[text_colour];
+    new_settings.text_colour = text_colour;
+    new_settings.ui_scale = scale;
+    new_settings.pixel_no_anti_aliasing = pixel_no_anti_aliasing;
+
+    if (new_settings != style_settings) {
+        style_settings = new_settings;
+        style_initialised = false;
     }
 }

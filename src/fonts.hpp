@@ -13,6 +13,6 @@ enum class embedded_fonts {
     end_,
 };
 
-void add_fonts(const std::string& mod_path);
+void add_fonts(const std::string& mod_path, float scale, bool pixel_no_anti_aliasing);
 
 #endif // Header guard

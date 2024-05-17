@@ -26,7 +26,9 @@ return function(path, name)
         bool navigation,
         int font_num,
         bool viewports_no_default_parent,
-        int text_colour
+        int text_colour,
+        float scale,
+        bool pixel_no_anti_aliasing
     );
     void imgui_signal_unpause();
 

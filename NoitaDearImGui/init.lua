@@ -16,7 +16,9 @@ function configure_settings()
         setting_get("navigation"),
         font_num,
         not setting_get("child_window_on_top"),
-        tonumber(setting_get("text_colour"))
+        tonumber(setting_get("text_colour")),
+        tonumber(setting_get("scale")),
+        setting_get("pixel_no_anti_aliasing")
     )
 end
 

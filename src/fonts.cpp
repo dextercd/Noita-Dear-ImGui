@@ -5,10 +5,8 @@
 
 #include "fonts.hpp"
 
-void add_fonts(const std::string& mod_path)
+void add_fonts(const std::string& mod_path, float scale, bool pixel_no_anti_aliasing)
 {
-    ImGuiIO& io = ImGui::GetIO();
-
     auto noita_font_path = mod_path + "/NoitaPixel.ttf";
     auto mono_font_path = mod_path + "/SourceCodePro-Regular.ttf";
     auto glyph_font_path = mod_path + "/NoitaGlyph.ttf";
@@ -26,25 +24,28 @@ void add_fonts(const std::string& mod_path)
     builder.AddChar(0x221e); // INFINITY
     ImWchar latin_extended_a[]{0x100, 0x17f, 0};
     builder.AddRanges(latin_extended_a);
+    ImGuiIO& io = ImGui::GetIO();
     builder.AddRanges(io.Fonts->GetGlyphRangesCyrillic());  // Includes default ranges
     builder.BuildRanges(&ranges);
 
     auto pixelcfg = ImFontConfig{};
-    pixelcfg.FontBuilderFlags = ImGuiFreeTypeBuilderFlags_MonoHinting | ImGuiFreeTypeBuilderFlags_Monochrome;
+    if (pixel_no_anti_aliasing)
+        pixelcfg.FontBuilderFlags = ImGuiFreeTypeBuilderFlags_MonoHinting | ImGuiFreeTypeBuilderFlags_Monochrome;
 
     // Doesn't make much sense to me, but these size arguments cause the font to
     // be scaled up pixel perfectly. If this breaks then I should look into
     // generating my own .TTF files or load the fonts manually from the .PNG
     // files.
-    io.Fonts->AddFontFromFileTTF(noita_font_path.c_str(), 15.5f, &pixelcfg, ranges.Data);
-    io.Fonts->AddFontFromFileTTF(noita_font_path.c_str(), 23.25f, &pixelcfg, ranges.Data);
-    io.Fonts->AddFontFromFileTTF(noita_font_path.c_str(), 30, &pixelcfg, ranges.Data);
+    io.Fonts->Clear();
+    io.Fonts->AddFontFromFileTTF(noita_font_path.c_str(), 15.5f * scale, &pixelcfg, ranges.Data);
+    io.Fonts->AddFontFromFileTTF(noita_font_path.c_str(), 23.25f * scale, &pixelcfg, ranges.Data);
+    io.Fonts->AddFontFromFileTTF(noita_font_path.c_str(), 30 * scale, &pixelcfg, ranges.Data);
 
     io.Fonts->AddFontDefault();
 
-    io.Fonts->AddFontFromFileTTF(mono_font_path.c_str(), 21, nullptr, io.Fonts->GetGlyphRangesCyrillic());
+    io.Fonts->AddFontFromFileTTF(mono_font_path.c_str(), 19 * scale, nullptr, io.Fonts->GetGlyphRangesCyrillic());
 
-    io.Fonts->AddFontFromFileTTF(glyph_font_path.c_str(), 14, &pixelcfg, ranges.Data);
+    io.Fonts->AddFontFromFileTTF(glyph_font_path.c_str(), 14 * scale, &pixelcfg, ranges.Data);
 
     io.Fonts->Build();  // Build with ranges in scope
 }
