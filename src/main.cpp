@@ -41,8 +41,6 @@ const char glsl_version[] = "#version 110";
 bool imgui_context_initialised = false;
 bool imgui_backend_initialised = false;
 
-bool style_initialised = false;
-
 struct style_settings_t {
     float ui_scale = 1.0f;
     embedded_fonts default_font = embedded_fonts::noita_pixel;
@@ -52,9 +50,9 @@ struct style_settings_t {
     friend bool operator==(const style_settings_t&, const style_settings_t&) = default;
 };
 
+bool style_initialised = false;
 style_settings_t style_settings;
 
-int i = 0;
 void load_style()
 {
     auto new_style = ImGuiStyle{};
