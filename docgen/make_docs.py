@@ -484,6 +484,27 @@ function ImGui.BeginChild(str_id, size_x, size_y, border) end
 ---@param flags WindowFlags
 ---@return boolean
 function ImGui.BeginChild(str_id, size_x, size_y, border, flags) end
+
+
+---@class Vector<T>: { [integer]: T }
+
+--[[
+Vector object supports the following sol2 container functions
+https://sol2.readthedocs.io/en/latest/containers.html
+- add
+- at
+- clear
+- empty
+- erase
+- find
+- get
+- index_of
+- insert
+- next
+- pairs
+- set
+- size
+]]
 """)
 
 object_to_class_mapping = {
@@ -532,7 +553,7 @@ for file_def in all_definitions:
             for name, type_ in params:
                 docout(f"---@param {param_name(name)} {type_}")
 
-            ret_types = clang_to_lua(sig.return_type)
+            ret_types = clang_to_lua(sig.return_type, is_return=True)
             if not isinstance(ret_types, list):
                 ret_types = [ret_types]
 

@@ -8,7 +8,7 @@ def enum_name(name):
     return name.removeprefix("Im")
 
 
-def clang_to_lua(typ: Type):
+def clang_to_lua(typ: Type, is_return=False):
     # ImPlot uses typedefs instead of real enums in its parameters.
     if typ.kind == TypeKind.ELABORATED:
         nt = typ.get_named_type()
@@ -65,16 +65,19 @@ def clang_to_lua(typ: Type):
             if pointee.kind == TypeKind.CHAR_S and pointee.is_const_qualified():
                 return "string"
 
-            return clang_to_lua(pointee)
+            return clang_to_lua(pointee, is_return)
         case TypeKind.RECORD | TypeKind.ELABORATED:
             spelling = typ.spelling
             if spelling.startswith("std::vector<"):
                 elem = typ.get_template_argument_type(0)
-                return f"{clang_to_lua(elem)}[]"
+                if is_return:
+                    return f"Vector<{clang_to_lua(elem, is_return)}>"
+                else:
+                    return f"{clang_to_lua(elem, is_return)}[]"
 
             if spelling.startswith("std::optional<"):
                 vt = typ.get_template_argument_type(0)
-                ct = clang_to_lua(vt)
+                ct = clang_to_lua(vt, is_return)
                 if isinstance(ct, list):
                     return [f"{c}?" for c in ct]
                 return f"{ct}?"
@@ -84,7 +87,7 @@ def clang_to_lua(typ: Type):
                     typ.get_template_argument_type(i)
                     for i in range(typ.get_num_template_arguments())
                 ]
-                return [clang_to_lua(t) for t in types]
+                return [clang_to_lua(t, is_return) for t in types]
 
             if spelling == "ImPlotPoint":
                 return "ImPlot.PlotPoint"
@@ -128,9 +131,12 @@ def clang_to_lua(typ: Type):
             if spelling == "lua_image":
                 return "ImGui.LuaImage"
 
+            if spelling == "vecfloat":
+                return "number[]|Vector<number>"
+
     canonical = typ.get_canonical()
     if canonical != typ:
-        return clang_to_lua(canonical)
+        return clang_to_lua(canonical, is_return)
 
     print(f"--Unsuported type: {typ}")
     print(f"--Spelling: {typ.spelling}")

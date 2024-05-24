@@ -207,6 +207,27 @@ function ImGui.BeginChild(str_id, size_x, size_y, border) end
 function ImGui.BeginChild(str_id, size_x, size_y, border, flags) end
 
 
+---@class Vector<T>: { [integer]: T }
+
+--[[
+Vector object supports the following sol2 container functions
+https://sol2.readthedocs.io/en/latest/containers.html
+- add
+- at
+- clear
+- empty
+- erase
+- find
+- get
+- index_of
+- insert
+- next
+- pairs
+- set
+- size
+]]
+
+
 
 ---@enum Col
 ImGui.Col = {
@@ -2343,7 +2364,7 @@ function ImPlot.SetupAxisFormat(axis, fmt) end
 
 
 ---@param axis Axis
----@param values number[]
+---@param values number[]|Vector<number>
 ---@param labels string[]?
 ---@param keep_default boolean?
 function ImPlot.SetupAxisTicks(axis, values, labels, keep_default) end
@@ -2457,145 +2478,145 @@ function ImPlot.SetNextAxesToFit() end
 
 
 ---@param label_id string
----@param values number[]
+---@param values number[]|Vector<number>
 function ImPlot.PlotLine(label_id, values) end
 
 ---@param label_id string
----@param values number[]
+---@param values number[]|Vector<number>
 ---@param xscale number
 function ImPlot.PlotLine(label_id, values, xscale) end
 
 ---@param label_id string
----@param values number[]
+---@param values number[]|Vector<number>
 ---@param xscale number
 ---@param xstart number
 function ImPlot.PlotLine(label_id, values, xscale, xstart) end
 
 ---@param label_id string
----@param values number[]
+---@param values number[]|Vector<number>
 ---@param xscale number
 ---@param xstart number
 ---@param flags PlotLineFlags
 function ImPlot.PlotLine(label_id, values, xscale, xstart, flags) end
 
 ---@param label_id string
----@param xs number[]
----@param ys number[]
+---@param xs number[]|Vector<number>
+---@param ys number[]|Vector<number>
 function ImPlot.PlotLine(label_id, xs, ys) end
 
 ---@param label_id string
----@param xs number[]
----@param ys number[]
+---@param xs number[]|Vector<number>
+---@param ys number[]|Vector<number>
 ---@param flags PlotLineFlags
 function ImPlot.PlotLine(label_id, xs, ys, flags) end
 
 
 ---@param label_id string
----@param values number[]
+---@param values number[]|Vector<number>
 function ImPlot.PlotScatter(label_id, values) end
 
 ---@param label_id string
----@param values number[]
+---@param values number[]|Vector<number>
 ---@param xscale number
 function ImPlot.PlotScatter(label_id, values, xscale) end
 
 ---@param label_id string
----@param values number[]
+---@param values number[]|Vector<number>
 ---@param xscale number
 ---@param xstart number
 function ImPlot.PlotScatter(label_id, values, xscale, xstart) end
 
 ---@param label_id string
----@param values number[]
+---@param values number[]|Vector<number>
 ---@param xscale number
 ---@param xstart number
 ---@param flags PlotScatterFlags
 function ImPlot.PlotScatter(label_id, values, xscale, xstart, flags) end
 
 ---@param label_id string
----@param xs number[]
----@param ys number[]
+---@param xs number[]|Vector<number>
+---@param ys number[]|Vector<number>
 function ImPlot.PlotScatter(label_id, xs, ys) end
 
 ---@param label_id string
----@param xs number[]
----@param ys number[]
+---@param xs number[]|Vector<number>
+---@param ys number[]|Vector<number>
 ---@param flags PlotScatterFlags
 function ImPlot.PlotScatter(label_id, xs, ys, flags) end
 
 
 ---@param label_id string
----@param values number[]
+---@param values number[]|Vector<number>
 function ImPlot.PlotStairs(label_id, values) end
 
 ---@param label_id string
----@param values number[]
+---@param values number[]|Vector<number>
 ---@param xscale number
 function ImPlot.PlotStairs(label_id, values, xscale) end
 
 ---@param label_id string
----@param values number[]
+---@param values number[]|Vector<number>
 ---@param xscale number
 ---@param xstart number
 function ImPlot.PlotStairs(label_id, values, xscale, xstart) end
 
 ---@param label_id string
----@param values number[]
+---@param values number[]|Vector<number>
 ---@param xscale number
 ---@param xstart number
 ---@param flags PlotStairsFlags
 function ImPlot.PlotStairs(label_id, values, xscale, xstart, flags) end
 
 ---@param label_id string
----@param xs number[]
----@param ys number[]
+---@param xs number[]|Vector<number>
+---@param ys number[]|Vector<number>
 function ImPlot.PlotStairs(label_id, xs, ys) end
 
 ---@param label_id string
----@param xs number[]
----@param ys number[]
+---@param xs number[]|Vector<number>
+---@param ys number[]|Vector<number>
 ---@param flags PlotStairsFlags
 function ImPlot.PlotStairs(label_id, xs, ys, flags) end
 
 
 ---@param label_id string
----@param values number[]
+---@param values number[]|Vector<number>
 function ImPlot.PlotBars(label_id, values) end
 
 ---@param label_id string
----@param values number[]
+---@param values number[]|Vector<number>
 ---@param bar_size number
 function ImPlot.PlotBars(label_id, values, bar_size) end
 
 ---@param label_id string
----@param values number[]
+---@param values number[]|Vector<number>
 ---@param bar_size number
 ---@param shift number
 function ImPlot.PlotBars(label_id, values, bar_size, shift) end
 
 ---@param label_id string
----@param values number[]
+---@param values number[]|Vector<number>
 ---@param bar_size number
 ---@param shift number
 ---@param flags PlotBarsFlags
 function ImPlot.PlotBars(label_id, values, bar_size, shift, flags) end
 
 ---@param label_id string
----@param xs number[]
----@param ys number[]
+---@param xs number[]|Vector<number>
+---@param ys number[]|Vector<number>
 ---@param bar_size number
 function ImPlot.PlotBars(label_id, xs, ys, bar_size) end
 
 ---@param label_id string
----@param xs number[]
----@param ys number[]
+---@param xs number[]|Vector<number>
+---@param ys number[]|Vector<number>
 ---@param flags PlotBarsFlags
 ---@param bar_size number
 function ImPlot.PlotBars(label_id, xs, ys, flags, bar_size) end
 
 
----@param labels string[]
----@param values number[]
+---@param labels any
+---@param values number[]|Vector<number>
 ---@param item_count integer
 ---@param group_count integer
 ---@param group_size number?
@@ -2605,23 +2626,23 @@ function ImPlot.PlotBarGroups(labels, values, item_count, group_count, group_siz
 
 
 ---@param label_id string
----@param xs number[]
----@param ys number[]
----@param err number[]
+---@param xs number[]|Vector<number>
+---@param ys number[]|Vector<number>
+---@param err number[]|Vector<number>
 ---@param flags PlotErrorBarsFlags?
 function ImPlot.PlotErrorBars(label_id, xs, ys, err, flags) end
 
 ---@param label_id string
----@param xs number[]
----@param ys number[]
----@param neg number[]
----@param pos number[]
+---@param xs number[]|Vector<number>
+---@param ys number[]|Vector<number>
+---@param neg number[]|Vector<number>
+---@param pos number[]|Vector<number>
 ---@param flags PlotErrorBarsFlags?
 function ImPlot.PlotErrorBars(label_id, xs, ys, neg, pos, flags) end
 
 
 ---@param label_id string
----@param values number[]
+---@param values number[]|Vector<number>
 ---@param ref number?
 ---@param scale number?
 ---@param start number?
@@ -2629,21 +2650,21 @@ function ImPlot.PlotErrorBars(label_id, xs, ys, neg, pos, flags) end
 function ImPlot.PlotStems(label_id, values, ref, scale, start, flags) end
 
 ---@param label_id string
----@param xs number[]
----@param ys number[]
+---@param xs number[]|Vector<number>
+---@param ys number[]|Vector<number>
 ---@param ref number?
 ---@param flags PlotStemsFlags?
 function ImPlot.PlotStems(label_id, xs, ys, ref, flags) end
 
 
 ---@param label_id string
----@param values number[]
+---@param values number[]|Vector<number>
 ---@param flags PlotInfLinesFlags?
 function ImPlot.PlotInfLines(label_id, values, flags) end
 
 
----@param label_ids string[]
----@param values number[]
+---@param label_ids any
+---@param values number[]|Vector<number>
 ---@param x number
 ---@param y number
 ---@param radius number
@@ -2654,7 +2675,7 @@ function ImPlot.PlotPieChart(label_ids, values, x, y, radius, label_fmt, angle0,
 
 
 ---@param label_id string
----@param values number[]
+---@param values number[]|Vector<number>
 ---@param rows integer
 ---@param cols integer
 ---@param scale_min number?
@@ -2667,7 +2688,7 @@ function ImPlot.PlotHeatmap(label_id, values, rows, cols, scale_min, scale_max, 
 
 
 ---@param label_id string
----@param values number[]
+---@param values number[]|Vector<number>
 ---@param bins PlotBin?
 ---@param bar_scale number?
 ---@param range ImPlot.PlotRange?
@@ -2677,8 +2698,8 @@ function ImPlot.PlotHistogram(label_id, values, bins, bar_scale, range, flags) e
 
 
 ---@param label_id string
----@param xs number[]
----@param ys number[]
+---@param xs number[]|Vector<number>
+---@param ys number[]|Vector<number>
 ---@param x_bins PlotBin?
 ---@param y_bins PlotBin?
 ---@param range ImPlot.PlotRect?
@@ -2688,8 +2709,8 @@ function ImPlot.PlotHistogram2D(label_id, xs, ys, x_bins, y_bins, range, flags) 
 
 
 ---@param label_id string
----@param xs number[]
----@param ys number[]
+---@param xs number[]|Vector<number>
+---@param ys number[]|Vector<number>
 ---@param flags PlotDigitalFlags?
 function ImPlot.PlotDigital(label_id, xs, ys, flags) end
 
@@ -5150,6 +5171,11 @@ function ImGui.SetKeyboardFocusHere() end
 
 ---@param offset integer
 function ImGui.SetKeyboardFocusHere(offset) end
+
+
+---@param vec number[]|Vector<number>
+---@return Vector<number>
+function ImGui.as_vector_float(vec) end
 
 
 ---@param image_path string

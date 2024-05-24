@@ -51,6 +51,7 @@ add_library(noita_dear_imgui SHARED
 
     # Lua features
     add_lua_features.cpp
+    lua_features/container.cpp
     lua_features/imgui_clipboard.cpp
     lua_features/imgui_color_editor.cpp
     lua_features/imgui_combo_box.cpp
