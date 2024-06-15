@@ -44,6 +44,7 @@ bool imgui_backend_initialised = false;
 struct style_settings_t {
     float ui_scale = 1.0f;
     embedded_fonts default_font = embedded_fonts::noita_pixel;
+    std::string noto_variant = "JP";
     int text_colour = 0;
     bool pixel_no_anti_aliasing = true;
 
@@ -73,7 +74,12 @@ void load_style()
 
     ImGui_ImplOpenGL3_DestroyFontsTexture();
 
-    add_fonts(mod_path, style_settings.ui_scale, style_settings.pixel_no_anti_aliasing);
+    add_fonts(
+        mod_path,
+        style_settings.ui_scale,
+        style_settings.pixel_no_anti_aliasing,
+        style_settings.noto_variant
+    );
     ImGuiIO& io = ImGui::GetIO();
     io.FontDefault = io.Fonts->Fonts[(int)style_settings.default_font];
 
@@ -392,6 +398,7 @@ NOITA_DEAR_IMGUI_EXPORT void settings_imgui(
         bool viewports,
         bool navigation,
         int font_num,
+        const char* noto_variant,
         bool viewports_no_default_parent,
         int text_colour,
         float scale,
@@ -419,6 +426,8 @@ NOITA_DEAR_IMGUI_EXPORT void settings_imgui(
 
     if (font_num >= 0 && font_num < (int)embedded_fonts::end_)
         new_settings.default_font = (embedded_fonts)font_num;
+
+    new_settings.noto_variant = noto_variant;
 
     new_settings.text_colour = text_colour;
     new_settings.ui_scale = scale;

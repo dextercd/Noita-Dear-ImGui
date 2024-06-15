@@ -5,11 +5,16 @@
 
 #include "fonts.hpp"
 
-void add_fonts(const std::string& mod_path, float scale, bool pixel_no_anti_aliasing)
+void add_fonts(
+        const std::string& mod_path,
+        float scale,
+        bool pixel_no_anti_aliasing,
+        const std::string& noto_variant)
 {
     auto noita_font_path = mod_path + "/NoitaPixel.ttf";
     auto mono_font_path = mod_path + "/SourceCodePro-Regular.ttf";
     auto glyph_font_path = mod_path + "/NoitaGlyph.ttf";
+    auto noto_font_path = mod_path + "/NotoSans" + noto_variant + "-Regular.ttf";
 
     // NoitaPixel font glyph ranges
     ImVector<ImWchar> ranges;
@@ -46,6 +51,22 @@ void add_fonts(const std::string& mod_path, float scale, bool pixel_no_anti_alia
     io.Fonts->AddFontFromFileTTF(mono_font_path.c_str(), 19 * scale, nullptr, io.Fonts->GetGlyphRangesCyrillic());
 
     io.Fonts->AddFontFromFileTTF(glyph_font_path.c_str(), 14 * scale, &pixelcfg, ranges.Data);
+
+    auto noto_builder = builder;
+
+    if (noto_variant == "JP") {
+        noto_builder.AddRanges(io.Fonts->GetGlyphRangesJapanese());
+    } else if (noto_variant == "KR") {
+        noto_builder.AddRanges(io.Fonts->GetGlyphRangesKorean());
+    } else if (noto_variant == "SC") {
+        //noto_builder.AddRanges(io.Fonts->GetGlyphRangesChineseFull());
+        noto_builder.AddRanges(io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
+    }
+
+    ImVector<ImWchar> noto_ranges;
+    noto_builder.BuildRanges(&noto_ranges);
+
+    io.Fonts->AddFontFromFileTTF(noto_font_path.c_str(), 24 * scale, nullptr, noto_ranges.Data);
 
     io.Fonts->Build();  // Build with ranges in scope
 }

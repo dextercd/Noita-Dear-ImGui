@@ -15,6 +15,7 @@ function configure_settings()
         setting_get("multi_viewports"),
         setting_get("navigation"),
         font_num,
+        setting_get("noto_variant"),
         not setting_get("child_window_on_top"),
         tonumber(setting_get("text_colour")),
         tonumber(setting_get("scale")),

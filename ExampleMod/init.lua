@@ -9,7 +9,7 @@
 --
 -- load_imgui returns a table with functions and enumeration values. This is
 -- used to create GUIs.
-local imgui = load_imgui({version="1.11.0", mod="NoitaDearImGuiExampleMod"})
+local imgui = load_imgui({version="1.21.0", mod="NoitaDearImGuiExampleMod"})
 
 -- Global values, we don't want these to reset on every iteration.
 local fx, fy
@@ -136,6 +136,7 @@ function OnWorldPostUpdate()
             {"ImGui", imgui.GetImGuiFont()},
             {"Monospace", imgui.GetMonospaceFont()},
             {"Glyph", imgui.GetGlyphFont()},
+            {"Noto", imgui.GetNotoFont()},
         }
 
         local _

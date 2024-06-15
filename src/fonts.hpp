@@ -10,9 +10,14 @@ enum class embedded_fonts {
     imgui = 3,
     monospace = 4,
     glyph = 5,
+    noto = 6,
     end_,
 };
 
-void add_fonts(const std::string& mod_path, float scale, bool pixel_no_anti_aliasing);
+void add_fonts(
+        const std::string& mod_path,
+        float scale,
+        bool pixel_no_anti_aliasing,
+        const std::string& noto_variant);
 
 #endif // Header guard

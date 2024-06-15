@@ -25,6 +25,7 @@ return function(path, name)
         bool viewports,
         bool navigation,
         int font_num,
+        const char* noto_variant,
         bool viewports_no_default_parent,
         int text_colour,
         float scale,
