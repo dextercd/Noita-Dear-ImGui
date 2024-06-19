@@ -46,7 +46,7 @@ return function(path, name)
     ]])
 
     local function loadlib_with_vs(vc_path, dll_path)
-        local old_dll_dir_buf = ffi.new("char[256]")
+        local old_dll_dir_buf = ffi.new("char[1024]")
         local old_dll_dir_sz = C.GetDllDirectoryA(ffi.sizeof(old_dll_dir_buf), old_dll_dir_buf)
         local old_dll_dir = nil
         if old_dll_dir_sz ~= 0 then
@@ -85,14 +85,7 @@ return function(path, name)
     --
     -- Without this, Noita crashes in JIT-ed Lua code when you use the "New Game"
     -- option, probably because some Lua states are preserved across new runs.
-    local hmodule = C.LoadLibraryA(imgui_dll_path)
-
-    if hmodule == nil then
-        -- Couldn't load the dll. This could be because they don't have the VC++
-        -- redistributables installed globally. Try again but with our copy
-        -- added to the search path.
-        hmodule = loadlib_with_vs(path, imgui_dll_path)
-    end
+    local hmodule = loadlib_with_vs(path, imgui_dll_path)
 
     if hmodule == nil then
         local err = C.GetLastError()
