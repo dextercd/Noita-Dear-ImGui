@@ -11,5 +11,8 @@ void add_imgui_scopes(sol::table& imgui)
             sol::resolve<void(int)>(ImGui::PushID)));
 
     imgui.set_function("PopID", sol::resolve<void()>(ImGui::PopID));
-    imgui.set_function("GetID", sol::resolve<unsigned int(const char*)>(ImGui::GetID));
+    imgui.set_function("GetID",
+        sol::overload(
+            sol::resolve<unsigned int(const char*)>(ImGui::GetID),
+            sol::resolve<unsigned int(int)>(ImGui::GetID)));
 }

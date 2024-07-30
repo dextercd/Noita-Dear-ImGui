@@ -16,6 +16,7 @@ void add_imgui_list_clipper(sol::table& imgui)
         "Step", sol::resolve<bool()>(&ImGuiListClipper::Step),
         "IncludeItemsByIndex", sol::resolve<void(int, int)>(&ImGuiListClipper::IncludeItemsByIndex),
         "IncludeItemByIndex", sol::resolve<void(int)>(&ImGuiListClipper::IncludeItemByIndex),
+        "SeekCursorForItem", sol::resolve<void(int)>(&ImGuiListClipper::SeekCursorForItem),
         "DisplayStart", sol::readonly(&ImGuiListClipper::DisplayStart),
         "DisplayEnd", sol::readonly(&ImGuiListClipper::DisplayEnd)
     );

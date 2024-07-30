@@ -11,6 +11,7 @@ void add_imgui_drag_sliders(sol::table& imgui)
         "Logarithmic",     ImGuiSliderFlags_Logarithmic,
         "NoRoundToFormat", ImGuiSliderFlags_NoRoundToFormat,
         "NoInput",         ImGuiSliderFlags_NoInput,
+        "WrapAround",      ImGuiSliderFlags_WrapAround,
         "InvalidMask_",    ImGuiSliderFlags_InvalidMask_
     );
 

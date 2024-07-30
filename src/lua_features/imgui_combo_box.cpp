@@ -58,12 +58,14 @@ void add_imgui_combo_box(sol::table& imgui)
             [](const char* label, int current_item, sol::table items, int popup_max_height_in_items) -> std::tuple<bool, int> { return ImGui_Combo(label, current_item, items, popup_max_height_in_items); }));
 
     imgui.new_enum("SelectableFlags",
-        "None",             ImGuiSelectableFlags_None,
-        "DontClosePopups",  ImGuiSelectableFlags_DontClosePopups,
-        "SpanAllColumns",   ImGuiSelectableFlags_SpanAllColumns,
-        "AllowDoubleClick", ImGuiSelectableFlags_AllowDoubleClick,
-        "Disabled",         ImGuiSelectableFlags_Disabled,
-        "AllowOverlap",     ImGuiSelectableFlags_AllowOverlap
+        "None",              ImGuiSelectableFlags_None,
+        "DontClosePopups",   ImGuiSelectableFlags_DontClosePopups,
+        "NoAutoClosePopups", ImGuiSelectableFlags_NoAutoClosePopups,
+        "SpanAllColumns",    ImGuiSelectableFlags_SpanAllColumns,
+        "AllowDoubleClick",  ImGuiSelectableFlags_AllowDoubleClick,
+        "Disabled",          ImGuiSelectableFlags_Disabled,
+        "AllowOverlap",      ImGuiSelectableFlags_AllowOverlap,
+        "Highlight",         ImGuiSelectableFlags_Highlight
     );
 
     imgui.set_function("Selectable",

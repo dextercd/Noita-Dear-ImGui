@@ -20,6 +20,7 @@ void add_imgui_trees(sol::table& imgui)
         "FramePadding",         ImGuiTreeNodeFlags_FramePadding,
         "SpanAvailWidth",       ImGuiTreeNodeFlags_SpanAvailWidth,
         "SpanFullWidth",        ImGuiTreeNodeFlags_SpanFullWidth,
+        "SpanTextWidth",        ImGuiTreeNodeFlags_SpanTextWidth,
         "SpanAllColumns",       ImGuiTreeNodeFlags_SpanAllColumns,
         "NavLeftJumpsBackHere", ImGuiTreeNodeFlags_NavLeftJumpsBackHere,
         //"NoScrollOnOpen",     ImGuiTreeNodeFlags_NoScrollOnOpen,
@@ -47,4 +48,6 @@ void add_imgui_trees(sol::table& imgui)
         sol::overload(
             [](bool is_open) { return ImGui::SetNextItemOpen(is_open); },
             sol::resolve<void(bool, ImGuiCond)>(ImGui::SetNextItemOpen)));
+
+    imgui.set_function("SetNextItemStorageID", sol::resolve<void(ImGuiID)>(ImGui::SetNextItemStorageID));
 }

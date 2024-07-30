@@ -264,27 +264,35 @@ ImGui.Col = {
     ResizeGrip = 30,
     ResizeGripHovered = 31,
     ResizeGripActive = 32,
-    Tab = 33,
-    TabHovered = 34,
+    Tab = 34,
+    TabHovered = 33,
     TabActive = 35,
-    TabUnfocused = 36,
-    TabUnfocusedActive = 37,
-    PlotLines = 40,
-    PlotLinesHovered = 41,
-    PlotHistogram = 42,
-    PlotHistogramHovered = 43,
-    TableHeaderBg = 44,
-    TableBorderStrong = 45,
-    TableBorderLight = 46,
-    TableRowBg = 47,
-    TableRowBgAlt = 48,
-    TextSelectedBg = 49,
-    DragDropTarget = 50,
-    NavHighlight = 51,
-    NavWindowingHighlight = 52,
-    NavWindowingDimBg = 53,
-    ModalWindowDimBg = 54,
-    COUNT = 55,
+    TabUnfocused = 37,
+    TabUnfocusedActive = 38,
+    TabSelected = 35,
+    TabSelectedOverline = 36,
+    TabDimmed = 37,
+    TabDimmedSelected = 38,
+    TabDimmedSelectedOverline = 39,
+    DockingPreview = 40,
+    DockingEmptyBg = 41,
+    PlotLines = 42,
+    PlotLinesHovered = 43,
+    PlotHistogram = 44,
+    PlotHistogramHovered = 45,
+    TableHeaderBg = 46,
+    TableBorderStrong = 47,
+    TableBorderLight = 48,
+    TableRowBg = 49,
+    TableRowBgAlt = 50,
+    TextLink = 51,
+    TextSelectedBg = 52,
+    DragDropTarget = 53,
+    NavHighlight = 54,
+    NavWindowingHighlight = 55,
+    NavWindowingDimBg = 56,
+    ModalWindowDimBg = 57,
+    COUNT = 58,
 }
 
 
@@ -313,14 +321,29 @@ ImGui.StyleVar = {
     GrabMinSize = 20,
     GrabRounding = 21,
     TabRounding = 22,
-    TabBarBorderSize = 23,
-    ButtonTextAlign = 24,
-    SelectableTextAlign = 25,
-    SeparatorTextBorderSize = 26,
-    SeparatorTextAlign = 27,
-    SeparatorTextPadding = 28,
-    DockingSeparatorSize = 29,
-    COUNT = 30,
+    TabBorderSize = 23,
+    TabBarBorderSize = 24,
+    TabBarOverlineSize = 25,
+    TableAngledHeadersAngle = 26,
+    TableAngledHeadersTextAlign = 27,
+    ButtonTextAlign = 28,
+    SelectableTextAlign = 29,
+    SeparatorTextBorderSize = 30,
+    SeparatorTextAlign = 31,
+    SeparatorTextPadding = 32,
+    DockingSeparatorSize = 33,
+    COUNT = 34,
+}
+
+
+---@enum ImGuiItemFlags
+ImGui.ImGuiItemFlags = {
+    None = 0,
+    NoTabStop = 1,
+    NoNav = 2,
+    NoNavDefaultFocus = 4,
+    ButtonRepeat = 8,
+    AutoClosePopups = 16,
 }
 
 
@@ -365,6 +388,14 @@ function ImGui.PushButtonRepeat(repeat_) end
 
 
 function ImGui.PopButtonRepeat() end
+
+
+---@param option ItemFlags
+---@param enabled boolean
+function ImGui.PushItemFlag(option, enabled) end
+
+
+function ImGui.PopItemFlag() end
 
 
 ---@param item_width number
@@ -441,10 +472,12 @@ function ImGui.Combo(label, current_item, items, popup_max_height_in_items) end
 ImGui.SelectableFlags = {
     None = 0,
     DontClosePopups = 1,
+    NoAutoClosePopups = 1,
     SpanAllColumns = 2,
     AllowDoubleClick = 4,
     Disabled = 8,
     AllowOverlap = 16,
+    Highlight = 32,
 }
 
 
@@ -496,8 +529,9 @@ ImGui.TreeNodeFlags = {
     FramePadding = 1024,
     SpanAvailWidth = 2048,
     SpanFullWidth = 4096,
-    SpanAllColumns = 8192,
-    NavLeftJumpsBackHere = 16384,
+    SpanTextWidth = 8192,
+    SpanAllColumns = 16384,
+    NavLeftJumpsBackHere = 32768,
     CollapsingHeader = 26,
 }
 
@@ -560,6 +594,10 @@ function ImGui.SetNextItemOpen(is_open) end
 function ImGui.SetNextItemOpen(is_open, cond) end
 
 
+---@param storage_id integer
+function ImGui.SetNextItemStorageID(storage_id) end
+
+
 ---@enum WindowFlags
 ImGui.WindowFlags = {
     None = 0,
@@ -612,6 +650,7 @@ ImGui.ChildFlags = {
     AutoResizeY = 32,
     AlwaysAutoResize = 64,
     FrameStyle = 128,
+    NavFlattened = 256,
 }
 
 
@@ -872,25 +911,27 @@ ImGui.InputTextFlags = {
     None = 0,
     CharsDecimal = 1,
     CharsHexadecimal = 2,
-    CharsUppercase = 4,
-    CharsNoBlank = 8,
-    AutoSelectAll = 16,
-    EnterReturnsTrue = 32,
-    CallbackCompletion = 64,
-    CallbackHistory = 128,
-    CallbackAlways = 256,
-    CallbackCharFilter = 512,
-    AllowTabInput = 1024,
-    CtrlEnterForNewLine = 2048,
-    NoHorizontalScroll = 4096,
-    AlwaysOverwrite = 8192,
-    ReadOnly = 16384,
-    Password = 32768,
+    CharsScientific = 4,
+    CharsUppercase = 8,
+    CharsNoBlank = 16,
+    AllowTabInput = 32,
+    EnterReturnsTrue = 64,
+    EscapeClearsAll = 128,
+    CtrlEnterForNewLine = 256,
+    ReadOnly = 512,
+    Password = 1024,
+    AlwaysOverwrite = 2048,
+    AutoSelectAll = 4096,
+    ParseEmptyRefVal = 8192,
+    DisplayEmptyRefVal = 16384,
+    NoHorizontalScroll = 32768,
     NoUndoRedo = 65536,
-    CharsScientific = 131072,
-    CallbackResize = 262144,
-    CallbackEdit = 524288,
-    EscapeClearsAll = 1048576,
+    CallbackCompletion = 131072,
+    CallbackHistory = 262144,
+    CallbackAlways = 524288,
+    CallbackCharFilter = 1048576,
+    CallbackResize = 2097152,
+    CallbackEdit = 4194304,
 }
 
 
@@ -1238,10 +1279,11 @@ ImGui.TabBarFlags = {
     NoCloseWithMiddleMouseButton = 8,
     NoTabListScrollingButtons = 16,
     NoTooltip = 32,
-    FittingPolicyResizeDown = 64,
-    FittingPolicyScroll = 128,
-    FittingPolicyMask_ = 192,
-    FittingPolicyDefault_ = 64,
+    DrawSelectedOverline = 64,
+    FittingPolicyResizeDown = 128,
+    FittingPolicyScroll = 256,
+    FittingPolicyMask_ = 384,
+    FittingPolicyDefault_ = 128,
 }
 
 
@@ -1541,6 +1583,19 @@ function ImGui.ProgressBar(fraction, size_x, size_y, overlay) end
 function ImGui.Bullet() end
 
 
+---@param label string
+---@return boolean
+function ImGui.TextLink(label) end
+
+
+---@param label string
+function ImGui.TextLinkOpenURL(label) end
+
+---@param label string
+---@param url string
+function ImGui.TextLinkOpenURL(label, url) end
+
+
 ---@enum TableFlags
 ImGui.TableFlags = {
     None = 0,
@@ -1636,32 +1691,32 @@ ImGui.SortDirection = {
 
 
 ---@param str_id string
----@param column integer
+---@param columns integer
 ---@return boolean
-function ImGui.BeginTable(str_id, column) end
+function ImGui.BeginTable(str_id, columns) end
 
 ---@param str_id string
----@param column integer
+---@param columns integer
 ---@param flags TableFlags
 ---@return boolean
-function ImGui.BeginTable(str_id, column, flags) end
+function ImGui.BeginTable(str_id, columns, flags) end
 
 ---@param str_id string
----@param column integer
+---@param columns integer
 ---@param flags TableFlags
 ---@param outer_size_x number
 ---@param outer_size_y number
 ---@return boolean
-function ImGui.BeginTable(str_id, column, flags, outer_size_x, outer_size_y) end
+function ImGui.BeginTable(str_id, columns, flags, outer_size_x, outer_size_y) end
 
 ---@param str_id string
----@param column integer
+---@param columns integer
 ---@param flags TableFlags
 ---@param outer_size_x number
 ---@param outer_size_y number
 ---@param inner_size number
 ---@return boolean
-function ImGui.BeginTable(str_id, column, flags, outer_size_x, outer_size_y, inner_size) end
+function ImGui.BeginTable(str_id, columns, flags, outer_size_x, outer_size_y, inner_size) end
 
 
 function ImGui.EndTable() end
@@ -1751,6 +1806,10 @@ function ImGui.TableGetColumnFlags(column_n) end
 ---@param column_n integer
 ---@param v boolean
 function ImGui.TableSetColumnEnabled(column_n, v) end
+
+
+---@return integer
+function ImGui.TableGetHoveredColumn() end
 
 
 ---@param target TableBgTarget
@@ -3564,6 +3623,10 @@ function ImGui.PopID() end
 ---@return integer
 function ImGui.GetID(str_id) end
 
+---@param int_id integer
+---@return integer
+function ImGui.GetID(int_id) end
+
 
 ---@enum DockNodeFlags
 ImGui.DockNodeFlags = {
@@ -3691,6 +3754,7 @@ ImGui.SliderFlags = {
     Logarithmic = 32,
     NoRoundToFormat = 64,
     NoInput = 128,
+    WrapAround = 256,
     InvalidMask_ = 1879048207,
 }
 
@@ -4458,6 +4522,9 @@ ImGui.DragDropFlags = {
     SourceNoHoldToOpenOthers = 4,
     SourceAllowNullID = 8,
     SourceExtern = 16,
+    PayloadAutoExpire = 32,
+    PayloadNoCrossContext = 64,
+    PayloadNoCrossProcess = 128,
     SourceAutoExpirePayload = 32,
     AcceptBeforeDelivery = 1024,
     AcceptNoDrawDefaultRect = 2048,
@@ -5123,8 +5190,8 @@ ImGui.Mod = {
     Shift = 8192,
     Alt = 16384,
     Super = 32768,
-    Shortcut = 2048,
-    Mask_ = 63488,
+    Shortcut = 4096,
+    Mask_ = 61440,
 }
 
 

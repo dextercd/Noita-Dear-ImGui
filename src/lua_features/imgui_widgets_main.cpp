@@ -33,4 +33,10 @@ void add_imgui_widgets_main(sol::table& imgui)
             [](float fraction, float size_x, float size_y) { ImGui::ProgressBar(fraction, {size_x, size_y}); },
             [](float fraction, float size_x, float size_y, const char* overlay) { ImGui::ProgressBar(fraction, {size_x, size_y}, overlay); }));
     imgui.set_function("Bullet", sol::resolve<void()>(ImGui::Bullet));
+
+    imgui.set_function("TextLink", sol::resolve<bool(const char*)>(ImGui::TextLink));
+    imgui.set_function("TextLinkOpenURL",
+        sol::overload(
+            [](const char* label) { return ImGui::TextLinkOpenURL(label); },
+            sol::resolve<void(const char*, const char*)>(ImGui::TextLinkOpenURL)));
 }

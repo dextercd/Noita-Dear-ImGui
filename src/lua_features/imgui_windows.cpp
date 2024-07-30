@@ -96,7 +96,8 @@ void add_imgui_windows(sol::table& imgui, version_number version)
         "AutoResizeX",            ImGuiChildFlags_AutoResizeX,
         "AutoResizeY",            ImGuiChildFlags_AutoResizeY,
         "AlwaysAutoResize",       ImGuiChildFlags_AlwaysAutoResize,
-        "FrameStyle",             ImGuiChildFlags_FrameStyle
+        "FrameStyle",             ImGuiChildFlags_FrameStyle,
+        "NavFlattened",           ImGuiChildFlags_NavFlattened
     );
 
     // Windows

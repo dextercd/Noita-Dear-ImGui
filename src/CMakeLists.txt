@@ -93,7 +93,6 @@ add_library(NoitaDearImGui::noita_dear_imgui ALIAS noita_dear_imgui)
 
 target_compile_definitions(noita_dear_imgui
     PUBLIC
-        IMGUI_DISABLE_OBSOLETE_FUNCTIONS
         IMGUI_USER_CONFIG=<noita_imgui/imgui_config.hpp>
 )
 

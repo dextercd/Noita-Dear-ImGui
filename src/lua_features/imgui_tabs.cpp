@@ -14,6 +14,7 @@ void add_imgui_tabs(sol::table& imgui)
         "NoCloseWithMiddleMouseButton", ImGuiTabBarFlags_NoCloseWithMiddleMouseButton,
         "NoTabListScrollingButtons",    ImGuiTabBarFlags_NoTabListScrollingButtons,
         "NoTooltip",                    ImGuiTabBarFlags_NoTooltip,
+        "DrawSelectedOverline",         ImGuiTabBarFlags_DrawSelectedOverline,
         "FittingPolicyResizeDown",      ImGuiTabBarFlags_FittingPolicyResizeDown,
         "FittingPolicyScroll",          ImGuiTabBarFlags_FittingPolicyScroll,
         "FittingPolicyMask_",           ImGuiTabBarFlags_FittingPolicyMask_,

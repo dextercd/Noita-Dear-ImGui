@@ -26,7 +26,7 @@ set(TC_COMPILE_FLAGS "")
 set(TC_LINK_FLAGS "")
 
 # We're building for 32 bit Windows using MinGW runtime
-string(APPEND TC_COMMON_FLAGS "--sysroot /usr/i686-w64-mingw32 -target i686-pc-windows-gnu")
+string(APPEND TC_COMMON_FLAGS "--sysroot /usr/i686-w64-mingw32 --target=i686-pc-windows-gnu")
 
 
 # Common flags
@@ -43,8 +43,10 @@ string(APPEND TC_COMPILE_FLAGS " -D__GXX_TYPEINFO_EQUALITY_INLINE=0")
 # MinGW include paths
 string(APPEND TC_COMPILE_FLAGS " -I /usr/i686-w64-mingw32/include/c++/13.1.0/ -I /usr/i686-w64-mingw32/include/c++/13.1.0/i686-w64-mingw32")
 
-set(CMAKE_C_FLAGS_INIT "${TC_COMPILE_FLAGS}")
-set(CMAKE_CXX_FLAGS_INIT "${TC_COMPILE_FLAGS}")
+string(APPEND TC_COMPILE_FLAGS " -DIMGUI_DISABLE_SSE")
+
+set(CMAKE_C_FLAGS "${TC_COMPILE_FLAGS}")
+set(CMAKE_CXX_FLAGS "${TC_COMPILE_FLAGS}")
 
 # Common flags
 string(APPEND TC_LINK_FLAGS "${TC_COMMON_FLAGS}")

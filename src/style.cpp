@@ -102,9 +102,11 @@ void noita_imgui_style(ImGuiStyle* dst)
 
     dst->Colors[ImGuiCol_Tab] = color("#40352b7c");
     dst->Colors[ImGuiCol_TabHovered] = color("#a990787d");
-    dst->Colors[ImGuiCol_TabActive] = color("#4d4545ff");
-    dst->Colors[ImGuiCol_TabUnfocused] = dst->Colors[ImGuiCol_Tab];
-    dst->Colors[ImGuiCol_TabUnfocusedActive] = dst->Colors[ImGuiCol_TabActive];
+    dst->Colors[ImGuiCol_TabSelected] = color("#4d4545ff");
+    dst->Colors[ImGuiCol_TabDimmed] = dst->Colors[ImGuiCol_Tab];
+    dst->Colors[ImGuiCol_TabDimmedSelected] = dst->Colors[ImGuiCol_TabSelected];
+    dst->Colors[ImGuiCol_TabSelectedOverline] = color("#eacf1cff");
+    dst->Colors[ImGuiCol_TabDimmedSelectedOverline] = color("#f5e46fff");
 
     dst->Colors[ImGuiCol_TextSelectedBg] = color("#2e8cffa3");
 
