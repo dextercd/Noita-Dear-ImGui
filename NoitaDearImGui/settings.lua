@@ -109,9 +109,19 @@ mod_settings =
                 },
                 scope = MOD_SETTING_SCOPE_RUNTIME,
             },
+            {
+                id = "reset_ini",
+                ui_name = "Reset imgui.ini",
+                ui_description = "Clears all window, table, docking positioning and layout changes that were saved.",
+                value_default = "no",
+                values = {
+                    {"no", "No"},
+                    {"next_restart", "On next game restart"},
+                },
+                scope = MOD_SETTING_SCOPE_RUNTIME_RESTART,
+            },
         },
     },
-
     {
         category_id = "for_developers",
         ui_name = "For Developers",

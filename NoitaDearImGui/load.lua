@@ -73,6 +73,12 @@ return function(path, name)
     function setting_get(key)
         return ModSettingGet(settings_prefix .. key) or false
     end
+    function setting_set(key, value)
+        return ModSettingSet(settings_prefix .. key, value)
+    end
+    function setting_set_next(key, value, is_default)
+        return ModSettingSetNextValue(settings_prefix .. key, value, is_default)
+    end
 
     local imgui_dll_path = path .. "/noita_dear_imgui.dll"
     if setting_get("build_type") == "debug" then
@@ -95,14 +101,21 @@ return function(path, name)
     local imgui_dll = ffi.load(imgui_dll_path)
     local sdl = ffi.load("SDL2.dll")
 
+    local reset_ini = setting_get("reset_ini") == "next_restart"
+
     imgui_dll.init_imgui(
-        false,
+        reset_ini,
         path,
         name,
         sdl.SDL_PollEvent,
         sdl.SDL_GL_SwapWindow,
         C.luaL_newstate
     )
+
+    if reset_ini then
+        setting_set("reset_ini", "no")
+        setting_set_next("reset_ini", "no", false)
+    end
 
     return {
         imgui_dll = imgui_dll,
