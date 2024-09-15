@@ -4,30 +4,34 @@
 local ffi = require("ffi")
 local C = ffi.C
 
-local non_virtual = {}
-local function virtual_image_size(name, image)
-    name = ffi.string(name)
-    if  non_virtual[name] or
-        name:sub(-4) ~= ".png" or
-        ModImageWhoSetContent(name) == ""
-    then
-        return
+local virtual_image_size, virtual_image_data = nil, nil
+
+if ModImageIdFromFilename then
+    local non_virtual = {}
+    virtual_image_size = function(name, image)
+        name = ffi.string(name)
+        if  non_virtual[name] or
+            name:sub(-4) ~= ".png" or
+            ModImageWhoSetContent(name) == ""
+        then
+            return
+        end
+
+        local id, width, height = ModImageIdFromFilename(name)
+        if id <= 0 then
+            non_virtual[name] = true
+            return
+        end
+
+        image[0], image[1], image[2] = id, width, height
     end
 
-    local id, width, height = ModImageIdFromFilename(name)
-    if id <= 0 then
-        non_virtual[name] = true
-        return
-    end
-
-    image[0], image[1], image[2] = id, width, height
-end
-
-local function virtual_image_data(id, width, height, data_out)
-    for y=0,height-1 do
-        for x=0,width-1 do
-            local pixel = ModImageGetPixel(id, x, y)
-            data_out[y * width + x] = pixel
+    virtual_image_data = function(id, width, height, data_out)
+        for y=0,height-1 do
+            for x=0,width-1 do
+                local pixel = ModImageGetPixel(id, x, y)
+                data_out[y * width + x] = pixel
+            end
         end
     end
 end
