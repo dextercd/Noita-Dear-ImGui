@@ -4,6 +4,34 @@
 local ffi = require("ffi")
 local C = ffi.C
 
+local non_virtual = {}
+local function virtual_image_size(name, image)
+    name = ffi.string(name)
+    if  non_virtual[name] or
+        name:sub(-4) ~= ".png" or
+        ModImageWhoSetContent(name) == ""
+    then
+        return
+    end
+
+    local id, width, height = ModImageIdFromFilename(name)
+    if id <= 0 then
+        non_virtual[name] = true
+        return
+    end
+
+    image[0], image[1], image[2] = id, width, height
+end
+
+local function virtual_image_data(id, width, height, data_out)
+    for y=0,height-1 do
+        for x=0,width-1 do
+            local pixel = ModImageGetPixel(id, x, y)
+            data_out[y * width + x] = pixel
+        end
+    end
+end
+
 return function(path, name)
     local embedded_version = name ~= "imgui"
     if embedded_version and ModIsEnabled("NoitaDearImGui") then
@@ -18,7 +46,9 @@ return function(path, name)
         const char* name,
         void* pollevent,
         void* swapwindow,
-        void* newstate
+        void* newstate,
+        void (*virtual_image_size)(const char* name, int* image),
+        void (*virtual_image_data)(int id, int width, int height, int* data_out)
     );
 
     void settings_imgui(
@@ -109,7 +139,9 @@ return function(path, name)
         name,
         sdl.SDL_PollEvent,
         sdl.SDL_GL_SwapWindow,
-        C.luaL_newstate
+        C.luaL_newstate,
+        virtual_image_size,
+        virtual_image_data
     )
 
     if reset_ini then

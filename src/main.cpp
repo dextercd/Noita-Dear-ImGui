@@ -351,8 +351,13 @@ NOITA_DEAR_IMGUI_EXPORT void init_imgui(
         const char* name,
         void* pollevent,
         void* swapwindow,
-        void* newstate)
+        void* newstate,
+        void (*vis)(const char* name, int* image),
+        void (*vid)(int id, int width, int height, int* data_out))
 {
+    virtual_image_size = vis;
+    virtual_image_data = vid;
+
     if (!is_loaded() || is_embedded)
         load_names.push_back(name);
 
