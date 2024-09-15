@@ -68,7 +68,6 @@ function OnWorldPostUpdate()
             imgui.SameLine()
             if imgui.Button("Clear") then
                 clearing = true
-                v = v + 100
             end
         else
             imgui.ProgressBar(clear_progress, -1, 0, "Clearing..")
