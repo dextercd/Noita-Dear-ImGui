@@ -336,8 +336,8 @@ ImGui.StyleVar = {
 }
 
 
----@enum ImGuiItemFlags
-ImGui.ImGuiItemFlags = {
+---@enum ItemFlags
+ImGui.ItemFlags = {
     None = 0,
     NoTabStop = 1,
     NoNav = 2,

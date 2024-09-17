@@ -1,7 +1,9 @@
 #include <sol/sol.hpp>
 #include <imgui.h>
 
-void add_imgui_param_stacks(sol::table& imgui)
+#include <noita_imgui/version_number.hpp>
+
+void add_imgui_param_stacks(sol::table& imgui, version_number version)
 {
     imgui.new_enum<ImGuiCol_>("Col", {
         {"Text",                      ImGuiCol_Text},
@@ -111,7 +113,7 @@ void add_imgui_param_stacks(sol::table& imgui)
         {"COUNT",                       ImGuiStyleVar_COUNT},
     });
 
-    imgui.new_enum<ImGuiItemFlags_>("ImGuiItemFlags", {
+    imgui.new_enum<ImGuiItemFlags_>("ItemFlags", {
         {"None",              ImGuiItemFlags_None},
         {"NoTabStop",         ImGuiItemFlags_NoTabStop},
         {"NoNav",             ImGuiItemFlags_NoNav},
@@ -119,6 +121,10 @@ void add_imgui_param_stacks(sol::table& imgui)
         {"ButtonRepeat",      ImGuiItemFlags_ButtonRepeat},
         {"AutoClosePopups",   ImGuiItemFlags_AutoClosePopups},
     });
+
+    // This had the wrong name for a while
+    if (version <= version_number{1, 24, 0, 0})
+        imgui["ImGuiItemFlags"] = imgui["ItemFlags"];
 
     imgui.set_function("PushStyleColor",
         sol::overload(
