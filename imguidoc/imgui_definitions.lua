@@ -44,8 +44,70 @@ function ImPlot.PlotRect.new(x_min, x_max, y_min, y_max) end
 local ImGui = {}
 
 ---@class ImGui.GuiIO
----@class ImGui.Font
 
+---@class ImGui.FontConfig
+---@field FontNo integer
+---@field SizePixels number
+---@field OversampleH integer
+---@field OversampleV integer
+---@field PixelSnapH boolean
+---@field GlyphExtraSpacing_x number
+---@field GlyphExtraSpacing_y number
+---@field GlyphOffset_x number
+---@field GlyphOffset_y number
+---@field GlyphMinAdvanceX number
+---@field GlyphMaxAdvanceX number
+---@field MergeMode boolean
+---@field FontBuilderFlags integer
+---@field RasterizerMultiply number
+---@field RasterizerDensity number
+---@field EllipsisChar integer
+
+---@class ImGui.Font
+---@field IndexAdvanceX any
+---@field FallbackAdvanceX number
+---@field FontSize number
+---@field IndexLookup any
+---@field ConfigData FontConfig
+---@field ConfigDataCount integer
+---@field FallbackChar integer
+---@field EllipsisChar integer
+---@field EllipsisCharCount integer
+---@field EllipsisWidth number
+---@field EllipsisCharStep number
+---@field DirtyLookupTables boolean
+---@field Scale number
+---@field Ascent number
+---@field Descent number
+---@field MetricsTotalSurface integer
+ImGui.Font = {}
+
+---@param c integer
+---@return number
+function ImGui.Font:GetCharAdvance(c) end
+
+---@return boolean
+function ImGui.Font:IsLoaded() end
+
+---@return string
+function ImGui.Font:GetDebugName() end
+
+---@param size number
+---@param max_width number
+---@param wrap_width number
+---@param text string
+---@param length integer?
+---@return width number
+---@return height number
+---@return remaining integer
+function ImGui.Font:CalcTextSizeA(size, max_width, wrap_width, text, length) end
+
+---@param scale number
+---@param text string
+---@param length integer?
+---@param wrap_width number
+---@return integer
+function ImGui.Font:CalcWordWrapPositionA(scale, text, length, wrap_width) end
 
 ---@class ImGui.ListClipper
 ---@field DisplayStart integer
@@ -3743,8 +3805,21 @@ function ImGui.PushFont(font) end
 function ImGui.PopFont() end
 
 
+---@return ImGui.Font
+function ImGui.GetFont() end
+
+
 ---@return number
 function ImGui.GetFontSize() end
+
+
+---@param text string
+---@param length integer?
+---@param hide_text_after_double_hash boolean?
+---@param wrap_width number?
+---@return number
+---@return number
+function ImGui.CalcTextSize(text, length, hide_text_after_double_hash, wrap_width) end
 
 
 ---@enum SliderFlags
