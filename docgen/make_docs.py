@@ -318,8 +318,22 @@ ImPlot.PlotRect = {}
 function ImPlot.PlotRect.new(x_min, x_max, y_min, y_max) end
 
 
+---@class ImGuiVersionInfo
+---@field num integer
+---@field str string
+
+---@class BindingsVersionInfo
+---@field git_sha string
+---@field parts [integer, integer, integer, integer]
+---@field str string
+
+---@class VersionInfo
+---@field imgui ImGuiVersionInfo
+---@field ndi BindingsVersionInfo
+
 ---@class ImGui
 ---@field implot ImPlot
+---@field version_info VersionInfo
 local ImGui = {}
 
 ---@class ImGui.GuiIO
@@ -376,9 +390,9 @@ function ImGui.Font:GetDebugName() end
 ---@param wrap_width number
 ---@param text string
 ---@param length integer?
----@return width number
----@return height number
----@return remaining integer
+---@return number width
+---@return number height
+---@return integer remaining
 function ImGui.Font:CalcTextSizeA(size, max_width, wrap_width, text, length) end
 
 ---@param scale number
