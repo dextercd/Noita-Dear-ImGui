@@ -1,5 +1,9 @@
 # Noita Dear ImGui bindings
 
+## Users
+
+If you want to install this mod, head over to the [Releases](https://github.com/dextercd/Noita-Dear-ImGui/releases) and download the latest build (NoitaDearImGui-X.Y.Z.zip NOT the source code).
+
 ## How to use this in your own mod?
 
 You are not expected to bundle this mod with your own mod, you should instead
