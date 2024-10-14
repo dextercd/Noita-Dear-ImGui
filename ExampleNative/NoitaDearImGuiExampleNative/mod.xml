@@ -1,5 +1,5 @@
 <Mod
-    name="NoitaDearImGui: C++ Example"
+    name="Dear ImGui: C++ Example"
     description="Shows the Dear ImGui demo window by loading a C++ DLL that links with the main mod's DLL.\nSee the source on GitHub for more info!"
     request_no_api_restrictions="1" />
 

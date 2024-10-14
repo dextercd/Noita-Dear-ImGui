@@ -109,6 +109,7 @@ FetchContent_MakeAvailable(tinyxml2)
 
 
 set(VERSION_INFO_TXT "${CMAKE_CURRENT_BINARY_DIR}/version_info.txt")
+set(MOD_XML "${CMAKE_CURRENT_BINARY_DIR}/mod.xml")
 set(VERSION_INFO_CPP "${CMAKE_CURRENT_BINARY_DIR}/version_info.cpp")
 
 find_program(GIT_PROGRAM git)
@@ -116,6 +117,7 @@ find_program(GIT_PROGRAM git)
 set(git_file_list
     version_info.txt.in ${VERSION_INFO_TXT}
     version_info.cpp.in ${VERSION_INFO_CPP}
+    mod.xml.in ${MOD_XML}
 )
 
 add_custom_target(version_info_files ALL
@@ -143,7 +145,11 @@ set(NDI_SUBPROJECT TRUE)
 add_subdirectory(ExampleNative)
 
 install(DIRECTORY NoitaDearImGui DESTINATION "." COMPONENT NoitaImGui)
-install(FILES ${VERSION_INFO_TXT} DESTINATION "NoitaDearImGui" COMPONENT NoitaImGui)
+install(
+    FILES ${VERSION_INFO_TXT} ${MOD_XML}
+    DESTINATION "NoitaDearImGui"
+    COMPONENT NoitaImGui
+)
 
 install(DIRECTORY ExampleMod/ DESTINATION "NoitaDearImGuiExampleMod" COMPONENT NoitaImGui_Example)
 install(FILES imguidoc/imgui_definitions.lua

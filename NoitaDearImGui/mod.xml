@@ -1,5 +1,0 @@
-<Mod
-    name="NoitaDearImGui: Main"
-    description="Adds DearImGui functions for other mods to use."
-    download_link="https://github.com/dextercd/Noita-Dear-ImGui/releases"
-    request_no_api_restrictions="1" />

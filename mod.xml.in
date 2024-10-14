@@ -1,0 +1,5 @@
+<Mod
+    name="Dear ImGui: Main @PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJECT_VERSION_PATCH@"
+    description="Add Dear ImGui functions to the modding API."
+    download_link="https://github.com/dextercd/Noita-Dear-ImGui/releases"
+    request_no_api_restrictions="1" />
