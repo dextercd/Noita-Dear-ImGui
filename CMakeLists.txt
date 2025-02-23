@@ -134,7 +134,7 @@ add_custom_target(version_info_files ALL
         -P cmake/write_git_info.cmake
 
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    BYPRODUCTS ${VERSION_INFO_TXT} ${VERSION_INFO_CPP}
+    BYPRODUCTS ${VERSION_INFO_TXT} ${VERSION_INFO_CPP} ${MOD_XML}
 )
 
 set(CMAKE_INSTALL_INCLUDEDIR "NoitaDearImGui/native/include")
