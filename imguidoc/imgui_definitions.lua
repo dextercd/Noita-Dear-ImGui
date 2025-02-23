@@ -82,7 +82,7 @@ local ImGui = {}
 ---@field FallbackAdvanceX number
 ---@field FontSize number
 ---@field IndexLookup any
----@field ConfigData FontConfig
+---@field ConfigData ImGui.FontConfig
 ---@field ConfigDataCount integer
 ---@field FallbackChar integer
 ---@field EllipsisChar integer
