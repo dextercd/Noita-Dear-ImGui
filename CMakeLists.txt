@@ -94,7 +94,7 @@ find_package(Lua REQUIRED)
 
 FetchContent_Declare(sol
     GIT_REPOSITORY https://github.com/ThePhD/sol2.git
-    GIT_TAG 19898d8d3e6c3def33625082343428be1bb9387b
+    GIT_TAG 2b0d2fe8ba0074e16b499940c4f3126b9c7d3471
 )
 
 FetchContent_MakeAvailable(sol)
