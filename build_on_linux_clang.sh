@@ -6,6 +6,8 @@ if [ ! -d clang-build ]; then
     mkdir clang-build
     pushd clang-build
 
+    export FREETYPE_DIR=/home/dexter/.local/i686-w64-mingw32
+
     cmake "$project_path" \
         -G 'Ninja Multi-Config' \
         -DCMAKE_INSTALL_PREFIX="$HOME/.local/share/Steam/steamapps/common/Noita/mods" \
