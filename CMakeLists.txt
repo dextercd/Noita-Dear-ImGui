@@ -160,14 +160,14 @@ install(FILES imguidoc/imgui_definitions.lua
 FetchContent_Declare(
     Handtokening_CMake
     GIT_REPOSITORY https://github.com/dextercd/Handtokening-CMake.git
-    GIT_TAG 5ffb815c8459bea6eb3de61eb92483b05cdc2fc6
+    GIT_TAG b492761e64dffba932a5c51a8123869a1149ed49
 )
 FetchContent_MakeAvailable(Handtokening_CMake)
 
-list(APPEND HT_SIGN_PATTERNS
-    "Debug/noita_dear_imgui\\.dll" description="Noita Dear ImGui module (Debug Build)"
-    "noita_dear_imgui\\.dll" description="Noita Dear ImGui module"
-    "native_test\\.dll" description="Noita Dear ImGui example native mod module"
+set(HT_SIGN_PATTERNS
+    "Debug/noita_dear_imgui\\.dll$" "description=Noita Dear ImGui module (Debug Build)"
+    "noita_dear_imgui\\.dll$"       "description=Noita Dear ImGui module"
+    "native_test\\.dll$"            "description=Noita Dear ImGui example native mod module"
 )
 include(Handtokening)
 
