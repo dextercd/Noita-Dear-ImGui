@@ -5,6 +5,12 @@ permissions:
 
 jobs:
   build:
+    environment: ${{ startsWith(github.ref, 'refs/tags/release-') && 'release' || 'testsign' }}
+    env:
+      HT_ENDPOINT: ${{ vars.HT_ENDPOINT }}
+      HT_SIGNING_PROFILE: ${{ vars.HT_SIGNING_PROFILE }}
+      HT_USER: ${{ vars.HT_USER }}
+      HT_SECRET: ${{ secrets.HT_SECRET }}
     runs-on: windows-2022
     steps:
       - name: Checkout
