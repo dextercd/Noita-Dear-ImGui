@@ -106,23 +106,6 @@ function ImGui.Font:IsLoaded() end
 ---@return string
 function ImGui.Font:GetDebugName() end
 
----@param size number
----@param max_width number
----@param wrap_width number
----@param text string
----@param length integer?
----@return number width
----@return number height
----@return integer remaining
-function ImGui.Font:CalcTextSizeA(size, max_width, wrap_width, text, length) end
-
----@param scale number
----@param text string
----@param length integer?
----@param wrap_width number
----@return integer
-function ImGui.Font:CalcWordWrapPositionA(scale, text, length, wrap_width) end
-
 ---@class ImGui.ListClipper
 ---@field DisplayStart integer
 ---@field DisplayEnd integer
@@ -303,6 +286,396 @@ https://sol2.readthedocs.io/en/latest/containers.html
 - size
 ]]
 
+---@class ImGui.Viewport
+ImGui.Viewport = {}
+
+
+---@class ImGui.DrawList
+ImGui.DrawList = {}
+
+
+
+
+---@enum DrawFlags
+ImGui.DrawFlags = {
+    None = 0,
+    Closed = 1,
+    RoundCornersTopLeft = 16,
+    RoundCornersTopRight = 32,
+    RoundCornersBottomLeft = 64,
+    RoundCornersBottomRight = 128,
+    RoundCornersNone = 256,
+    RoundCornersTop = 48,
+    RoundCornersBottom = 192,
+    RoundCornersLeft = 80,
+    RoundCornersRight = 160,
+    RoundCornersAll = 240,
+}
+
+
+---@param clip_rect_min_x number
+---@param clip_rect_min_y number
+---@param clip_rect_max_x number
+---@param clip_rect_max_y number
+---@param intersect_with_current_clip_rect boolean?
+function ImGui.DrawList:PushClipRect(clip_rect_min_x, clip_rect_min_y, clip_rect_max_x, clip_rect_max_y, intersect_with_current_clip_rect) end
+
+
+function ImGui.DrawList:PushClipRectFullScreen() end
+
+
+function ImGui.DrawList:PopClipRect() end
+
+
+---@param img ImGui.LuaImage
+function ImGui.DrawList:PushTextureID(img) end
+
+
+function ImGui.DrawList:PopTextureID() end
+
+
+---@return number
+---@return number
+function ImGui.DrawList:GetClipRectMin() end
+
+
+---@return number
+---@return number
+function ImGui.DrawList:GetClipRectMax() end
+
+
+---@param p1_x number
+---@param p1_y number
+---@param p2_x number
+---@param p2_y number
+---@param col integer
+---@param thickness number?
+function ImGui.DrawList:AddLine(p1_x, p1_y, p2_x, p2_y, col, thickness) end
+
+
+---@param p_min_x number
+---@param p_min_y number
+---@param p_max_x number
+---@param p_max_y number
+---@param col integer
+---@param rounding number?
+---@param flags integer?
+---@param thickness number?
+function ImGui.DrawList:AddRect(p_min_x, p_min_y, p_max_x, p_max_y, col, rounding, flags, thickness) end
+
+
+---@param p_min_x number
+---@param p_min_y number
+---@param p_max_x number
+---@param p_max_y number
+---@param col integer
+---@param rounding number?
+---@param flags integer?
+function ImGui.DrawList:AddRectFilled(p_min_x, p_min_y, p_max_x, p_max_y, col, rounding, flags) end
+
+
+---@param p_min_x number
+---@param p_min_y number
+---@param p_max_x number
+---@param p_max_y number
+---@param col_upr_left integer
+---@param col_upr_right integer
+---@param col_bot_right integer
+---@param col_bot_left integer
+function ImGui.DrawList:AddRectFilledMultiColor(p_min_x, p_min_y, p_max_x, p_max_y, col_upr_left, col_upr_right, col_bot_right, col_bot_left) end
+
+
+---@param p1_x number
+---@param p1_y number
+---@param p2_x number
+---@param p2_y number
+---@param p3_x number
+---@param p3_y number
+---@param p4_x number
+---@param p4_y number
+---@param col integer
+---@param thickness number?
+function ImGui.DrawList:AddQuad(p1_x, p1_y, p2_x, p2_y, p3_x, p3_y, p4_x, p4_y, col, thickness) end
+
+
+---@param p1_x number
+---@param p1_y number
+---@param p2_x number
+---@param p2_y number
+---@param p3_x number
+---@param p3_y number
+---@param p4_x number
+---@param p4_y number
+---@param col integer
+function ImGui.DrawList:AddQuadFilled(p1_x, p1_y, p2_x, p2_y, p3_x, p3_y, p4_x, p4_y, col) end
+
+
+---@param p1_x number
+---@param p1_y number
+---@param p2_x number
+---@param p2_y number
+---@param p3_x number
+---@param p3_y number
+---@param col integer
+---@param thickness number?
+function ImGui.DrawList:AddTriangle(p1_x, p1_y, p2_x, p2_y, p3_x, p3_y, col, thickness) end
+
+
+---@param p1_x number
+---@param p1_y number
+---@param p2_x number
+---@param p2_y number
+---@param p3_x number
+---@param p3_y number
+---@param col integer
+function ImGui.DrawList:AddTriangleFilled(p1_x, p1_y, p2_x, p2_y, p3_x, p3_y, col) end
+
+
+---@param center_x number
+---@param center_y number
+---@param radius number
+---@param col integer
+---@param num_segments integer?
+---@param thickness number?
+function ImGui.DrawList:AddCircle(center_x, center_y, radius, col, num_segments, thickness) end
+
+
+---@param center_x number
+---@param center_y number
+---@param radius number
+---@param col integer
+---@param num_segments integer?
+function ImGui.DrawList:AddCircleFilled(center_x, center_y, radius, col, num_segments) end
+
+
+---@param center_x number
+---@param center_y number
+---@param radius number
+---@param col integer
+---@param num_segments integer?
+---@param thickness number?
+function ImGui.DrawList:AddNgon(center_x, center_y, radius, col, num_segments, thickness) end
+
+
+---@param center_x number
+---@param center_y number
+---@param radius number
+---@param col integer
+---@param num_segments integer?
+function ImGui.DrawList:AddNgonFilled(center_x, center_y, radius, col, num_segments) end
+
+
+---@param center_x number
+---@param center_y number
+---@param radius_x number
+---@param radius_y number
+---@param col integer
+---@param rot number?
+---@param num_segments integer?
+---@param thickness number?
+function ImGui.DrawList:AddEllipse(center_x, center_y, radius_x, radius_y, col, rot, num_segments, thickness) end
+
+
+---@param center_x number
+---@param center_y number
+---@param radius_x number
+---@param radius_y number
+---@param col integer
+---@param rot number?
+---@param num_segments integer?
+function ImGui.DrawList:AddEllipseFilled(center_x, center_y, radius_x, radius_y, col, rot, num_segments) end
+
+
+---@param pos_x number
+---@param pos_y number
+---@param col integer
+---@param text string
+function ImGui.DrawList:AddText(pos_x, pos_y, col, text) end
+
+---@param font ImGui.Font
+---@param font_size number
+---@param pos_x number
+---@param pos_y number
+---@param col integer
+---@param text string
+function ImGui.DrawList:AddText(font, font_size, pos_x, pos_y, col, text) end
+
+
+---@param p1_x number
+---@param p1_y number
+---@param p2_x number
+---@param p2_y number
+---@param p3_x number
+---@param p3_y number
+---@param p4_x number
+---@param p4_y number
+---@param col integer
+---@param thickness number
+---@param num_segments integer?
+function ImGui.DrawList:AddBezierCubic(p1_x, p1_y, p2_x, p2_y, p3_x, p3_y, p4_x, p4_y, col, thickness, num_segments) end
+
+
+---@param p1_x number
+---@param p1_y number
+---@param p2_x number
+---@param p2_y number
+---@param p3_x number
+---@param p3_y number
+---@param col integer
+---@param thickness number
+---@param num_segments integer?
+function ImGui.DrawList:AddBezierQuadratic(p1_x, p1_y, p2_x, p2_y, p3_x, p3_y, col, thickness, num_segments) end
+
+
+---@param img ImGui.LuaImage
+---@param p_min_x number
+---@param p_min_y number
+---@param p_max_x number
+---@param p_max_y number
+---@param uv_min_x number?
+---@param uv_min_y number?
+---@param uv_max_x number?
+---@param uv_max_y number?
+---@param col integer?
+function ImGui.DrawList:AddImage(img, p_min_x, p_min_y, p_max_x, p_max_y, uv_min_x, uv_min_y, uv_max_x, uv_max_y, col) end
+
+
+---@param img ImGui.LuaImage
+---@param p1_x number
+---@param p1_y number
+---@param p2_x number
+---@param p2_y number
+---@param p3_x number
+---@param p3_y number
+---@param p4_x number
+---@param p4_y number
+---@param uv1_x number?
+---@param uv1_y number?
+---@param uv2_x number?
+---@param uv2_y number?
+---@param uv3_x number?
+---@param uv3_y number?
+---@param uv4_x number?
+---@param uv4_y number?
+---@param col integer?
+function ImGui.DrawList:AddImageQuad(img, p1_x, p1_y, p2_x, p2_y, p3_x, p3_y, p4_x, p4_y, uv1_x, uv1_y, uv2_x, uv2_y, uv3_x, uv3_y, uv4_x, uv4_y, col) end
+
+
+---@param img ImGui.LuaImage
+---@param p_min_x number
+---@param p_min_y number
+---@param p_max_x number
+---@param p_max_y number
+---@param uv_min_x number
+---@param uv_min_y number
+---@param uv_max_x number
+---@param uv_max_y number
+---@param col integer
+---@param rounding number
+---@param flags integer?
+function ImGui.DrawList:AddImageRounded(img, p_min_x, p_min_y, p_max_x, p_max_y, uv_min_x, uv_min_y, uv_max_x, uv_max_y, col, rounding, flags) end
+
+
+function ImGui.DrawList:PathClear() end
+
+
+---@param pos_x number
+---@param pos_y number
+function ImGui.DrawList:PathLineTo(pos_x, pos_y) end
+
+
+---@param pos_x number
+---@param pos_y number
+function ImGui.DrawList:PathLineToMergeDuplicate(pos_x, pos_y) end
+
+
+---@param col integer
+function ImGui.DrawList:PathFillConvex(col) end
+
+
+---@param col integer
+function ImGui.DrawList:PathFillConcave(col) end
+
+
+---@param col integer
+---@param flags integer?
+---@param thickness number?
+function ImGui.DrawList:PathStroke(col, flags, thickness) end
+
+
+---@param center_x number
+---@param center_y number
+---@param radius number
+---@param a_min number
+---@param a_max number
+---@param num_segments integer?
+function ImGui.DrawList:PathArcTo(center_x, center_y, radius, a_min, a_max, num_segments) end
+
+
+---@param center_x number
+---@param center_y number
+---@param radius number
+---@param a_min_of_12 integer
+---@param a_max_of_12 integer
+function ImGui.DrawList:PathArcToFast(center_x, center_y, radius, a_min_of_12, a_max_of_12) end
+
+
+---@param center_x number
+---@param center_y number
+---@param radius_x number
+---@param radius_y number
+---@param rot number
+---@param a_min number
+---@param a_max number
+---@param num_segments integer?
+function ImGui.DrawList:PathEllipticalArcTo(center_x, center_y, radius_x, radius_y, rot, a_min, a_max, num_segments) end
+
+
+---@param p2_x number
+---@param p2_y number
+---@param p3_x number
+---@param p3_y number
+---@param p4_x number
+---@param p4_y number
+---@param num_segments integer?
+function ImGui.DrawList:PathBezierCubicCurveTo(p2_x, p2_y, p3_x, p3_y, p4_x, p4_y, num_segments) end
+
+
+---@param p2_x number
+---@param p2_y number
+---@param p3_x number
+---@param p3_y number
+---@param num_segments integer?
+function ImGui.DrawList:PathBezierQuadraticCurveTo(p2_x, p2_y, p3_x, p3_y, num_segments) end
+
+
+---@param rect_min_x number
+---@param rect_min_y number
+---@param rect_max_x number
+---@param rect_max_y number
+---@param rounding number?
+---@param flags integer?
+function ImGui.DrawList:PathRect(rect_min_x, rect_min_y, rect_max_x, rect_max_y, rounding, flags) end
+
+
+---@return ImGui.DrawList
+function ImGui.GetWindowDrawList() end
+
+
+---@return ImGui.DrawList
+function ImGui.GetBackgroundDrawList() end
+
+---@param viewport ImGui.Viewport
+---@return ImGui.DrawList
+function ImGui.GetBackgroundDrawList(viewport) end
+
+
+---@return ImGui.DrawList
+function ImGui.GetForegroundDrawList() end
+
+---@param viewport ImGui.Viewport
+---@return ImGui.DrawList
+function ImGui.GetForegroundDrawList(viewport) end
 
 
 ---@enum Col
@@ -2750,7 +3123,7 @@ function ImPlot.PlotBars(label_id, xs, ys, bar_size) end
 function ImPlot.PlotBars(label_id, xs, ys, flags, bar_size) end
 
 
----@param labels any
+---@param labels string[]
 ---@param values number[]|Vector<number>
 ---@param item_count integer
 ---@param group_count integer
@@ -2798,7 +3171,7 @@ function ImPlot.PlotStems(label_id, xs, ys, ref, flags) end
 function ImPlot.PlotInfLines(label_id, values, flags) end
 
 
----@param label_ids any
+---@param label_ids string[]
 ---@param values number[]|Vector<number>
 ---@param x number
 ---@param y number
@@ -3779,6 +4152,59 @@ function ImGui.DockBuilderCopyWindowSettings(src_name, dst_name) end
 function ImGui.DockBuilderFinish(node_id) end
 
 
+---@param in_ integer
+---@return number
+---@return number
+---@return number
+---@return number
+function ImGui.ColorConvertU32ToFloat4(in_) end
+
+
+---@param x number
+---@param y number
+---@param z number
+---@param w number
+---@return integer
+function ImGui.ColorConvertFloat4ToU32(x, y, z, w) end
+
+
+---@param r number
+---@param g number
+---@param b number
+---@return number
+---@return number
+---@return number
+function ImGui.ColorConvertRGBtoHSV(r, g, b) end
+
+
+---@param h number
+---@param s number
+---@param v number
+---@return number
+---@return number
+---@return number
+function ImGui.ColorConvertHSVtoRGB(h, s, v) end
+
+
+---@param size number
+---@param max_width number
+---@param wrap_width number
+---@param text string
+---@param length integer?
+---@return number
+---@return number
+---@return integer
+function ImGui.Font:CalcTextSizeA(size, max_width, wrap_width, text, length) end
+
+
+---@param scale number
+---@param text string
+---@param length integer?
+---@param wrap_width number
+---@return integer
+function ImGui.Font:CalcWordWrapPositionA(scale, text, length, wrap_width) end
+
+
 ---@param font_index integer
 ---@return ImGui.Font
 function ImGui.GetFontIndex(font_index) end
@@ -4577,6 +5003,10 @@ ImGui.Dir = {
 
 ---@return ImGui.Style
 function ImGui.GetStyle() end
+
+
+---@return ImGui.Viewport
+function ImGui.GetMainViewport() end
 
 
 ---@return integer

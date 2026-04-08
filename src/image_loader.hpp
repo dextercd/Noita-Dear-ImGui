@@ -17,4 +17,23 @@ std::optional<image> get_image(std::string path);
 
 void unload_unused_images();
 
+struct lua_image {
+    std::string path;
+    int width = -1;
+    int height = -1;
+
+    void* get_handle()
+    {
+        auto img = get_image(path);
+        if (!img)
+            return nullptr;
+
+        // Update width/height
+        width = img->width;
+        height = img->height;
+
+        return img->handle;
+    }
+};
+
 #endif // Header guard

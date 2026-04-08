@@ -11,6 +11,7 @@
 
 void add_container(sol::table&);
 void add_imgui_clipboard(sol::table&);
+void add_imgui_color(sol::table&);
 void add_imgui_color_editor(sol::table&);
 void add_imgui_combo_box(sol::table&);
 void add_imgui_common(sol::table&);
@@ -18,6 +19,7 @@ void add_imgui_disable(sol::table&);
 void add_imgui_docking(sol::table&);
 void add_imgui_drag_and_drop(sol::table&);
 void add_imgui_drag_sliders(sol::table&);
+void add_imgui_draw_list(sol::table& imgui);
 void add_imgui_font(sol::table&);
 void add_imgui_gui_io(sol::table&);
 void add_imgui_images(sol::table&);
@@ -65,6 +67,7 @@ sol::table load_imgui(sol::this_state s, sol::table load_params)
 
     add_container(imgui);
     add_imgui_clipboard(imgui);
+    add_imgui_color(imgui);
     add_imgui_color_editor(imgui);
     add_imgui_combo_box(imgui);
     add_imgui_common(imgui);
@@ -72,6 +75,7 @@ sol::table load_imgui(sol::this_state s, sol::table load_params)
     add_imgui_docking(imgui);
     add_imgui_drag_and_drop(imgui);
     add_imgui_drag_sliders(imgui);
+    add_imgui_draw_list(imgui);
     add_imgui_font(imgui);
     add_imgui_gui_io(imgui);
     add_imgui_images(imgui);

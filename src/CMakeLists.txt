@@ -53,6 +53,7 @@ add_library(noita_dear_imgui SHARED
     add_lua_features.cpp
     lua_features/container.cpp
     lua_features/imgui_clipboard.cpp
+    lua_features/imgui_color.cpp
     lua_features/imgui_color_editor.cpp
     lua_features/imgui_combo_box.cpp
     lua_features/imgui_common.cpp
@@ -60,6 +61,7 @@ add_library(noita_dear_imgui SHARED
     lua_features/imgui_docking.cpp
     lua_features/imgui_drag_and_drop.cpp
     lua_features/imgui_drag_sliders.cpp
+    lua_features/imgui_draw_list.cpp
     lua_features/imgui_font.cpp
     lua_features/imgui_gui_io.cpp
     lua_features/imgui_images.cpp

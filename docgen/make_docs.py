@@ -157,6 +157,9 @@ def parse_add_function(cursor) -> FunctionDef:
 
     func = FunctionDef(func_name, signatures=[])
     bound = arguments[1]
+
+    if bound.kind != CursorKind.UNEXPOSED_EXPR:
+        print_tree(cursor)
     assert bound.kind == CursorKind.UNEXPOSED_EXPR
 
     bound_child = next(bound.get_children())
@@ -193,9 +196,6 @@ def get_unit(filepath):
         args = args[0:file_start]
     except ValueError:
         pass
-
-    # Not sure why this is needed
-    args += ["-isystem", "/usr/lib/gcc/i686-w64-mingw32/13.1.0/include/"]
 
     unit = index.parse(filepath, args=args)
 
@@ -255,7 +255,7 @@ def get_definitions(unit, filepath):
 
 # Debugging code
 if False:
-    p = "src/lua_features/imgui_keyboard_input.cpp"
+    p = "src/lua_features/imgui_windows.cpp"
     unit = get_unit(p)
     #print_unit(unit, "src/lua_features/imgui_keyboard_input.cpp")
     get_definitions(unit, p)
@@ -264,6 +264,8 @@ if False:
 
 all_definitions = []
 for p in glob.glob("src/lua_features/*.cpp"):
+    print()
+    print()
     print("Processing", p)
     unit = get_unit(p)
     all_definitions.extend(get_definitions(unit, p))
@@ -384,23 +386,6 @@ function ImGui.Font:IsLoaded() end
 
 ---@return string
 function ImGui.Font:GetDebugName() end
-
----@param size number
----@param max_width number
----@param wrap_width number
----@param text string
----@param length integer?
----@return number width
----@return number height
----@return integer remaining
-function ImGui.Font:CalcTextSizeA(size, max_width, wrap_width, text, length) end
-
----@param scale number
----@param text string
----@param length integer?
----@param wrap_width number
----@return integer
-function ImGui.Font:CalcWordWrapPositionA(scale, text, length, wrap_width) end
 
 ---@class ImGui.ListClipper
 ---@field DisplayStart integer
@@ -581,11 +566,21 @@ https://sol2.readthedocs.io/en/latest/containers.html
 - set
 - size
 ]]
+
+---@class ImGui.Viewport
+ImGui.Viewport = {}
+
+
+---@class ImGui.DrawList
+ImGui.DrawList = {}
+
 """)
 
-object_to_class_mapping = {
+object_to_namespace_mapping = {
     "imgui": "ImGui",
     "implot": "ImPlot",
+    "draw_list": "ImGui.DrawList",
+    "font_type": "ImGui.Font",
 }
 
 def param_name(name):
@@ -598,9 +593,10 @@ def param_name(name):
 
 for file_def in all_definitions:
     def_ = file_def.definition
-    class_ = object_to_class_mapping.get(file_def.object_name)
+    namespace = object_to_namespace_mapping.get(file_def.object_name)
 
-    if not class_:
+    if not namespace:
+        print(f"Skipping unmapped ns {file_def.object_name}")
         continue
 
     docout()
@@ -608,7 +604,7 @@ for file_def in all_definitions:
 
     if isinstance(def_, EnumDef):
         docout(f"---@enum {def_.name}")
-        docout(f"{class_}.{def_.name} = {{")
+        docout(f"{namespace}.{def_.name} = {{")
         for name, value in def_.items.items():
             docout(f"    {name} = {value},")
         docout("}")
@@ -629,6 +625,10 @@ for file_def in all_definitions:
             # Exclude none types
             params = [p for p in params if p[1]]
 
+            is_method = params and params[0][1] == namespace
+            if is_method:
+                del params[0]
+
             for name, type_ in params:
                 docout(f"---@param {param_name(name)} {type_}")
 
@@ -642,4 +642,6 @@ for file_def in all_definitions:
 
             param_string = ", ".join(param_name(name) for name, _ in params)
 
-            docout(f"function {class_}.{def_.name}({param_string}) end")
+            ns_divider = ":" if is_method else "."
+
+            docout(f"function {namespace}{ns_divider}{def_.name}({param_string}) end")

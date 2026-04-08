@@ -5,25 +5,6 @@
 
 #include "../image_loader.hpp"
 
-struct lua_image {
-    std::string path;
-    int width = -1;
-    int height = -1;
-
-    void* get_handle()
-    {
-        auto img = get_image(path);
-        if (!img)
-            return nullptr;
-
-        // Update width/height
-        width = img->width;
-        height = img->height;
-
-        return img->handle;
-    }
-};
-
 void add_imgui_images(sol::table& imgui)
 {
     imgui.new_usertype<lua_image>("LuaImage",

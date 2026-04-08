@@ -9,6 +9,9 @@ def enum_name(name):
 
 
 def clang_to_lua(typ: Type, is_return=False):
+    spelling = typ.spelling
+    spelling = spelling.removeprefix("const ")
+
     # ImPlot uses typedefs instead of real enums in its parameters.
     if typ.kind == TypeKind.ELABORATED:
         nt = typ.get_named_type()
@@ -17,14 +20,14 @@ def clang_to_lua(typ: Type, is_return=False):
 
     if typ.kind == TypeKind.TYPEDEF:
         if (
-            typ.spelling != "ImGuiID"
+            spelling != "ImGuiID"
             and (
-                typ.spelling == "ImAxis"
-                or typ.spelling.startswith("ImGui")
-                or typ.spelling.startswith("ImPlot")
+                spelling == "ImAxis"
+                or spelling.startswith("ImGui")
+                or spelling.startswith("ImPlot")
             )
         ):
-            return enum_name(typ.spelling)
+            return enum_name(spelling)
 
     if (
         typ.kind == TypeKind.LVALUEREFERENCE or
@@ -59,15 +62,15 @@ def clang_to_lua(typ: Type, is_return=False):
         case TypeKind.FLOAT128: return "number"
         case TypeKind.HALF: return "number"
         case TypeKind.ENUM:
-            return enum_name(typ.spelling)
+            return enum_name(spelling)
         case TypeKind.POINTER:
             pointee = typ.get_pointee()
             if pointee.kind == TypeKind.CHAR_S and pointee.is_const_qualified():
                 return "string"
 
             return clang_to_lua(pointee, is_return)
-        case TypeKind.RECORD | TypeKind.ELABORATED:
-            spelling = typ.spelling
+        case TypeKind.RECORD | TypeKind.ELABORATED | TypeKind.UNEXPOSED:
+
             if spelling.startswith("std::vector<"):
                 elem = typ.get_template_argument_type(0)
                 if is_return:
@@ -113,6 +116,12 @@ def clang_to_lua(typ: Type, is_return=False):
             if spelling == "sol::this_state":
                 return None
 
+            if spelling == "ImDrawList":
+                return "ImGui.DrawList"
+
+            if spelling == "ImGuiViewport":
+                return "ImGui.Viewport"
+
             if spelling == "ImGuiIO":
                 return "ImGui.GuiIO"
 
@@ -139,6 +148,6 @@ def clang_to_lua(typ: Type, is_return=False):
         return clang_to_lua(canonical, is_return)
 
     print(f"--Unsuported type: {typ}")
-    print(f"--Spelling: {typ.spelling}")
+    print(f"--Spelling: {spelling}")
     print(f"--Kind: {typ.kind}")
     return "any"

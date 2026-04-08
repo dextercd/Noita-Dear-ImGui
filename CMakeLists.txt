@@ -160,7 +160,7 @@ install(FILES imguidoc/imgui_definitions.lua
 FetchContent_Declare(
     Handtokening_CMake
     GIT_REPOSITORY https://github.com/dextercd/Handtokening-CMake.git
-    GIT_TAG b492761e64dffba932a5c51a8123869a1149ed49
+    GIT_TAG a06a201f7f224df8335c6c6b6d5796a04c836f48
 )
 FetchContent_MakeAvailable(Handtokening_CMake)
 
