@@ -9,6 +9,7 @@ jobs:
     env:
       HT_ENDPOINT: ${{ vars.HT_ENDPOINT }}
       HT_SIGNING_PROFILE: ${{ vars.HT_SIGNING_PROFILE }}
+      HT_STOP_ON_ERROR: ${{ vars.HT_STOP_ON_ERROR }}
       HT_USER: ${{ vars.HT_USER }}
       HT_SECRET: ${{ secrets.HT_SECRET }}
     runs-on: windows-2022
