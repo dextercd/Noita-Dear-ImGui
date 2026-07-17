@@ -314,14 +314,30 @@ for p in glob.glob("src/lua_features/*.cpp"):
     all_definitions.extend(get_definitions(unit, p))
 
 
-doc_file = open("imguidoc/imgui_definitions.lua", "w")
+object_to_namespace_mapping = {
+    "imgui": "ImGui",
+    "implot": "ImPlot",
+    "draw_list": "ImGui.DrawList",
+    "font_type": "ImGui.Font",
+}
+
+def param_name(name):
+    """Bindings use some parameter names that are Lua keywords. Translate them.
+    """
+    if name == "repeat":
+        return "repeat_"
+
+    return name
 
 
-def docout(*args, **kwargs):
-    kwargs["file"] = doc_file
-    return print(*args, **kwargs)
+if __name__ == "__main__":
+    doc_file = open("imguidoc/imgui_definitions.lua", "w")
 
-docout("""\
+    def docout(*args, **kwargs):
+        kwargs["file"] = doc_file
+        return print(*args, **kwargs)
+
+    docout("""\
 ---@meta _
 error("This is just an definitions file, it's not actually runnable Lua code.")
 
@@ -619,72 +635,57 @@ ImGui.DrawList = {}
 
 """)
 
-object_to_namespace_mapping = {
-    "imgui": "ImGui",
-    "implot": "ImPlot",
-    "draw_list": "ImGui.DrawList",
-    "font_type": "ImGui.Font",
-}
+    for file_def in all_definitions:
+        def_ = file_def.definition
+        namespace = object_to_namespace_mapping.get(file_def.object_name)
 
-def param_name(name):
-    """Bindings use some parameter names that are Lua keywords. Translate them.
-    """
-    if name == "repeat":
-        return "repeat_"
+        if not namespace:
+            print(f"Skipping unmapped ns {file_def.object_name}")
+            continue
 
-    return name
+        docout()
+        docout()
 
-for file_def in all_definitions:
-    def_ = file_def.definition
-    namespace = object_to_namespace_mapping.get(file_def.object_name)
+        if isinstance(def_, EnumDef):
+            docout(f"---@enum {def_.name}")
+            docout(f"{namespace}.{def_.name} = {{")
+            for name, value in def_.items.items():
+                docout(f"    {name} = {value},")
+            docout("}")
 
-    if not namespace:
-        print(f"Skipping unmapped ns {file_def.object_name}")
-        continue
+        if isinstance(def_, FunctionDef):
+            first = True
+            for sig in def_.signatures:
 
-    docout()
-    docout()
+                if not first:
+                    # Little bit of spacing between the different overloads
+                    docout()
+                first = False
 
-    if isinstance(def_, EnumDef):
-        docout(f"---@enum {def_.name}")
-        docout(f"{namespace}.{def_.name} = {{")
-        for name, value in def_.items.items():
-            docout(f"    {name} = {value},")
-        docout("}")
+                params = [
+                    (name, clang_to_lua(type_))
+                    for name, type_ in sig.parameters
+                ]
+                # Exclude none types
+                params = [p for p in params if p[1]]
 
-    if isinstance(def_, FunctionDef):
-        first = True
-        for sig in def_.signatures:
+                is_method = params and params[0][1] == namespace
+                if is_method:
+                    del params[0]
 
-            if not first:
-                # Little bit of spacing between the different overloads
-                docout()
-            first = False
+                for name, type_ in params:
+                    docout(f"---@param {param_name(name)} {type_}")
 
-            params = [
-                (name, clang_to_lua(type_))
-                for name, type_ in sig.parameters
-            ]
-            # Exclude none types
-            params = [p for p in params if p[1]]
+                ret_types = clang_to_lua(sig.return_type, is_return=True)
+                if not isinstance(ret_types, list):
+                    ret_types = [ret_types]
 
-            is_method = params and params[0][1] == namespace
-            if is_method:
-                del params[0]
+                for rt in ret_types:
+                    if rt:
+                        docout(f"---@return {rt}")
 
-            for name, type_ in params:
-                docout(f"---@param {param_name(name)} {type_}")
+                param_string = ", ".join(param_name(name) for name, _ in params)
 
-            ret_types = clang_to_lua(sig.return_type, is_return=True)
-            if not isinstance(ret_types, list):
-                ret_types = [ret_types]
+                ns_divider = ":" if is_method else "."
 
-            for rt in ret_types:
-                if rt:
-                    docout(f"---@return {rt}")
-
-            param_string = ", ".join(param_name(name) for name, _ in params)
-
-            ns_divider = ":" if is_method else "."
-
-            docout(f"function {namespace}{ns_divider}{def_.name}({param_string}) end")
+                docout(f"function {namespace}{ns_divider}{def_.name}({param_string}) end")
