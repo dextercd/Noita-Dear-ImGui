@@ -230,12 +230,16 @@ def get_unit(filepath):
     except ValueError:
         pass
 
+    # -w disables warning diagnostics: we only care about the AST, and the
+    # sol2/imgui headers emit a lot of noise (unused-argument, memset, ...).
+    args = args + ["-w"]
+
     unit = index.parse(filepath, args=args + ["-include-pch", _get_pch(args)])
 
-    diags = False
+    # Still surface anything at error severity or worse.
     for d in unit.diagnostics:
-        print(d)
-        diags = True
+        if d.severity >= clang.cindex.Diagnostic.Error:
+            print(f"  {d}")
 
     return unit
 
@@ -306,10 +310,9 @@ if False:
 
 
 all_definitions = []
-for p in glob.glob("src/lua_features/*.cpp"):
-    print()
-    print()
-    print("Processing", p)
+files = glob.glob("src/lua_features/*.cpp")
+for i, p in enumerate(files, 1):
+    print(f"[{i}/{len(files)}] Processing", p)
     unit = get_unit(p)
     all_definitions.extend(get_definitions(unit, p))
 
