@@ -1,5 +1,8 @@
 import glob
+import os
 import sys
+import atexit
+import tempfile
 import itertools
 
 import more_itertools
@@ -184,6 +187,36 @@ def parse_add_function(cursor) -> FunctionDef:
 index = clang.cindex.Index.create(True)
 compile_db = clang.cindex.CompilationDatabase.fromDirectory("clang-build")
 
+# Every lua_features/*.cpp includes the same heavy, template-laden headers
+# (sol2 and imgui). Re-parsing those for each of the ~36 files dominates the
+# runtime. Instead we parse them once into a precompiled header and inject it
+# into each translation unit via -include-pch; the headers' include guards turn
+# the file's own #includes into no-ops, so this is transparent to parsing.
+_pch_path = None
+
+# CXTranslationUnit_ForSerialization: needed so the TU can be saved as a PCH.
+_FOR_SERIALIZATION = 0x20
+
+def _get_pch(args):
+    global _pch_path
+    if _pch_path is None:
+        with tempfile.NamedTemporaryFile(
+            "w", suffix=".hpp", delete=False
+        ) as header:
+            header.write("#include <sol/sol.hpp>\n#include <imgui.h>\n")
+            header_path = header.name
+        tu = index.parse(header_path, args=args, options=_FOR_SERIALIZATION)
+        _pch_path = header_path + ".pch"
+        tu.save(_pch_path)
+        atexit.register(
+            lambda: [
+                os.unlink(p)
+                for p in (header_path, _pch_path)
+                if os.path.exists(p)
+            ]
+        )
+    return _pch_path
+
 
 def get_unit(filepath):
     commands = list(compile_db.getCompileCommands(filepath))
@@ -197,7 +230,7 @@ def get_unit(filepath):
     except ValueError:
         pass
 
-    unit = index.parse(filepath, args=args)
+    unit = index.parse(filepath, args=args + ["-include-pch", _get_pch(args)])
 
     diags = False
     for d in unit.diagnostics:
