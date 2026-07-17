@@ -252,36 +252,46 @@ def print_unit(unit, filepath):
 def get_definitions(unit, filepath):
     file_definitions: list[FileDefinition] = []
 
-    for cursor in unit.cursor.walk_preorder():
-        if not cursor.location.file or cursor.location.file.name != filepath:
+    # A translation unit has thousands of top-level declarations pulled in from
+    # the sol2/imgui headers, but the binding calls we care about live only in
+    # the handful of top-level cursors that belong to this .cpp. Walking the
+    # whole TU with walk_preorder() would recurse through hundreds of thousands
+    # of header nodes, so prune to the in-file top-level cursors first.
+    for top in unit.cursor.get_children():
+        top_file = top.location.file
+        if not top_file or top_file.name != filepath:
             continue
 
-        if cursor.kind != CursorKind.CALL_EXPR:
-            continue
+        for cursor in top.walk_preorder():
+            if not cursor.location.file or cursor.location.file.name != filepath:
+                continue
 
-        mem_ref = next(cursor.get_children(), None)
-        if not mem_ref or mem_ref.kind != CursorKind.MEMBER_REF_EXPR:
-            continue
+            if cursor.kind != CursorKind.CALL_EXPR:
+                continue
 
-        def_ = None
-        match tokens(mem_ref):
-            case [obj, _, "new_enum"]:
-                def_ = parse_enum(cursor)
+            mem_ref = next(cursor.get_children(), None)
+            if not mem_ref or mem_ref.kind != CursorKind.MEMBER_REF_EXPR:
+                continue
 
-            case [obj, _, "new_enum", "<", *_]:
-                def_ = parse_brace_enum(cursor)
+            def_ = None
+            match tokens(mem_ref):
+                case [obj, _, "new_enum"]:
+                    def_ = parse_enum(cursor)
 
-            case [obj, _, "set_function"]:
-                def_ = parse_add_function(cursor)
+                case [obj, _, "new_enum", "<", *_]:
+                    def_ = parse_brace_enum(cursor)
 
-        if def_:
-            file_definitions.append(
-                FileDefinition(
-                    filepath=filepath,
-                    object_name=obj,
-                    definition=def_
+                case [obj, _, "set_function"]:
+                    def_ = parse_add_function(cursor)
+
+            if def_:
+                file_definitions.append(
+                    FileDefinition(
+                        filepath=filepath,
+                        object_name=obj,
+                        definition=def_
+                    )
                 )
-            )
 
     return file_definitions
 
